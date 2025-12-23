@@ -4049,20 +4049,9 @@ body,
   position: relative;
   height: 280px;
   overflow: hidden;
-  /* Apply top border-radius to match card corners - prevents black gap at top corners */
-  border-radius: 24px 24px 0 0;
-}
-
-/* Photo link - covers entire photo area, prevents black gap */
-.mst-guide-carousel-photo-link {
-  display: block;
-  width: 100%;
-  height: 100%;
-  line-height: 0; /* Remove line-height space that causes black gap */
 }
 
 .mst-guide-carousel-photo img {
-  display: block; /* Remove inline element spacing */
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -4238,35 +4227,31 @@ body,
   stroke: #30ABE8;
 }
 
-/* Guide inside button for Woo Tour Carousel - now uses <a> tag, positioned in footer */
+/* Guide inside button for Woo Tour Carousel */
 .mst-woo-carousel-guide-inside {
-  display: block; /* For <a> tag - prevents inline spacing */
-  text-decoration: none; /* Remove link underline */
   cursor: pointer;
   z-index: 5;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
-  /* Positioned in footer, overlapping the button */
+  /* Desktop: use CSS variables from Elementor */
   position: absolute;
   width: var(--guide-size-desktop, 64px);
   height: var(--guide-size-desktop, 64px);
   right: var(--guide-right-desktop, 0px);
-  /* Center vertically on the button - button is ~44px height, guide overlaps */
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: var(--guide-bottom-desktop, 0px);
   border-radius: 50%;
   border-width: var(--guide-border-desktop, 3px);
   border-style: solid;
   border-color: var(--guide-border-color, hsl(45, 98%, 50%));
   overflow: hidden;
   flex-shrink: 0;
-  transition: all 0.3s ease, transform 0.3s ease;
+  transition: all 0.3s ease;
   background: #fff;
 }
 
 .mst-woo-carousel-guide-inside:hover {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   border-color: var(--guide-hover-border-color, hsl(270, 70%, 60%));
-  transform: translateY(-50%) scale(1.08);
+  transform: scale(1.08);
 }
 
 /* Ensure guide photo stays within visual boundary */
