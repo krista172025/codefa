@@ -4049,9 +4049,20 @@ body,
   position: relative;
   height: 280px;
   overflow: hidden;
+  /* Apply top border-radius to match card corners - prevents black gap at top corners */
+  border-radius: 24px 24px 0 0;
+}
+
+/* Photo link - covers entire photo area, prevents black gap */
+.mst-guide-carousel-photo-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  line-height: 0; /* Remove line-height space that causes black gap */
 }
 
 .mst-guide-carousel-photo img {
+  display: block; /* Remove inline element spacing */
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -4227,31 +4238,35 @@ body,
   stroke: #30ABE8;
 }
 
-/* Guide inside button for Woo Tour Carousel */
+/* Guide inside button for Woo Tour Carousel - now uses <a> tag, positioned in footer */
 .mst-woo-carousel-guide-inside {
+  display: block; /* For <a> tag - prevents inline spacing */
+  text-decoration: none; /* Remove link underline */
   cursor: pointer;
   z-index: 5;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
-  /* Desktop: use CSS variables from Elementor */
+  /* Positioned in footer, overlapping the button */
   position: absolute;
   width: var(--guide-size-desktop, 64px);
   height: var(--guide-size-desktop, 64px);
   right: var(--guide-right-desktop, 0px);
-  bottom: var(--guide-bottom-desktop, 0px);
+  /* Center vertically on the button - button is ~44px height, guide overlaps */
+  top: 50%;
+  transform: translateY(-50%);
   border-radius: 50%;
   border-width: var(--guide-border-desktop, 3px);
   border-style: solid;
   border-color: var(--guide-border-color, hsl(45, 98%, 50%));
   overflow: hidden;
   flex-shrink: 0;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease, transform 0.3s ease;
   background: #fff;
 }
 
 .mst-woo-carousel-guide-inside:hover {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   border-color: var(--guide-hover-border-color, hsl(270, 70%, 60%));
-  transform: scale(1.08);
+  transform: translateY(-50%) scale(1.08);
 }
 
 /* Ensure guide photo stays within visual boundary */
@@ -5013,11 +5028,20 @@ body,
   transform: none;
 }
 
+/* Badges container - max-width to prevent overlap with wishlist */
+.mst-shop-grid-badges {
+  max-width: calc(100% - 60px);
+}
+
 /* Badge - remove absolute positioning, let container handle it */
 .mst-shop-grid-badge {
   padding: 6px 12px;
   font-size: var(--badge-size, 11px);
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
 }
 
 .mst-shop-grid-badge.mst-badge-liquid-glass {
@@ -5027,21 +5051,28 @@ body,
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Wishlist - let inline styles from PHP control most properties */
+/* Wishlist - responsive via CSS variables */
 .mst-shop-grid-wishlist,
 .mst-shop-grid-wishlist.mst-wishlist-btn {
-  /* Only set non-configurable properties in CSS */
+  width: var(--wishlist-size, 36px);
+  height: var(--wishlist-size, 36px);
   cursor: pointer;
   text-decoration: none;
+  flex-shrink: 0;
+  backdrop-filter: blur(var(--wishlist-blur, 12px));
+  -webkit-backdrop-filter: blur(var(--wishlist-blur, 12px));
+}
+
+.mst-shop-grid-wishlist svg,
+.mst-shop-grid-wishlist .mst-heart-icon {
+  width: var(--wishlist-icon-size, 18px) !important;
+  height: var(--wishlist-icon-size, 18px) !important;
+  transition: transform 0.3s ease;
 }
 
 /* Wishlist hover - use data-hover-bg from element, fallback subtle */
 .mst-shop-grid-wishlist:hover {
   transform: scale(1.08);
-}
-
-.mst-shop-grid-wishlist .mst-heart-icon {
-  transition: transform 0.3s ease;
 }
 
 .mst-shop-grid-wishlist:hover .mst-heart-icon {
@@ -5133,13 +5164,14 @@ body,
   filter: brightness(1.1);
 }
 
-/* Guide Photo */
+/* Guide Photo - responsive via CSS variables */
 .mst-shop-grid-guide {
-  width: 44px;
-  height: 44px;
+  width: var(--guide-size, 44px);
+  height: var(--guide-size, 44px);
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid;
+  border-width: var(--guide-border, 3px);
+  border-style: solid;
   flex-shrink: 0;
   transition: all 0.3s ease;
   display: block;
@@ -5155,7 +5187,7 @@ body,
   transform: scale(1.1);
 }
 
-/* Guide Inside Button - Right Bottom Corner anchoring */
+/* Guide Inside Button - responsive via CSS variables */
 .mst-shop-grid-button-wrapper {
   position: relative;
   margin-top: auto;
@@ -5164,12 +5196,25 @@ body,
 .mst-shop-grid-button-wrapper .mst-shop-grid-button {
   display: block;
   width: 100%;
+  /* Add right padding to make room for guide photo */
+  padding-right: calc(var(--guide-size, 64px) / 2 + 20px) !important;
 }
 
 .mst-shop-grid-guide-inside {
+  position: absolute;
+  right: var(--guide-right, 0px);
+  bottom: var(--guide-bottom, 0px);
+  width: var(--guide-size, 64px);
+  height: var(--guide-size, 64px);
+  border-radius: 50%;
+  overflow: hidden;
+  border-width: var(--guide-border, 3px);
+  border-style: solid;
   display: block;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   background: #fff;
+  z-index: 2;
+  transition: all 0.3s ease;
 }
 
 .mst-shop-grid-guide-inside img {
@@ -5233,6 +5278,24 @@ body,
     height: 160px;
   }
   
+  /* Badges responsive for tablet */
+  .mst-shop-grid-badges {
+    max-width: calc(100% - 54px);
+    gap: 5px;
+  }
+  
+  .mst-shop-grid-badge {
+    font-size: 10px;
+    padding: 5px 8px;
+  }
+  
+  .mst-shop-grid-badge svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
+  
+  /* Wishlist uses CSS variables from Elementor, no fixed override needed */
+  
   .mst-shop-grid-content {
     padding: 12px;
   }
@@ -5250,10 +5313,7 @@ body,
     font-size: 13px;
   }
   
-  .mst-shop-grid-guide {
-    width: 36px;
-    height: 36px;
-  }
+  /* Guide uses CSS variables from Elementor, no fixed override needed */
   
   .mst-guide-carousel-container.mst-arrows-outside {
     padding: 0 45px;
@@ -5270,15 +5330,24 @@ body,
     height: 140px;
   }
   
-  .mst-shop-grid-badge {
-    font-size: 10px;
-    padding: 4px 8px;
+  /* Badges responsive - smaller on mobile, prevent overflow */
+  .mst-shop-grid-badges {
+    max-width: calc(100% - 50px);
+    gap: 4px;
   }
   
-  .mst-shop-grid-wishlist {
-    width: 32px;
-    height: 32px;
+  .mst-shop-grid-badge {
+    font-size: 9px;
+    padding: 4px 6px;
+    gap: 2px;
   }
+  
+  .mst-shop-grid-badge svg {
+    width: 10px !important;
+    height: 10px !important;
+  }
+  
+  /* Wishlist uses CSS variables from Elementor, no fixed override needed */
   
   .mst-shop-grid-content {
     padding: 10px;
@@ -5295,13 +5364,27 @@ body,
     gap: 8px;
   }
   
-  .mst-shop-grid-guide {
-    width: 32px;
-    height: 32px;
-  }
+  /* Guide uses CSS variables from Elementor, no fixed override needed */
   
   .mst-guide-carousel-container.mst-arrows-outside {
     padding: 0 40px;
+  }
+}
+
+/* Extra small screens - even more compact */
+@media (max-width: 360px) {
+  .mst-shop-grid-badges {
+    max-width: calc(100% - 44px);
+  }
+  
+  .mst-shop-grid-badge {
+    font-size: 8px;
+    padding: 3px 5px;
+  }
+  
+  .mst-shop-grid-badge svg {
+    width: 9px !important;
+    height: 9px !important;
   }
 }
 

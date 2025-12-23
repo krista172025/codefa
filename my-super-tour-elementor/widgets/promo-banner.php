@@ -778,30 +778,72 @@ class Promo_Banner extends Widget_Base {
             }
             
             /* Mobile responsiveness */
+            <?php
+              // Pull responsive padding values from Elementor (fallback to our design defaults)
+              $pad_m = $settings['banner_padding_mobile'] ?? [];
+              $pad_m_unit = $pad_m['unit'] ?? 'px';
+
+              $pad_m_left = (isset($pad_m['left']) && $pad_m['left'] !== '') ? ($pad_m['left'] . $pad_m_unit) : '28px';
+              $pad_m_right = (isset($pad_m['right']) && $pad_m['right'] !== '') ? ($pad_m['right'] . $pad_m_unit) : '28px';
+              $pad_m_bottom = (isset($pad_m['bottom']) && $pad_m['bottom'] !== '') ? ($pad_m['bottom'] . $pad_m_unit) : '28px';
+            ?>
             @media (max-width: 768px) {
                 #<?php echo esc_attr($unique_id); ?> .mst-promo-content-wrapper {
                     flex-direction: column !important;
                 }
+
+                /* Make the image ignore banner padding and stretch edge-to-edge */
                 #<?php echo esc_attr($unique_id); ?> .mst-promo-image-side {
-                    width: 100% !important;
-                    max-width: 100% !important;
-                    margin-top: 24px;
+                    position: relative !important;
+                    top: auto !important;
+                    right: auto !important;
+                    bottom: auto !important;
+                    left: auto !important;
+
+                    width: calc(100% + (<?php echo esc_attr($pad_m_left); ?>) + (<?php echo esc_attr($pad_m_right); ?>)) !important;
+                    max-width: none !important;
+                    margin: 24px calc(-1 * (<?php echo esc_attr($pad_m_right); ?>)) calc(-1 * (<?php echo esc_attr($pad_m_bottom); ?>)) calc(-1 * (<?php echo esc_attr($pad_m_left); ?>)) !important;
+
+                    height: 260px !important;
+                    border-radius: 0 0 24px 24px !important;
+                    overflow: hidden !important;
                 }
+
+                #<?php echo esc_attr($unique_id); ?> .mst-promo-image-side img {
+                    width: 100% !important;
+                    height: 100% !important;
+                    object-fit: cover !important;
+                    object-position: center center !important;
+                    border-radius: 0 !important;
+                    display: block !important;
+                }
+
                 #<?php echo esc_attr($unique_id); ?> .mst-promo-text-content {
                     width: 100% !important;
                 }
+
                 #<?php echo esc_attr($unique_id); ?> .mst-promo-title {
                     font-size: 28px !important;
                 }
+
                 #<?php echo esc_attr($unique_id); ?> .mst-promo-buttons {
                     flex-direction: column !important;
                     gap: 12px !important;
                 }
+
                 #<?php echo esc_attr($unique_id); ?> .mst-promo-button-primary,
                 #<?php echo esc_attr($unique_id); ?> .mst-promo-button-secondary {
                     width: 100% !important;
                     text-align: center !important;
                     justify-content: center !important;
+                }
+            }
+
+            @media (max-width: 480px) {
+                #<?php echo esc_attr($unique_id); ?> .mst-promo-image-side {
+                    margin-top: 20px !important;
+                    height: 220px !important;
+                    border-radius: 0 0 20px 20px !important;
                 }
             }
         </style>

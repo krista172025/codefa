@@ -300,7 +300,12 @@ class Shop_Grid extends Widget_Base {
                 'type' => Controls_Manager::SLIDER,
                 'range' => ['px' => ['min' => 24, 'max' => 56, 'step' => 2]],
                 'default' => ['size' => 36, 'unit' => 'px'],
+                'tablet_default' => ['size' => 32, 'unit' => 'px'],
+                'mobile_default' => ['size' => 28, 'unit' => 'px'],
                 'condition' => ['show_wishlist' => 'yes'],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-wishlist' => '--wishlist-size: {{SIZE}}{{UNIT}};',
+                ],
             ]
         );
 
@@ -311,7 +316,12 @@ class Shop_Grid extends Widget_Base {
                 'type' => Controls_Manager::SLIDER,
                 'range' => ['px' => ['min' => 12, 'max' => 32, 'step' => 1]],
                 'default' => ['size' => 18, 'unit' => 'px'],
+                'tablet_default' => ['size' => 15, 'unit' => 'px'],
+                'mobile_default' => ['size' => 14, 'unit' => 'px'],
                 'condition' => ['show_wishlist' => 'yes'],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-wishlist' => '--wishlist-icon-size: {{SIZE}}{{UNIT}};',
+                ],
             ]
         );
 
@@ -322,7 +332,12 @@ class Shop_Grid extends Widget_Base {
                 'type' => Controls_Manager::SLIDER,
                 'range' => ['px' => ['min' => 0, 'max' => 30, 'step' => 1]],
                 'default' => ['size' => 12, 'unit' => 'px'],
+                'tablet_default' => ['size' => 10, 'unit' => 'px'],
+                'mobile_default' => ['size' => 8, 'unit' => 'px'],
                 'condition' => ['show_wishlist' => 'yes', 'wishlist_liquid_glass' => 'yes'],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-wishlist' => '--wishlist-blur: {{SIZE}}{{UNIT}};',
+                ],
             ]
         );
 
@@ -394,7 +409,13 @@ class Shop_Grid extends Widget_Base {
                 'type' => Controls_Manager::SLIDER,
                 'range' => ['px' => ['min' => 40, 'max' => 100, 'step' => 2]],
                 'default' => ['size' => 64, 'unit' => 'px'],
+                'tablet_default' => ['size' => 54, 'unit' => 'px'],
+                'mobile_default' => ['size' => 44, 'unit' => 'px'],
                 'condition' => ['show_guide' => 'yes'],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-guide-inside' => '--guide-size: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .mst-shop-grid-guide' => '--guide-size: {{SIZE}}{{UNIT}};',
+                ],
             ]
         );
 
@@ -405,7 +426,13 @@ class Shop_Grid extends Widget_Base {
                 'type' => Controls_Manager::SLIDER,
                 'range' => ['px' => ['min' => 1, 'max' => 8, 'step' => 1]],
                 'default' => ['size' => 3, 'unit' => 'px'],
+                'tablet_default' => ['size' => 3, 'unit' => 'px'],
+                'mobile_default' => ['size' => 2, 'unit' => 'px'],
                 'condition' => ['show_guide' => 'yes'],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-guide-inside' => '--guide-border: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .mst-shop-grid-guide' => '--guide-border: {{SIZE}}{{UNIT}};',
+                ],
             ]
         );
 
@@ -417,6 +444,9 @@ class Shop_Grid extends Widget_Base {
                 'range' => ['px' => ['min' => -50, 'max' => 50, 'step' => 1]],
                 'default' => ['size' => 0, 'unit' => 'px'],
                 'condition' => ['show_guide' => 'yes', 'guide_position' => 'inside_button'],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-guide-inside' => '--guide-right: {{SIZE}}{{UNIT}};',
+                ],
             ]
         );
 
@@ -428,6 +458,9 @@ class Shop_Grid extends Widget_Base {
                 'range' => ['px' => ['min' => -50, 'max' => 50, 'step' => 1]],
                 'default' => ['size' => 0, 'unit' => 'px'],
                 'condition' => ['show_guide' => 'yes', 'guide_position' => 'inside_button'],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-guide-inside' => '--guide-bottom: {{SIZE}}{{UNIT}};',
+                ],
             ]
         );
 
@@ -570,6 +603,11 @@ class Shop_Grid extends Widget_Base {
                 'type' => Controls_Manager::SLIDER,
                 'range' => ['px' => ['min' => 8, 'max' => 18, 'step' => 1]],
                 'default' => ['size' => 12, 'unit' => 'px'],
+                'tablet_default' => ['size' => 10, 'unit' => 'px'],
+                'mobile_default' => ['size' => 9, 'unit' => 'px'],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-badges' => '--badge-size: {{SIZE}}{{UNIT}};',
+                ],
             ]
         );
 
@@ -580,6 +618,26 @@ class Shop_Grid extends Widget_Base {
                 'type' => Controls_Manager::SLIDER,
                 'range' => ['px' => ['min' => 8, 'max' => 24, 'step' => 1]],
                 'default' => ['size' => 12, 'unit' => 'px'],
+                'tablet_default' => ['size' => 11, 'unit' => 'px'],
+                'mobile_default' => ['size' => 10, 'unit' => 'px'],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-badges' => '--badge-icon-size: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'badge_padding',
+            [
+                'label' => __('Badge Padding', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px'],
+                'default' => ['top' => '6', 'right' => '12', 'bottom' => '6', 'left' => '12', 'unit' => 'px', 'isLinked' => false],
+                'tablet_default' => ['top' => '5', 'right' => '8', 'bottom' => '5', 'left' => '8', 'unit' => 'px', 'isLinked' => false],
+                'mobile_default' => ['top' => '4', 'right' => '6', 'bottom' => '4', 'left' => '6', 'unit' => 'px', 'isLinked' => false],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-badge' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
             ]
         );
 
@@ -930,7 +988,7 @@ class Shop_Grid extends Widget_Base {
                     </a>
                     
                     <?php if ($show_badges): ?>
-                    <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; --badge-size: <?php echo esc_attr($badge_size); ?>px; --badge-icon-size: <?php echo esc_attr($badge_icon_size); ?>px;">
+                    <div class="mst-shop-grid-badges mst-badges-auto-position" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px); --badge-size: <?php echo esc_attr($badge_size); ?>px; --badge-icon-size: <?php echo esc_attr($badge_icon_size); ?>px;">
                         <?php if (!empty($badge_1)): ?>
                         <span class="mst-shop-grid-badge mst-follow-glow" style="background: <?php echo esc_attr($settings['badge_bg_color']); ?>; color: <?php echo esc_attr($settings['badge_text_color']); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: <?php echo esc_attr($badge_border_radius); ?>px; border: 1px solid rgba(255,255,255,0.3);">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -1015,31 +1073,25 @@ class Shop_Grid extends Widget_Base {
                     <!-- Footer: Button + Guide -->
                     <?php 
                         $guide_position = isset($settings['guide_position']) ? $settings['guide_position'] : 'inside_button';
-                        $guide_size = isset($settings['guide_photo_size']['size']) ? intval($settings['guide_photo_size']['size']) : 64;
-                        $guide_border = isset($settings['guide_border_width']['size']) ? intval($settings['guide_border_width']['size']) : 3;
-                        $guide_offset_right = isset($settings['guide_offset_right']['size']) ? intval($settings['guide_offset_right']['size']) : 0;
-                        $guide_offset_bottom = isset($settings['guide_offset_bottom']['size']) ? intval($settings['guide_offset_bottom']['size']) : 0;
                         $guide_url = !empty($settings['guide_link']['url']) ? $settings['guide_link']['url'] : '#';
+                        $guide_border_color = isset($settings['guide_border_color']) ? $settings['guide_border_color'] : '#ffffff';
+                        $guide_hover_border = isset($settings['guide_hover_border']) ? $settings['guide_hover_border'] : 'hsl(45, 98%, 60%)';
                     ?>
                     
-                    <?php if ($guide_position === 'inside_button' && $show_guide && !empty($settings['default_guide_photo']['url'])): 
-                        $button_border_radius = isset($settings['button_border_radius']['size']) ? $settings['button_border_radius']['size'] : 12;
-                        // Calculate guide offset from right edge of button  
-                        $guide_visible_portion = $guide_size / 2;
-                    ?>
-                    <!-- Button with Guide Inside - Right Bottom Corner -->
-                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin-top: auto;">
+                    <?php if ($guide_position === 'inside_button' && $show_guide && !empty($settings['default_guide_photo']['url'])): ?>
+                    <!-- Button with Guide Inside - responsive via CSS variables -->
+                    <div class="mst-shop-grid-button-wrapper">
                         <a href="<?php echo esc_url(get_permalink($product_id)); ?>" 
                            class="mst-shop-grid-button mst-follow-glow" 
-                           style="display: block; background: <?php echo esc_attr($settings['button_bg_color']); ?>; color: <?php echo esc_attr($settings['button_text_color']); ?>; text-align: left; padding: 14px 24px; border-radius: <?php echo esc_attr($button_border_radius); ?>px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">
+                           style="background: <?php echo esc_attr($settings['button_bg_color']); ?>; color: <?php echo esc_attr($settings['button_text_color']); ?>;">
                             <?php echo esc_html($settings['button_text']); ?>
                         </a>
                         <a href="<?php echo esc_url($guide_url); ?>" 
                            class="mst-shop-grid-guide-inside mst-follow-glow" 
-                           style="position: absolute; right: <?php echo esc_attr($guide_offset_right); ?>px; bottom: <?php echo esc_attr($guide_offset_bottom); ?>px; width: <?php echo esc_attr($guide_size); ?>px; height: <?php echo esc_attr($guide_size); ?>px; border-radius: 50%; overflow: hidden; border: <?php echo esc_attr($guide_border); ?>px solid <?php echo esc_attr($settings['guide_border_color']); ?>; transition: all 0.3s ease; box-shadow: 0 2px 12px rgba(0,0,0,0.12); background: #fff; z-index: 2;"
-                           data-hover-border="<?php echo esc_attr($settings['guide_hover_border']); ?>"
+                           style="border-color: <?php echo esc_attr($guide_border_color); ?>;"
+                           data-hover-border="<?php echo esc_attr($guide_hover_border); ?>"
                            title="<?php echo esc_attr($settings['guide_label']); ?>">
-                            <img src="<?php echo esc_url($settings['default_guide_photo']['url']); ?>" alt="<?php echo esc_attr($settings['guide_label']); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                            <img src="<?php echo esc_url($settings['default_guide_photo']['url']); ?>" alt="<?php echo esc_attr($settings['guide_label']); ?>">
                         </a>
                     </div>
                     <?php else: ?>
@@ -1047,15 +1099,15 @@ class Shop_Grid extends Widget_Base {
                     <div class="mst-shop-grid-footer">
                         <a href="<?php echo esc_url(get_permalink($product_id)); ?>" 
                            class="mst-shop-grid-button mst-follow-glow" 
-                           style="background: <?php echo esc_attr($settings['button_bg_color']); ?>; color: <?php echo esc_attr($settings['button_text_color']); ?>; overflow: hidden;">
+                           style="background: <?php echo esc_attr($settings['button_bg_color']); ?>; color: <?php echo esc_attr($settings['button_text_color']); ?>;">
                             <?php echo esc_html($settings['button_text']); ?>
                         </a>
                         
                         <?php if ($show_guide && !empty($settings['default_guide_photo']['url'])): ?>
                         <a href="<?php echo esc_url($guide_url); ?>" 
                            class="mst-shop-grid-guide" 
-                           style="border-color: <?php echo esc_attr($settings['guide_border_color']); ?>;"
-                           data-hover-border="<?php echo esc_attr($settings['guide_hover_border']); ?>"
+                           style="border-color: <?php echo esc_attr($guide_border_color); ?>;"
+                           data-hover-border="<?php echo esc_attr($guide_hover_border); ?>"
                            title="<?php echo esc_attr($settings['guide_label']); ?>">
                             <img src="<?php echo esc_url($settings['default_guide_photo']['url']); ?>" alt="<?php echo esc_attr($settings['guide_label']); ?>">
                         </a>
