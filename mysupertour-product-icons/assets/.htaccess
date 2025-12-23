@@ -1,0 +1,18 @@
+# Правильные MIME типы для CSS и JS
+<IfModule mod_mime.c>
+  AddType text/css .css
+  AddType application/javascript .js
+  AddType application/json .json
+</IfModule>
+
+# Разрешить доступ к файлам
+<IfModule mod_authz_core.c>
+  Require all granted
+</IfModule>
+
+# Кэширование
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+</IfModule>

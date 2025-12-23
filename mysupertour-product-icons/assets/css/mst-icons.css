@@ -1,0 +1,33 @@
+/**
+ * MySuperTour Product Icons - Frontend Styles
+ * Author: Telegram @l1ghtsun
+ * Author URI: https://t.me/l1ghtsun
+ */
+.mst-pi-badge{
+  position:absolute;
+  top:8px;
+  left:8px;
+  z-index:9999;
+  background:rgba(0,0,0,.55);
+  color:#fff;
+  padding:6px 10px;
+  border-radius:10px;
+  font-size:12px;
+  line-height:1;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  pointer-events:none;
+  font-weight:500;
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
+  box-sizing:border-box;
+}
+.mst-pi-badge span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+.mst-pi-badge img{width:18px;height:18px;display:block;}
+.mst-pi-badge .mst-pi-format{font-weight:600;}
+.mst-pi-badge .mst-pi-duration-text{font-weight:400;}
+@media (max-width:540px){
+  .mst-pi-badge{font-size:11px;top:6px;left:6px;padding:5px 8px;}
+  .mst-pi-badge img{width:15px;height:15px;}
+}
