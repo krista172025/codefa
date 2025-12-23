@@ -15,7 +15,7 @@ public function render_filters() {
     if (empty($active_filters)) {
         return '<p>Фильтры не настроены.</p>';
     }
-    
+
     ob_start(); ?>
     <div class="wcaf-filters">
         <form id="wcaf-filters-form">
@@ -27,25 +27,26 @@ public function render_filters() {
                         $terms = get_terms(['taxonomy' => $taxonomy, 'hide_empty' => false]);
                         foreach ($terms as $term): ?>
                             <li>
-                                <input type="checkbox" name="<?php echo esc_attr($taxonomy); ?>[]" value="<?php echo esc_attr($term->slug); ?>">
-                                <label><?php echo esc_html($term->name); ?></label>
+                                <span class="icon"><?php echo esc_html($this->get_term_icon($term)); ?></span>
+                                <span class="text"><?php echo esc_html($term->name); ?></span>
                             </li>
                         <?php endforeach; ?>
                     </ul>
                 </div>
             <?php endforeach; ?>
-            <button type="submit" class="wcaf-btn-apply">Применить</button>
         </form>
     </div>
     <?php
     return ob_get_clean();
 }
 
-private function get_filter_label($taxonomy) {
-    $labels = [
-        'pa_tour-type' => 'Тип тура',
-        'pa_duration' => 'Длительность тура',
-        'pa_transport' => 'Транспорт',
+private function get_term_icon($term) {
+    $icons = [
+        'personal' => '👤',
+        'group' => '👥',
+        'mini-group' => '👪',
+        'museum' => '🏛',
+        // Добавьте дополнительные иконки здесь
     ];
-    return $labels[$taxonomy] ?? $taxonomy;
+    return $icons[$term->slug] ?? '⭐';
 }

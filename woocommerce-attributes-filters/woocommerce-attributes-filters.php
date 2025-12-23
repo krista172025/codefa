@@ -15,7 +15,11 @@ define('WCAF_URL', plugin_dir_url(__FILE__));
 require_once WCAF_PATH . 'includes/class-attributes-filters.php';
 require_once WCAF_PATH . 'includes/class-ajax-handler.php';
 
+
 add_action('plugins_loaded', function() {
     Attributes_Filters::instance();
     Ajax_Handler::instance();
+add_action('wp_enqueue_scripts', function() {
+    wp_enqueue_style('wcaf-filters-liquid-glass', plugins_url('assets/css/filters.css', __FILE__), [], '1.1');
+});
 });
