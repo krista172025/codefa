@@ -1118,7 +1118,29 @@ class Shop_Grid extends Widget_Base {
             </div>
             <?php endforeach; ?>
         </div>
-        
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.mst-filters-form');
+            const results = document.getElementById('shop-grid-results');
+            
+            form.addEventListener('change', function() {
+                const data = new FormData(this);
+
+                fetch('/wp-admin/admin-ajax.php?action=connect_shop_grid', {
+                    method: 'POST',
+                    body: JSON.stringify(Object.fromEntries(data)),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(res => res.json())
+                .then(response => {
+                    results.innerHTML = response.data.html;
+                })
+                .catch(err => console.error('Error:', err));
+            });
+        });
+        </script>
         <?php if ($settings['show_pagination'] === 'yes' && $settings['pagination_type'] === 'load_more'): ?>
         <div class="mst-shop-grid-pagination">
             <button class="mst-shop-grid-load-more" style="background: <?php echo esc_attr($settings['button_bg_color']); ?>; color: <?php echo esc_attr($settings['button_text_color']); ?>;">
