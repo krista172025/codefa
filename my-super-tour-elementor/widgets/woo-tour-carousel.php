@@ -1146,7 +1146,7 @@ class Woo_Tour_Carousel extends Widget_Base {
                                 </div>
                             </div>
                             
-                            <div class="mst-woo-carousel-footer" style="margin-top: auto;">
+                            <div class="mst-woo-carousel-footer" style="margin-top: auto; position: relative;">
                                 <?php 
                                     // Get guide size values - desktop, tablet, mobile
                                     $guide_size_desktop = isset($settings['guide_photo_size']['size']) ? intval($settings['guide_photo_size']['size']) : 64;
@@ -1167,18 +1167,18 @@ class Woo_Tour_Carousel extends Widget_Base {
                                     $guide_bottom_tablet = isset($settings['guide_offset_bottom_tablet']['size']) ? intval($settings['guide_offset_bottom_tablet']['size']) : $guide_bottom_desktop;
                                     $guide_bottom_mobile = isset($settings['guide_offset_bottom_mobile']['size']) ? intval($settings['guide_offset_bottom_mobile']['size']) : $guide_bottom_desktop;
                                 ?>
-                                <a href="<?php echo esc_url($product->get_permalink()); ?>" class="mst-woo-carousel-button mst-follow-glow" style="position: relative; display: flex; align-items: center; justify-content: center; width: 100%; background: <?php echo esc_attr($settings['button_bg_color']); ?>; color: <?php echo esc_attr($settings['button_text_color']); ?>; padding: 12px 20px; padding-right: calc(var(--guide-size-desktop) / 2 + 20px); border-radius: <?php echo esc_attr($button_border_radius); ?>px; text-align: center; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease; overflow: visible; --guide-size-desktop: <?php echo esc_attr($guide_size_desktop); ?>px; --guide-size-tablet: <?php echo esc_attr($guide_size_tablet); ?>px; --guide-size-mobile: <?php echo esc_attr($guide_size_mobile); ?>px;">
+                                <a href="<?php echo esc_url($product->get_permalink()); ?>" class="mst-woo-carousel-button mst-follow-glow" style="position: relative; display: flex; align-items: center; justify-content: center; width: 100%; background: <?php echo esc_attr($settings['button_bg_color']); ?>; color: <?php echo esc_attr($settings['button_text_color']); ?>; padding: 12px 20px; <?php echo ($show_guide && !empty($settings['guide_photo']['url'])) ? 'padding-right: calc(' . esc_attr($guide_size_desktop) . 'px / 2 + 20px);' : ''; ?> border-radius: <?php echo esc_attr($button_border_radius); ?>px; text-align: center; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease; --guide-size-desktop: <?php echo esc_attr($guide_size_desktop); ?>px; --guide-size-tablet: <?php echo esc_attr($guide_size_tablet); ?>px; --guide-size-mobile: <?php echo esc_attr($guide_size_mobile); ?>px;">
                                     <span style="flex: 1; text-align: center;"><?php echo esc_html($settings['button_text']); ?></span>
-                                    <?php if ($show_guide && !empty($settings['guide_photo']['url'])): 
-                                        $guide_url = !empty($settings['guide_link']['url']) ? $settings['guide_link']['url'] : '#';
-                                    ?>
-                                    <span class="mst-woo-carousel-guide-inside" 
-                                          style="--guide-size-desktop: <?php echo esc_attr($guide_size_desktop); ?>px; --guide-size-tablet: <?php echo esc_attr($guide_size_tablet); ?>px; --guide-size-mobile: <?php echo esc_attr($guide_size_mobile); ?>px; --guide-border-desktop: <?php echo esc_attr($guide_border_desktop); ?>px; --guide-border-tablet: <?php echo esc_attr($guide_border_tablet); ?>px; --guide-border-mobile: <?php echo esc_attr($guide_border_mobile); ?>px; --guide-right-desktop: <?php echo esc_attr($guide_right_desktop); ?>px; --guide-right-tablet: <?php echo esc_attr($guide_right_tablet); ?>px; --guide-right-mobile: <?php echo esc_attr($guide_right_mobile); ?>px; --guide-bottom-desktop: <?php echo esc_attr($guide_bottom_desktop); ?>px; --guide-bottom-tablet: <?php echo esc_attr($guide_bottom_tablet); ?>px; --guide-bottom-mobile: <?php echo esc_attr($guide_bottom_mobile); ?>px; --guide-border-color: <?php echo esc_attr($settings['guide_border_color']); ?>; --guide-hover-border-color: <?php echo esc_attr($settings['guide_hover_border_color']); ?>;" 
-                                          onclick="event.preventDefault(); event.stopPropagation(); window.location.href='<?php echo esc_url($guide_url); ?>';">
-                                        <img src="<?php echo esc_url($settings['guide_photo']['url']); ?>" alt="Guide" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                                    </span>
-                                    <?php endif; ?>
                                 </a>
+                                <?php if ($show_guide && !empty($settings['guide_photo']['url'])): 
+                                    $guide_url = !empty($settings['guide_link']['url']) ? $settings['guide_link']['url'] : '#';
+                                ?>
+                                <a href="<?php echo esc_url($guide_url); ?>" 
+                                   class="mst-woo-carousel-guide-inside" 
+                                   style="--guide-size-desktop: <?php echo esc_attr($guide_size_desktop); ?>px; --guide-size-tablet: <?php echo esc_attr($guide_size_tablet); ?>px; --guide-size-mobile: <?php echo esc_attr($guide_size_mobile); ?>px; --guide-border-desktop: <?php echo esc_attr($guide_border_desktop); ?>px; --guide-border-tablet: <?php echo esc_attr($guide_border_tablet); ?>px; --guide-border-mobile: <?php echo esc_attr($guide_border_mobile); ?>px; --guide-right-desktop: <?php echo esc_attr($guide_right_desktop); ?>px; --guide-right-tablet: <?php echo esc_attr($guide_right_tablet); ?>px; --guide-right-mobile: <?php echo esc_attr($guide_right_mobile); ?>px; --guide-bottom-desktop: <?php echo esc_attr($guide_bottom_desktop); ?>px; --guide-bottom-tablet: <?php echo esc_attr($guide_bottom_tablet); ?>px; --guide-bottom-mobile: <?php echo esc_attr($guide_bottom_mobile); ?>px; --guide-border-color: <?php echo esc_attr($settings['guide_border_color']); ?>; --guide-hover-border-color: <?php echo esc_attr($settings['guide_hover_border_color']); ?>;">
+                                    <img src="<?php echo esc_url($settings['guide_photo']['url']); ?>" alt="Guide" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                </a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
