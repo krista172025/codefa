@@ -1,23 +1,23 @@
 <?php
 /**
- * Bridge Connecting Shop Grid with Filters
+ * Connect Logic for MySuperTour Plugins
  * Author: Telegram @l1ghtsun
  */
+
 if (!defined('ABSPATH')) exit;
 
 class MST_Connect {
-    private static $instance = null;
-
     public static function instance() {
-        if (null === self::$instance) {
-            self::$instance = new self();
-            self::$instance->setup_hooks();
+        static $instance = null;
+        if (null === $instance) {
+            $instance = new self();
+            $instance->setup_hooks();
         }
-        return self::$instance;
+        return $instance;
     }
 
     private function setup_hooks() {
-        // Подключаем обработку AJAX запросов
+        // AJAX обработка
         add_action('wp_ajax_connect_shop_grid', [$this, 'handle_ajax_request']);
         add_action('wp_ajax_nopriv_connect_shop_grid', [$this, 'handle_ajax_request']);
     }
@@ -32,7 +32,6 @@ class MST_Connect {
             'tax_query' => [],
         ];
 
-        // Применяем фильтры
         if (!empty($filters['category'])) {
             $args['tax_query'][] = [
                 'taxonomy' => 'product_cat',
