@@ -15,6 +15,7 @@ class MST_Guide_System {
         add_action('rest_api_init', [$this, 'register_rest_route']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
         add_shortcode('mst_guide_profile', [$this, 'render_guide_profile']);
+        add_shortcode('mst_guides_list', [$this, 'render_guides_list']);
         add_action('show_user_profile', [$this, 'add_guide_review_fields']);
         add_action('edit_user_profile', [$this, 'add_guide_review_fields']);
         add_action('personal_options_update', [$this, 'save_guide_review_fields']);
@@ -62,17 +63,8 @@ class MST_Guide_System {
             ];
             $border_color = $status_colors[$user_status] ?? '#00c896';
             
-            $pages = get_posts([
-                'post_type' => 'page',
-                'posts_per_page' => 1,
-                's' => '[mst_guide_profile]'
-            ]);
-            
-            if (!empty($pages)) {
-                $guide_url = add_query_arg('guide_id', $guide_id, get_permalink($pages[0]->ID));
-            } else {
-                $guide_url = '#';
-            }
+            // Use new /guide/{id} URL format
+            $guide_url = home_url('/guide/' . $guide_id);
             
             $result[$product_id] = [
                 'name' => $guide->display_name,
@@ -469,6 +461,405 @@ class MST_Guide_System {
         update_user_meta($user_id, 'mst_guide_experience_years', intval($_POST['mst_guide_experience_years'] ?? 0));
         update_user_meta($user_id, 'mst_guide_tours_count', intval($_POST['mst_guide_tours_count'] ?? 0));
         update_user_meta($user_id, 'mst_guide_achievements', sanitize_textarea_field($_POST['mst_guide_achievements'] ?? ''));
+    }
+    
+    public function render_guides_list($atts) {
+        $atts = shortcode_atts([
+            'per_page' => 12,
+            'columns' => 3,
+            'orderby' => 'display_name',
+            'order' => 'ASC',
+        ], $atts);
+        
+        // Get all guides
+        $guides = get_users([
+            'meta_key' => 'mst_user_status',
+            'meta_value' => 'guide',
+            'number' => intval($atts['per_page']),
+            'orderby' => $atts['orderby'],
+            'order' => $atts['order']
+        ]);
+        
+        if (empty($guides)) {
+            return '<div style="text-align:center;padding:60px 20px;"><p>Гиды не найдены</p></div>';
+        }
+        
+        // Get guide profile page for links
+        $guide_profile_url = '';
+        $pages = get_posts([
+            'post_type' => 'page',
+            'posts_per_page' => 1,
+            's' => '[mst_guide_profile]'
+        ]);
+        if (!empty($pages)) {
+            $guide_profile_url = get_permalink($pages[0]->ID);
+        }
+        
+        ob_start();
+        ?>
+        <style>
+        .mst-guides-list-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .mst-guides-grid {
+            display: grid;
+            grid-template-columns: repeat(<?php echo intval($atts['columns']); ?>, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 992px) {
+            .mst-guides-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .mst-guides-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+        
+        .mst-guide-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .mst-guide-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .mst-guide-card-photo {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+        }
+        
+        .mst-guide-card-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .mst-guide-card:hover .mst-guide-card-photo img {
+            transform: scale(1.05);
+        }
+        
+        .mst-guide-card-photo-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+        }
+        
+        .mst-guide-card-photo-info {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            color: white;
+        }
+        
+        .mst-guide-card-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0 0 8px;
+            color: white;
+        }
+        
+        .mst-guide-card-location {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            opacity: 0.95;
+        }
+        
+        .mst-guide-card-content {
+            padding: 20px;
+        }
+        
+        .mst-guide-card-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .mst-guide-badge {
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .mst-guide-badge.verified {
+            background: #E0F2FE;
+            color: #0EA5E9;
+        }
+        
+        .mst-guide-badge.my-super-tour {
+            background: #FFF4E6;
+            color: #F59E0B;
+        }
+        
+        .mst-guide-badge.partner {
+            background: #F0FDF4;
+            color: #22C55E;
+        }
+        
+        .mst-guide-badge.doctor {
+            background: #FAE8FF;
+            color: #C026D3;
+        }
+        
+        .mst-guide-card-stats {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .mst-guide-stat {
+            text-align: center;
+        }
+        
+        .mst-guide-stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .mst-guide-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .mst-guide-card-languages,
+        .mst-guide-card-specialties {
+            margin-bottom: 16px;
+        }
+        
+        .mst-guide-section-title {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .mst-guide-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .mst-guide-tag {
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            background: rgba(0, 0, 0, 0.05);
+            color: #555;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .mst-guide-view-profile-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .mst-guide-view-profile-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .mst-guide-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+        }
+        
+        .mst-guide-rating-star {
+            color: #FFA500;
+        }
+        
+        .mst-guide-rating-value {
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .mst-guide-rating-count {
+            color: #999;
+            font-size: 13px;
+        }
+        </style>
+        
+        <div class="mst-guides-list-container">
+            <div class="mst-guides-grid">
+                <?php foreach ($guides as $guide): 
+                    $guide_id = $guide->ID;
+                    $custom_avatar = get_user_meta($guide_id, 'mst_lk_avatar', true);
+                    $avatar_url = $custom_avatar ? wp_get_attachment_url($custom_avatar) : get_avatar_url($guide_id, ['size' => 400]);
+                    
+                    $rating = get_user_meta($guide_id, 'mst_guide_rating', true) ?: '5.0';
+                    $reviews_count = get_user_meta($guide_id, 'mst_guide_reviews_count', true) ?: '0';
+                    $languages = get_user_meta($guide_id, 'mst_guide_languages', true) ?: '';
+                    $specialization = get_user_meta($guide_id, 'mst_guide_specialization', true) ?: '';
+                    $city = get_user_meta($guide_id, 'mst_guide_city', true) ?: '';
+                    $tours_count = get_user_meta($guide_id, 'mst_guide_tours_count', true) ?: '0';
+                    $experience_years = get_user_meta($guide_id, 'mst_guide_experience_years', true) ?: '0';
+                    
+                    // Determine badges
+                    $is_verified = floatval($rating) >= 4.5;
+                    $is_my_super_tour = true; // All guides are My Super Tour
+                    $is_partner = floatval($experience_years) >= 5;
+                    $is_doctor = strpos(strtolower($guide->display_name), 'доктор') !== false || 
+                                 strpos(strtolower(get_user_meta($guide_id, 'mst_guide_achievements', true) ?: ''), 'доктор') !== false;
+                    
+                    // Use new /guide/{id} URL format
+                    $profile_url = home_url('/guide/' . $guide_id);
+                ?>
+                <div class="mst-guide-card">
+                    <div class="mst-guide-card-photo">
+                        <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php echo esc_attr($guide->display_name); ?>">
+                        <div class="mst-guide-card-photo-overlay"></div>
+                        <div class="mst-guide-card-photo-info">
+                            <h3 class="mst-guide-card-name"><?php echo esc_html($guide->display_name); ?></h3>
+                            <?php if ($city): ?>
+                            <div class="mst-guide-card-location">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                                    <circle cx="12" cy="10" r="3" fill="rgba(255,255,255,0.8)"/>
+                                </svg>
+                                <span><?php echo esc_html($city); ?></span>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    
+                    <div class="mst-guide-card-content">
+                        <div class="mst-guide-card-badges">
+                            <?php if ($is_verified): ?>
+                            <span class="mst-guide-badge verified">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                                Верифицирован
+                            </span>
+                            <?php endif; ?>
+                            
+                            <?php if ($is_my_super_tour): ?>
+                            <span class="mst-guide-badge my-super-tour">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                                </svg>
+                                My Super Tour
+                            </span>
+                            <?php endif; ?>
+                            
+                            <?php if ($is_partner): ?>
+                            <span class="mst-guide-badge partner">
+                                Партнер
+                            </span>
+                            <?php endif; ?>
+                            
+                            <?php if ($is_doctor): ?>
+                            <span class="mst-guide-badge doctor">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                                    <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                                </svg>
+                                Доктор наук
+                            </span>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <div class="mst-guide-card-stats">
+                            <div class="mst-guide-stat">
+                                <div class="mst-guide-stat-label">Рейтинг</div>
+                                <div class="mst-guide-rating">
+                                    <span class="mst-guide-rating-star">★</span>
+                                    <span class="mst-guide-rating-value"><?php echo esc_html($rating); ?></span>
+                                    <span class="mst-guide-rating-count">(<?php echo esc_html($reviews_count); ?>)</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mst-guide-stat">
+                                <div class="mst-guide-stat-label">Экскурсий</div>
+                                <div class="mst-guide-stat-value"><?php echo esc_html($tours_count); ?></div>
+                            </div>
+                        </div>
+                        
+                        <?php if ($languages): ?>
+                        <div class="mst-guide-card-languages">
+                            <div class="mst-guide-section-title">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;">
+                                    <path d="M5 8h10M5 8c0 4.97 5 7 5 7s5-2.03 5-7M3 3h18M3 21h8"/>
+                                </svg>
+                                Языки:
+                            </div>
+                            <div class="mst-guide-tags">
+                                <?php foreach (array_slice(explode(',', $languages), 0, 3) as $lang): ?>
+                                <span class="mst-guide-tag"><?php echo esc_html(trim($lang)); ?></span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <?php if ($specialization): ?>
+                        <div class="mst-guide-card-specialties">
+                            <div class="mst-guide-section-title">Специализация:</div>
+                            <div class="mst-guide-tags">
+                                <?php foreach (array_slice(explode(',', $specialization), 0, 3) as $spec): ?>
+                                <span class="mst-guide-tag"><?php echo esc_html(trim($spec)); ?></span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <a href="<?php echo esc_url($profile_url); ?>" class="mst-guide-view-profile-btn">
+                            Посмотреть профиль
+                        </a>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
     }
     
     public function render_guide_profile($atts) {
