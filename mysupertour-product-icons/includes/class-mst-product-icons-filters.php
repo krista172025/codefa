@@ -387,17 +387,6 @@ class MST_Product_Icons_Filters {
     public function apply_filters_query($query) {
         if (is_admin() || !$query->is_main_query()) return;
         
-        // FIXED: Only apply filters when using Shop Grid widget, NOT WooCommerce Archive
-        // Check if this is a Shop Grid request by looking for the mst_shop_grid parameter
-        // or if it's being called in a context where filters should apply
-        $is_shop_grid_context = isset($_GET['mst_shop_grid']) || 
-                                 (isset($_GET['format']) || isset($_GET['transport']) || isset($_GET['attributes']) || isset($_GET['min_price']) || isset($_GET['max_price']));
-        
-        // Skip if it's standard WooCommerce archive without filter parameters
-        if (!$is_shop_grid_context && (is_shop() || is_product_category() || is_product_taxonomy())) {
-            return;
-        }
-        
         // Only proceed if we have filter parameters
         if (!isset($_GET['format']) && !isset($_GET['transport']) && !isset($_GET['attributes']) && !isset($_GET['min_price']) && !isset($_GET['max_price'])) {
             return;
@@ -406,24 +395,30 @@ class MST_Product_Icons_Filters {
         $meta_query = [];
         $tax_query = [];
 
+        // FIXED: Use WooCommerce taxonomy attributes instead of meta fields
+        // Format filter - use pa_tour-type taxonomy
         if (!empty($_GET['format'])) {
             $formats = is_array($_GET['format']) ? array_map('sanitize_text_field', $_GET['format']) : [sanitize_text_field($_GET['format'])];
-            $meta_query[] = [
-                'key' => '_mst_pi_format',
-                'value' => $formats,
-                'compare' => 'IN'
+            $tax_query[] = [
+                'taxonomy' => 'pa_tour-type',
+                'field' => 'slug',
+                'terms' => $formats,
+                'operator' => 'IN'
             ];
         }
 
+        // Transport filter - use pa_transport taxonomy
         if (!empty($_GET['transport'])) {
             $transports = is_array($_GET['transport']) ? array_map('sanitize_text_field', $_GET['transport']) : [sanitize_text_field($_GET['transport'])];
-            $meta_query[] = [
-                'key' => '_mst_pi_transport',
-                'value' => $transports,
-                'compare' => 'IN'
+            $tax_query[] = [
+                'taxonomy' => 'pa_transport',
+                'field' => 'slug',
+                'terms' => $transports,
+                'operator' => 'IN'
             ];
         }
 
+        // Attributes filter - use product_attributes taxonomy
         if (!empty($_GET['attributes'])) {
             $attributes = is_array($_GET['attributes']) ? array_map('intval', $_GET['attributes']) : [intval($_GET['attributes'])];
             $tax_query[] = [
@@ -434,6 +429,18 @@ class MST_Product_Icons_Filters {
             ];
         }
 
+        // Duration filter - use pa_duration taxonomy if provided
+        if (!empty($_GET['duration'])) {
+            $durations = is_array($_GET['duration']) ? array_map('sanitize_text_field', $_GET['duration']) : [sanitize_text_field($_GET['duration'])];
+            $tax_query[] = [
+                'taxonomy' => 'pa_duration',
+                'field' => 'slug',
+                'terms' => $durations,
+                'operator' => 'IN'
+            ];
+        }
+
+        // Price filter - still uses meta_query as prices are stored in post meta
         if (!empty($_GET['min_price']) || !empty($_GET['max_price'])) {
             $min = !empty($_GET['min_price']) ? floatval($_GET['min_price']) : 0;
             $max = !empty($_GET['max_price']) ? floatval($_GET['max_price']) : 999999;

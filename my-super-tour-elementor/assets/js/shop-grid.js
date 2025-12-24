@@ -25,17 +25,18 @@
             // INSTANT ANIMATION - Update UI immediately before AJAX
             const $icon = $btn.find('.mst-heart-icon');
             const strokeColor = $icon.attr('stroke') || 'hsl(0, 80%, 60%)';
-            const defaultFill = $btn.data('icon-fill') || '#ffffff';
+            // FIXED: Use 'none' or 'transparent' for outline-only (empty) state
+            const defaultFill = $btn.data('icon-fill') || 'none';
             
             // Add animation class for scale effect
             $btn.addClass('mst-wishlist-animating');
             
             if (isActive) {
-                // Removing from wishlist - animate out
+                // Removing from wishlist - animate out to outline only
                 $icon.attr('fill', defaultFill);
                 $btn.removeClass('mst-wishlist-active');
             } else {
-                // Adding to wishlist - animate in
+                // Adding to wishlist - animate in with fill color
                 $icon.attr('fill', strokeColor);
                 $btn.addClass('mst-wishlist-active');
             }
@@ -66,7 +67,7 @@
                             $icon.attr('fill', strokeColor);
                             $btn.addClass('mst-wishlist-active');
                         } else {
-                            $icon.attr('fill', defaultFill);
+                            $icon.attr('fill', 'none');
                             $btn.removeClass('mst-wishlist-active');
                         }
                     }
@@ -78,7 +79,7 @@
                         $icon.attr('fill', strokeColor);
                         $btn.addClass('mst-wishlist-active');
                     } else {
-                        $icon.attr('fill', defaultFill);
+                        $icon.attr('fill', 'none');
                         $btn.removeClass('mst-wishlist-active');
                     }
                 },
