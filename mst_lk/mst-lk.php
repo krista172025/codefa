@@ -77,9 +77,44 @@ class MST_LK {
     public function register_endpoints() {
         add_rewrite_endpoint('mst-profile', EP_ROOT | EP_PAGES);
         
-        // Add rewrite rule for guide profiles: /guide/123 -> ?guide_id=123
+        // Add rewrite rules for guide profiles with multilingual support
+        // Russian: /gid/123 -> ?guide_id=123
+        add_rewrite_rule('^gid/([0-9]+)/?$', 'index.php?guide_id=$matches[1]', 'top');
+        
+        // English: /guide/123 -> ?guide_id=123
         add_rewrite_rule('^guide/([0-9]+)/?$', 'index.php?guide_id=$matches[1]', 'top');
+        
+        // Add query var
         add_rewrite_tag('%guide_id%', '([0-9]+)');
+    }
+    
+    /**
+     * Generate guide URL based on current language
+     * 
+     * @param int $guide_id Guide user ID
+     * @return string Localized guide URL
+     */
+    public function get_guide_url($guide_id) {
+        // Detect current language
+        $locale = determine_locale();
+        
+        // Check for WPML
+        if (function_exists('icl_get_current_language')) {
+            $lang = icl_get_current_language();
+        }
+        // Check for Polylang
+        elseif (function_exists('pll_current_language')) {
+            $lang = pll_current_language();
+        }
+        // Fallback to locale
+        else {
+            $lang = strpos($locale, 'en') === 0 ? 'en' : 'ru';
+        }
+        
+        // Generate URL based on language
+        $slug = ($lang === 'en') ? 'guide' : 'gid';
+        
+        return home_url('/' . $slug . '/' . intval($guide_id));
     }
     
     public function add_hub_menu() {
