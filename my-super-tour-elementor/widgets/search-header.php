@@ -413,9 +413,9 @@ class Search_Header extends Widget_Base {
 
     protected function render() {
         $settings = $this->get_settings_for_display();
-        $action_url = !empty($settings['search_action']['url']) ? $settings['search_action']['url'] : '/tours';
+        $action_url = !empty($settings['search_action']['url']) ? $settings['search_action']['url'] : '/shop';
         $liquid_glass = isset($settings['enable_liquid_glass']) && $settings['enable_liquid_glass'] === 'yes';
-        $form_class = 'mst-search-header';
+        $form_class = 'mst-search-header msts-search-wrapper';
         if ($liquid_glass) {
             $form_class .= ' mst-search-liquid-glass';
         }
@@ -430,8 +430,10 @@ class Search_Header extends Widget_Base {
                         </svg>
                     </span>
                 <?php endif; ?>
-                <input type="text" name="search" class="mst-search-input" placeholder="<?php echo esc_attr($settings['placeholder_text']); ?>">
+                <input type="text" name="s" class="mst-search-input msts-search-input" placeholder="<?php echo esc_attr($settings['placeholder_text']); ?>" autocomplete="off">
+                <input type="hidden" name="post_type" value="product">
                 <button type="submit" class="mst-search-button"><?php echo esc_html($settings['button_text']); ?></button>
+                <div class="msts-suggestions"></div>
             </form>
         </div>
         <?php
@@ -443,9 +445,10 @@ add_shortcode('mst_search_header', function($atts) {
     $atts = shortcode_atts([
         'placeholder' => 'Куда хотите поехать?',
         'button_text' => 'Найти',
-        'action' => '/tours',
+        'action' => '/shop',
         'width' => '400px',
         'align' => 'center',
+        'liquid_glass' => 'yes',
     ], $atts);
     
     $align_style = '';
@@ -460,18 +463,25 @@ add_shortcode('mst_search_header', function($atts) {
             $align_style = 'justify-content: center;';
     }
     
+    $form_class = 'mst-search-header msts-search-wrapper';
+    if ($atts['liquid_glass'] === 'yes') {
+        $form_class .= ' mst-search-liquid-glass';
+    }
+    
     ob_start();
     ?>
     <div class="mst-search-header-wrapper" style="display: flex; <?php echo $align_style; ?>">
-        <form class="mst-search-header" action="<?php echo esc_url($atts['action']); ?>" method="get" style="width: <?php echo esc_attr($atts['width']); ?>;">
+        <form class="<?php echo esc_attr($form_class); ?>" action="<?php echo esc_url($atts['action']); ?>" method="get" style="width: <?php echo esc_attr($atts['width']); ?>;">
             <span class="mst-search-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <path d="m21 21-4.3-4.3"></path>
                 </svg>
             </span>
-            <input type="text" name="search" class="mst-search-input" placeholder="<?php echo esc_attr($atts['placeholder']); ?>">
+            <input type="text" name="s" class="mst-search-input msts-search-input" placeholder="<?php echo esc_attr($atts['placeholder']); ?>" autocomplete="off">
+            <input type="hidden" name="post_type" value="product">
             <button type="submit" class="mst-search-button"><?php echo esc_html($atts['button_text']); ?></button>
+            <div class="msts-suggestions"></div>
         </form>
     </div>
     <?php
