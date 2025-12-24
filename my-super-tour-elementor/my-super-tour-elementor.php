@@ -45,6 +45,10 @@ function mst_elementor_init() {
     // Enqueue styles and scripts
     add_action('wp_enqueue_scripts', 'mst_elementor_enqueue_assets');
     add_action('elementor/editor/before_enqueue_scripts', 'mst_elementor_editor_scripts');
+    
+    // AJAX handlers for wishlist
+    add_action('wp_ajax_mst_toggle_wishlist', 'mst_handle_wishlist_ajax');
+    add_action('wp_ajax_nopriv_mst_toggle_wishlist', 'mst_handle_wishlist_ajax');
 }
 add_action('plugins_loaded', 'mst_elementor_init');
 
@@ -160,4 +164,58 @@ function mst_elementor_editor_scripts() {
         [],
         MST_ELEMENTOR_VERSION
     );
+}
+
+// AJAX handler for wishlist toggle
+function mst_handle_wishlist_ajax() {
+    // Verify nonce
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'mst_wishlist_nonce')) {
+        wp_send_json_error('Invalid nonce');
+        return;
+    }
+    
+    // Get product ID
+    $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
+    if (!$product_id) {
+        wp_send_json_error('Invalid product ID');
+        return;
+    }
+    
+    // Get current user
+    $user_id = get_current_user_id();
+    if (!$user_id) {
+        wp_send_json_error('User not logged in');
+        return;
+    }
+    
+    // Check if adding or removing
+    $add_to_wishlist = isset($_POST['add']) && $_POST['add'] === '1';
+    
+    // Get XStore wishlist meta key
+    $wishlist_key = 'xstore_wishlist_ids_0';
+    $wishlist_ids = get_user_meta($user_id, $wishlist_key, true);
+    
+    // Ensure it's an array
+    if (!is_array($wishlist_ids)) {
+        $wishlist_ids = !empty($wishlist_ids) ? array($wishlist_ids) : array();
+    }
+    
+    // Add or remove product
+    if ($add_to_wishlist) {
+        if (!in_array($product_id, $wishlist_ids)) {
+            $wishlist_ids[] = $product_id;
+        }
+    } else {
+        $wishlist_ids = array_diff($wishlist_ids, array($product_id));
+    }
+    
+    // Update user meta
+    update_user_meta($user_id, $wishlist_key, array_values($wishlist_ids));
+    
+    // Return success with count
+    wp_send_json_success(array(
+        'count' => count($wishlist_ids),
+        'product_id' => $product_id,
+        'action' => $add_to_wishlist ? 'added' : 'removed'
+    ));
 }

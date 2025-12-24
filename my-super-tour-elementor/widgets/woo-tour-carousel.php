@@ -1100,14 +1100,28 @@ class Woo_Tour_Carousel extends Widget_Base {
                                 if ($wishlist_liquid) {
                                     $wishlist_style .= ' backdrop-filter: blur(' . esc_attr($wishlist_blur) . 'px); -webkit-backdrop-filter: blur(' . esc_attr($wishlist_blur) . 'px); box-shadow: 0 4px 12px rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.6);';
                                 }
+                                
+                                // Check if product is in wishlist
+                                $user_id = get_current_user_id();
+                                $wishlist_key = 'xstore_wishlist_ids_0';
+                                $wishlist_ids = $user_id ? get_user_meta($user_id, $wishlist_key, true) : array();
+                                if (!is_array($wishlist_ids)) {
+                                    $wishlist_ids = !empty($wishlist_ids) ? array($wishlist_ids) : array();
+                                }
+                                $is_in_wishlist = in_array($product_id, $wishlist_ids);
+                                $active_class = $is_in_wishlist ? ' mst-wishlist-active' : '';
+                                $active_fill = $is_in_wishlist ? $wishlist_stroke : $wishlist_icon;
                             ?>
                             <button type="button" 
-                               class="mst-woo-carousel-wishlist mst-wishlist-btn mst-follow-glow" 
+                               class="mst-woo-carousel-wishlist mst-wishlist-btn mst-follow-glow<?php echo $active_class; ?>" 
                                data-product-id="<?php echo esc_attr($product_id); ?>"
                                data-hover-bg="<?php echo esc_attr($wishlist_hover_bg); ?>"
+                               data-active-fill="<?php echo esc_attr($wishlist_stroke); ?>"
+                               data-inactive-fill="<?php echo esc_attr($wishlist_icon); ?>"
+                               data-stroke="<?php echo esc_attr($wishlist_stroke); ?>"
                                style="position: absolute; top: 12px; right: 12px; z-index: 2; <?php echo $wishlist_style; ?>"
                                aria-label="Add to wishlist">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="<?php echo esc_attr($wishlist_icon_size); ?>" height="<?php echo esc_attr($wishlist_icon_size); ?>" viewBox="0 0 24 24" fill="<?php echo esc_attr($wishlist_icon); ?>" stroke="<?php echo esc_attr($wishlist_stroke); ?>" stroke-width="2" class="mst-heart-icon"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="<?php echo esc_attr($wishlist_icon_size); ?>" height="<?php echo esc_attr($wishlist_icon_size); ?>" viewBox="0 0 24 24" fill="<?php echo esc_attr($active_fill); ?>" stroke="<?php echo esc_attr($wishlist_stroke); ?>" stroke-width="2" class="mst-heart-icon"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
                             </button>
                             <?php endif; ?>
                         </div>
@@ -1171,10 +1185,17 @@ class Woo_Tour_Carousel extends Widget_Base {
                                     <span style="flex: 1; text-align: center;"><?php echo esc_html($settings['button_text']); ?></span>
                                 </a>
                                 <?php if ($show_guide && !empty($settings['guide_photo']['url'])): 
-                                    $guide_url = !empty($settings['guide_link']['url']) ? $settings['guide_link']['url'] : '#';
+                                    // Get guide ID from product meta
+                                    $product_guide_id = get_post_meta($product_id, '_mst_guide_id', true);
+                                    if ($product_guide_id) {
+                                        $guide_url = home_url('/guide/' . $product_guide_id);
+                                    } else {
+                                        $guide_url = !empty($settings['guide_link']['url']) ? $settings['guide_link']['url'] : '#';
+                                    }
                                 ?>
                                 <a href="<?php echo esc_url($guide_url); ?>" 
                                    class="mst-woo-carousel-guide-inside" 
+                                   onclick="event.stopPropagation();"
                                    style="--guide-size-desktop: <?php echo esc_attr($guide_size_desktop); ?>px; --guide-size-tablet: <?php echo esc_attr($guide_size_tablet); ?>px; --guide-size-mobile: <?php echo esc_attr($guide_size_mobile); ?>px; --guide-border-desktop: <?php echo esc_attr($guide_border_desktop); ?>px; --guide-border-tablet: <?php echo esc_attr($guide_border_tablet); ?>px; --guide-border-mobile: <?php echo esc_attr($guide_border_mobile); ?>px; --guide-right-desktop: <?php echo esc_attr($guide_right_desktop); ?>px; --guide-right-tablet: <?php echo esc_attr($guide_right_tablet); ?>px; --guide-right-mobile: <?php echo esc_attr($guide_right_mobile); ?>px; --guide-bottom-desktop: <?php echo esc_attr($guide_bottom_desktop); ?>px; --guide-bottom-tablet: <?php echo esc_attr($guide_bottom_tablet); ?>px; --guide-bottom-mobile: <?php echo esc_attr($guide_bottom_mobile); ?>px; --guide-border-color: <?php echo esc_attr($settings['guide_border_color']); ?>; --guide-hover-border-color: <?php echo esc_attr($settings['guide_hover_border_color']); ?>;">
                                     <img src="<?php echo esc_url($settings['guide_photo']['url']); ?>" alt="Guide" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                                 </a>
