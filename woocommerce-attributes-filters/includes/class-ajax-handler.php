@@ -15,18 +15,52 @@ class Ajax_Handler {
     }
 
     public function filter_products() {
-        // Get filter data from POST
-        $filters = $_POST;
+        // Verify nonce for security
+        check_ajax_referer('wcaf_filter_nonce', 'nonce');
+        
+        // Get filter data from POST with proper sanitization
+        $filters = array();
         
         // Get current language for localization
-        $current_lang = isset($_POST['lang']) ? sanitize_text_field($_POST['lang']) : determine_locale();
+        $current_lang = isset($_POST['lang']) ? sanitize_text_field(wp_unslash($_POST['lang'])) : determine_locale();
+        
+        // Get widget settings - validate each setting individually
+        $widget_settings = array();
+        if (isset($_POST['widget_settings']) && is_array($_POST['widget_settings'])) {
+            $settings = wp_unslash($_POST['widget_settings']);
+            $widget_settings = array(
+                'card_bg_color' => isset($settings['card_bg_color']) ? sanitize_hex_color($settings['card_bg_color']) : '#ffffff',
+                'title_color' => isset($settings['title_color']) ? sanitize_hex_color($settings['title_color']) : '#1a1a1a',
+                'price_color' => isset($settings['price_color']) ? sanitize_hex_color($settings['price_color']) : '#1a1a1a',
+                'button_bg_color' => isset($settings['button_bg_color']) ? sanitize_hex_color($settings['button_bg_color']) : 'hsl(270, 70%, 60%)',
+                'button_text_color' => isset($settings['button_text_color']) ? sanitize_hex_color($settings['button_text_color']) : '#ffffff',
+                'button_text' => isset($settings['button_text']) ? sanitize_text_field($settings['button_text']) : 'Подробнее',
+                'show_rating' => isset($settings['show_rating']) ? (bool)$settings['show_rating'] : true,
+                'products_count' => isset($settings['products_count']) ? intval($settings['products_count']) : 12,
+                'orderby' => isset($settings['orderby']) ? sanitize_text_field($settings['orderby']) : 'date',
+                'order' => isset($settings['order']) ? sanitize_text_field($settings['order']) : 'DESC',
+            );
+        }
+        
+        // Sanitize other POST data
+        foreach ($_POST as $key => $value) {
+            if (in_array($key, array('action', 'nonce', 'lang', 'widget_settings'))) {
+                continue;
+            }
+            
+            if (is_array($value)) {
+                $filters[$key] = array_map('sanitize_text_field', wp_unslash($value));
+            } else {
+                $filters[$key] = sanitize_text_field(wp_unslash($value));
+            }
+        }
         
         // Build WooCommerce product query args
         $args = [
             'status' => 'publish',
-            'limit' => isset($filters['products_count']) ? intval($filters['products_count']) : 12,
-            'orderby' => isset($filters['orderby']) ? sanitize_text_field($filters['orderby']) : 'date',
-            'order' => isset($filters['order']) ? sanitize_text_field($filters['order']) : 'DESC',
+            'limit' => $widget_settings['products_count'],
+            'orderby' => $widget_settings['orderby'],
+            'order' => $widget_settings['order'],
         ];
 
         // Handle price filtering
@@ -45,7 +79,7 @@ class Ajax_Handler {
         $tax_query = [];
         foreach ($filters as $key => $values) {
             // Skip non-taxonomy fields
-            if (in_array($key, ['action', 'min_price', 'max_price', 'products_count', 'orderby', 'order', 'lang'])) {
+            if (in_array($key, ['min_price', 'max_price'])) {
                 continue;
             }
             
@@ -54,7 +88,7 @@ class Ajax_Handler {
                 $tax_query[] = [
                     'taxonomy' => sanitize_text_field($key),
                     'field'    => 'slug',
-                    'terms'    => is_array($values) ? array_map('sanitize_text_field', $values) : [sanitize_text_field($values)],
+                    'terms'    => is_array($values) ? $values : [$values],
                     'operator' => 'IN',
                 ];
             }
@@ -75,11 +109,8 @@ class Ajax_Handler {
             $no_products_text = __('Товары не найдены', 'woocommerce-attributes-filters');
             $html = '<p class="mst-no-products">' . esc_html($no_products_text) . '</p>';
         } else {
-            // Get widget settings from request (passed from frontend)
-            $settings = isset($filters['widget_settings']) ? $filters['widget_settings'] : [];
-            
             foreach ($products as $product) {
-                $html .= $this->render_product_card($product, $settings);
+                $html .= $this->render_product_card($product, $widget_settings);
             }
         }
 

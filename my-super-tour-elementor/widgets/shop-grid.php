@@ -943,7 +943,8 @@ class Shop_Grid extends Widget_Base {
         $card_hover_glow_size = isset($settings['card_hover_glow_size']['size']) ? $settings['card_hover_glow_size']['size'] : 8;
         $card_hover_border_color = isset($settings['card_hover_border_color']) ? $settings['card_hover_border_color'] : 'rgba(255, 255, 255, 0.25)';
         ?>
-        <div class="mst-shop-grid" data-widget-id="<?php echo esc_attr($this->get_id()); ?>"><?php foreach ($products as $product): 
+        <div class="mst-shop-grid" data-widget-id="<?php echo esc_attr($this->get_id()); ?>">
+            <?php foreach ($products as $product): 
                 $product_id = $product->get_id();
                 $image = wp_get_attachment_image_src(get_post_thumbnail_id($product_id), 'medium');
                 $image_url = $image ? $image[0] : wc_placeholder_img_src('medium');

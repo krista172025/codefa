@@ -19,6 +19,7 @@ class Attributes_Filters {
         ob_start(); ?>
         <div class="wcaf-filters">
             <form id="wcaf-filters-form">
+                <?php wp_nonce_field('wcaf_filter_nonce', 'nonce', false); ?>
                 <?php foreach ($active_filters as $taxonomy): ?>
                     <div class="wcaf-filter-group">
                         <h3><?php echo esc_html($this->get_filter_label($taxonomy)); ?></h3>
