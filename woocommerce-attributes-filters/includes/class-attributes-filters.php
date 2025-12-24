@@ -17,14 +17,14 @@ class Attributes_Filters {
         ob_start(); ?>
         <div class="wcaf-filters">
             <form id="wcaf-filters-form">
-                <!-- Диапазон цен -->
+                <!-- Price Range -->
                 <div class="wcaf-price-range">
-                    <label for="min_price">Цена от:</label>
-                    <input type="number" name="min_price" value="<?php echo esc_attr($price_range['min']); ?>"> 
-                    <label for="max_price">до:</label>
+                    <label>Цена от:</label>
+                    <input type="number" name="min_price" value="<?php echo esc_attr($price_range['min']); ?>">
+                    <label>до:</label>
                     <input type="number" name="max_price" value="<?php echo esc_attr($price_range['max']); ?>">
                 </div>
-                
+
                 <?php foreach ($active_filters as $taxonomy): ?>
                     <div class="wcaf-filter-group">
                         <h3><?php echo esc_html($this->get_filter_label($taxonomy)); ?></h3>
@@ -40,8 +40,9 @@ class Attributes_Filters {
                         </ul>
                     </div>
                 <?php endforeach; ?>
-            
+
                 <button type="submit" class="wcaf-btn-apply">Применить</button>
+                <button type="reset" class="wcaf-btn-reset">Сброс</button>
             </form>
         </div>
         <?php
@@ -50,18 +51,12 @@ class Attributes_Filters {
 
     private function get_term_icon($term) {
         $icons = [
-            'personal' => '👤',        // Персональная группа
-            'group' => '👥',           // Групповой тур
-            'museum' => '🏛',          // Музейные туры
-            'children' => '🎨',        // Детские
-            'adventure' => '⚔',        // Приключения
-            'luxury' => '💎',          // Роскошные
-            'transport-car' => '🚗',   // Автомобиль
-            'transport-bus' => '🚌',   // Автобус
-            'transport-plane' => '✈', // Самолёт
-            // Добавляйте остальные по аналогии
+            'personal' => '👤',
+            'group' => '👥',
+            'museum' => '🏛',
+            // Добавьте остальные здесь
         ];
-        return $icons[$term->slug] ?? '⭐'; // Если термин не найден, использует классическую звезду
+        return $icons[$term->slug] ?? '⭐';
     }
 
     private function get_price_range() {
@@ -82,6 +77,6 @@ class Attributes_Filters {
             'pa_duration' => 'Длительность тура',
             'pa_transport' => 'Транспорт',
         ];
-        return $labels[$taxonomy] ?? $taxonomy;
+        return $labels[$taxonomy] ?? 'Атрибут';
     }
 }

@@ -1,17 +1,21 @@
 <?php
 class Ajax_Handler {
-    private static $instance;
+    private static $instance; // Переменная для хранения экземпляра класса
 
     public static function instance() {
-        if (!self::$instance) {
-            self::$instance = new self();
-            add_action('wp_ajax_wcaf_filter_products', [$self::$instance, 'filter_products']);
-            add_action('wp_ajax_nopriv_wcaf_filter_products', [$self::$instance, 'filter_products']);
+        if (!isset(self::$instance)) {
+            self::$instance = new self(); // Создаём новый экземпляр класса
         }
         return self::$instance;
     }
 
+    public function __construct() {
+        add_action('wp_ajax_wcaf_filter_products', [$this, 'filter_products']);
+        add_action('wp_ajax_nopriv_wcaf_filter_products', [$this, 'filter_products']);
+    }
+
     public function filter_products() {
+        // Логика обработки AJAX
         $filters = $_POST;
         $args = [
             'post_type' => 'product',
