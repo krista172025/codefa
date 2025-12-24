@@ -495,6 +495,7 @@ class MST_Guide_System {
         $experience_years = get_user_meta($guide_id, 'mst_guide_experience_years', true) ?: '8';
         $tours_count = get_user_meta($guide_id, 'mst_guide_tours_count', true) ?: '234';
         $achievements = get_user_meta($guide_id, 'mst_guide_achievements', true) ?: '';
+        $testimonials = get_user_meta($guide_id, 'mst_guide_testimonials', true) ?: '';
         
         $user_status = get_user_meta($guide_id, 'mst_user_status', true) ?: 'guide';
         $status_colors = [
@@ -520,31 +521,54 @@ class MST_Guide_System {
         ?>
         <div class="mst-guide-profile" style="max-width:1200px;margin:0 auto;padding:20px;">
             
-            <div style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:20px;padding:50px 40px;color:#fff;margin-bottom:40px;">
-                <div style="display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap;">
-                    <div style="flex-shrink:0;">
-                        <div style="width:180px;height:180px;border-radius:50%;padding:5px;background:<?php echo $border_color; ?>;box-shadow:0 10px 30px rgba(0,0,0,0.3);">
-                            <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php echo esc_attr($guide->display_name); ?>" style="width:170px;height:170px;border-radius:50%;object-fit:cover;border:5px solid #fff;">
+            <!-- Hero Section with Glass Liquid Style -->
+            <div class="mst-guide-hero glass-liquid-hero">
+                <div class="mst-guide-hero-content">
+                    <div class="mst-guide-avatar-section">
+                        <div class="mst-guide-avatar-wrapper hover-lift-gentle" style="background:<?php echo esc_attr($border_color); ?>;">
+                            <div class="mst-guide-avatar-ring">
+                                <img src="<?php echo esc_url($avatar_url); ?>" 
+                                     alt="<?php echo esc_attr($guide->display_name); ?>" 
+                                     class="mst-guide-avatar-img">
+                            </div>
                         </div>
                     </div>
-                    <div style="flex:1;min-width:300px;">
-                        <h1 style="font-size:42px;font-weight:700;margin:0 0 10px;color:#fff;"><?php echo esc_html($guide->display_name); ?></h1>
+                    <div class="mst-guide-info">
+                        <h1 class="mst-guide-name"><?php echo esc_html($guide->display_name); ?></h1>
                         <?php if ($city): ?>
-                            <div style="font-size:18px;margin-bottom:15px;opacity:0.95;">📍 <?php echo esc_html($city); ?></div>
-                        <?php endif; ?>
-                        <div style="display:flex;align-items:center;gap:8px;font-size:22px;margin-bottom:30px;">
-                            <span style="font-size:26px;">⭐</span>
-                            <span style="font-weight:700;"><?php echo esc_html($rating); ?></span>
-                            <span style="opacity:0.85;">(<?php echo esc_html($reviews_count); ?> отзывов)</span>
-                        </div>
-                        <div style="display:flex;gap:50px;flex-wrap:wrap;">
-                            <div>
-                                <div style="font-size:14px;opacity:0.8;margin-bottom:5px;">Опыт</div>
-                                <div style="font-size:32px;font-weight:700;"><?php echo esc_html($experience_years); ?> лет</div>
+                            <div class="mst-guide-location">
+                                <span class="mst-icon mst-icon-location"></span>
+                                <?php echo esc_html($city); ?>
                             </div>
-                            <div>
-                                <div style="font-size:14px;opacity:0.8;margin-bottom:5px;">Туров проведено</div>
-                                <div style="font-size:32px;font-weight:700;"><?php echo esc_html($tours_count); ?></div>
+                        <?php endif; ?>
+                        <div class="mst-guide-rating">
+                            <span class="mst-guide-rating-star">⭐</span>
+                            <span class="mst-guide-rating-value"><?php echo esc_html($rating); ?></span>
+                            <span class="mst-guide-rating-count">(<?php echo esc_html($reviews_count); ?> отзывов)</span>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="mst-guide-actions">
+                            <a href="#tours" class="mst-btn-book-tour">
+                                <span class="mst-icon mst-icon-calendar"></span>
+                                Забронировать тур
+                            </a>
+                            <a href="#" class="mst-btn-icon-action" onclick="return false;" title="Добавить в избранное">
+                                <span class="mst-icon mst-icon-heart"></span>
+                            </a>
+                            <a href="#" class="mst-btn-icon-action" onclick="return false;" title="Поделиться">
+                                <span class="mst-icon mst-icon-share"></span>
+                            </a>
+                        </div>
+                        
+                        <div class="mst-guide-stats">
+                            <div class="mst-guide-stat">
+                                <span class="mst-guide-stat-label">Опыт</span>
+                                <span class="mst-guide-stat-value"><?php echo esc_html($experience_years); ?> лет</span>
+                            </div>
+                            <div class="mst-guide-stat">
+                                <span class="mst-guide-stat-label">Туров проведено</span>
+                                <span class="mst-guide-stat-value"><?php echo esc_html($tours_count); ?></span>
                             </div>
                         </div>
                     </div>
@@ -552,41 +576,49 @@ class MST_Guide_System {
             </div>
             
             <?php if ($languages): ?>
-                <div style="background:#fff;border-radius:15px;padding:30px;margin-bottom:30px;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
-                    <h3 style="font-size:22px;font-weight:700;margin:0 0 20px;color:#333;">🗣️ Языки</h3>
-                    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+                <div class="mst-guide-section">
+                    <h3 class="mst-guide-section-title">
+                        <span class="mst-icon mst-icon-language"></span>
+                        Языки
+                    </h3>
+                    <div class="mst-guide-badges-container">
                         <?php foreach (explode(',', $languages) as $lang): ?>
-                            <span style="padding:10px 18px;border-radius:20px;font-size:15px;font-weight:600;background:#FFF4E6;color:#F59E0B;"><?php echo esc_html(trim($lang)); ?></span>
+                            <span class="badge-warm"><?php echo esc_html(trim($lang)); ?></span>
                         <?php endforeach; ?>
                     </div>
                 </div>
             <?php endif; ?>
             
             <?php if ($specialization): ?>
-                <div style="background:#fff;border-radius:15px;padding:30px;margin-bottom:30px;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
-                    <h3 style="font-size:22px;font-weight:700;margin:0 0 20px;color:#333;">🎯 Специализация</h3>
-                    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+                <div class="mst-guide-section">
+                    <h3 class="mst-guide-section-title">
+                        <span class="mst-icon mst-icon-award"></span>
+                        Специализация
+                    </h3>
+                    <div class="mst-guide-badges-container">
                         <?php foreach (explode(',', $specialization) as $spec): ?>
-                            <span style="padding:10px 18px;border-radius:20px;font-size:15px;font-weight:600;background:#E0F2FE;color:#0EA5E9;"><?php echo esc_html(trim($spec)); ?></span>
+                            <span class="badge-trust"><?php echo esc_html(trim($spec)); ?></span>
                         <?php endforeach; ?>
                     </div>
                 </div>
             <?php endif; ?>
             
             <?php if ($experience): ?>
-                <div style="background:#fff;border-radius:15px;padding:30px;margin-bottom:30px;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
-                    <h3 style="font-size:22px;font-weight:700;margin:0 0 20px;color:#333;">📖 О гиде</h3>
-                    <div style="line-height:1.8;font-size:16px;color:#555;"><?php echo nl2br(esc_html($experience)); ?></div>
+                <div class="mst-guide-section">
+                    <h3 class="mst-guide-section-title">О гиде</h3>
+                    <div class="mst-guide-description"><?php echo nl2br(esc_html($experience)); ?></div>
                 </div>
             <?php endif; ?>
             
             <?php if ($achievements): ?>
-                <div style="background:#fff;border-radius:15px;padding:30px;margin-bottom:30px;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
-                    <h3 style="font-size:22px;font-weight:700;margin:0 0 20px;color:#333;">🏆 Достижения</h3>
+                <div class="mst-guide-section">
+                    <h3 class="mst-guide-section-title">🏆 Достижения</h3>
                     <ul style="list-style:none;padding:0;margin:0;">
                         <?php foreach (explode("\n", $achievements) as $achievement): 
                             if (trim($achievement)): ?>
-                                <li style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#555;">🎖️ <?php echo esc_html(trim($achievement)); ?></li>
+                                <li style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#555;">
+                                    🎖️ <?php echo esc_html(trim($achievement)); ?>
+                                </li>
                             <?php endif;
                         endforeach; ?>
                     </ul>
@@ -594,20 +626,31 @@ class MST_Guide_System {
             <?php endif; ?>
             
             <?php if ($tours_query->have_posts()): ?>
-                <div style="background:#fff;border-radius:15px;padding:30px;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
-                    <h2 style="font-size:30px;font-weight:700;margin:0 0 30px;color:#333;">Популярные туры</h2>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:25px;">
+                <div class="mst-guide-section" id="tours">
+                    <h2 class="mst-guide-section-title" style="font-size:30px;">Популярные туры</h2>
+                    <div class="mst-guide-tours-grid">
                         <?php while ($tours_query->have_posts()): $tours_query->the_post();
                             $product = wc_get_product(get_the_ID());
+                            $product_rating = $product->get_average_rating();
                             ?>
-                            <div style="border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:transform 0.2s,box-shadow 0.2s;">
+                            <div class="mst-tour-card glass-liquid hover-lift-gentle transition-smooth">
                                 <a href="<?php the_permalink(); ?>" style="text-decoration:none;color:inherit;display:block;">
                                     <?php if (has_post_thumbnail()): ?>
-                                        <?php the_post_thumbnail('medium', ['style' => 'width:100%;height:200px;object-fit:cover;']); ?>
+                                        <div class="mst-tour-card-image">
+                                            <?php the_post_thumbnail('medium', ['style' => 'width:100%;height:100%;object-fit:cover;']); ?>
+                                        </div>
                                     <?php endif; ?>
-                                    <div style="padding:20px;">
-                                        <h4 style="font-size:16px;font-weight:600;margin:0 0 15px;color:#333;"><?php the_title(); ?></h4>
-                                        <div style="color:#00c896;font-weight:700;font-size:18px;"><?php echo $product->get_price_html(); ?></div>
+                                    <div class="mst-tour-card-content">
+                                        <h4 class="mst-tour-card-title"><?php the_title(); ?></h4>
+                                        <div class="mst-tour-card-footer">
+                                            <div class="mst-tour-card-price"><?php echo $product->get_price_html(); ?></div>
+                                            <?php if ($product_rating > 0): ?>
+                                                <div class="mst-tour-card-rating">
+                                                    <span class="mst-tour-rating-star">⭐</span>
+                                                    <span><?php echo number_format($product_rating, 1); ?></span>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
                                 </a>
                             </div>
@@ -615,6 +658,33 @@ class MST_Guide_System {
                     </div>
                 </div>
             <?php endif; ?>
+            
+            <?php if ($testimonials): 
+                $testimonials_data = maybe_unserialize($testimonials);
+                if (is_array($testimonials_data) && !empty($testimonials_data)): ?>
+                    <div class="mst-guide-section" style="background:#f8f9fa;">
+                        <h2 class="mst-guide-section-title" style="font-size:30px;">Отзывы туристов</h2>
+                        <div class="mst-testimonials-grid">
+                            <?php foreach ($testimonials_data as $testimonial): ?>
+                                <div class="mst-testimonial-card card-warm hover-lift-gentle transition-smooth">
+                                    <div class="mst-testimonial-header">
+                                        <span class="mst-testimonial-author"><?php echo esc_html($testimonial['author'] ?? 'Аноним'); ?></span>
+                                        <div class="mst-testimonial-stars">
+                                            <?php 
+                                            $stars = intval($testimonial['rating'] ?? 5);
+                                            for ($i = 0; $i < $stars; $i++): ?>
+                                                <span class="mst-testimonial-star">⭐</span>
+                                            <?php endfor; ?>
+                                        </div>
+                                    </div>
+                                    <p class="mst-testimonial-text"><?php echo esc_html($testimonial['text'] ?? ''); ?></p>
+                                    <span class="mst-testimonial-date"><?php echo esc_html($testimonial['date'] ?? ''); ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif;
+            endif; ?>
             
         </div>
         <?php
