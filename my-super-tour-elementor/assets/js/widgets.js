@@ -1173,6 +1173,77 @@
     });
   }
 
+  // Wishlist flying heart animation
+  function animateHeartFly(fromElement, toElement, isAdding) {
+    const heart = document.createElement('div');
+    heart.className = 'mst-flying-heart';
+    heart.innerHTML = '❤️';
+    heart.style.cssText = `
+      position: fixed;
+      z-index: 999999;
+      font-size: 24px;
+      pointer-events: none;
+      transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    `;
+    
+    const fromRect = fromElement.getBoundingClientRect();
+    const toRect = toElement.getBoundingClientRect();
+    
+    // Starting position
+    heart.style.left = fromRect.left + fromRect.width / 2 + 'px';
+    heart.style.top = fromRect.top + fromRect.height / 2 + 'px';
+    heart.style.color = isAdding ? '#ffffff' : '#ff0000';
+    heart.style.opacity = '1';
+    heart.style.transform = 'scale(1) translate(-50%, -50%)';
+    
+    document.body.appendChild(heart);
+    
+    // Animate to target
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        heart.style.left = toRect.left + toRect.width / 2 + 'px';
+        heart.style.top = toRect.top + toRect.height / 2 + 'px';
+        heart.style.transform = 'scale(0.3) translate(-50%, -50%)';
+        heart.style.opacity = '0';
+      });
+    });
+    
+    setTimeout(() => heart.remove(), 600);
+  }
+
+  // Initialize wishlist animation handlers
+  function initWishlistAnimation() {
+    // Find wishlist icon in header
+    const wishlistIcon = document.querySelector('.header-wishlist, .etheme-wishlist-widget, [class*="wishlist"]');
+    
+    if (!wishlistIcon) {
+      console.warn('Wishlist icon not found in header');
+      return;
+    }
+    
+    // Handle wishlist button clicks
+    document.addEventListener('click', function(e) {
+      const wishlistBtn = e.target.closest('.mst-wishlist-btn, .mst-shop-grid-wishlist');
+      
+      if (wishlistBtn) {
+        // Check if adding or removing
+        const isInWishlist = wishlistBtn.classList.contains('in-wishlist') || 
+                            wishlistBtn.classList.contains('added');
+        const isAdding = !isInWishlist;
+        
+        // Animate heart flying
+        animateHeartFly(wishlistBtn, wishlistIcon, isAdding);
+        
+        // Toggle state class
+        if (isAdding) {
+          wishlistBtn.classList.add('in-wishlist');
+        } else {
+          wishlistBtn.classList.remove('in-wishlist');
+        }
+      }
+    });
+  }
+
   // Initialize all functionality
   // Auto-fit badges so they never touch wishlist (mobile/tablet)
   function initBadgeAutoPosition() {
@@ -1239,6 +1310,7 @@
     initCursorGlow();
     initFollowGlow();
     initWishlistHover();
+    initWishlistAnimation();
     initBadgeAutoPosition();
   }
   
