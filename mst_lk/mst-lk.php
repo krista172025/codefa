@@ -28,6 +28,8 @@ class MST_LK {
         add_action('admin_menu', [$this, 'add_hub_menu'], 20);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         add_action('init', [$this, 'register_endpoints']);
+        add_filter('query_vars', [$this, 'add_query_vars']);
+        add_action('template_redirect', [$this, 'handle_guide_template']);
         add_shortcode('mst_lk', [$this, 'render_profile_shortcode']);
         add_filter('woocommerce_account_menu_items', [$this, 'add_my_account_menu'], 40);
         add_action('woocommerce_account_mst-profile_endpoint', [$this, 'render_my_account_content']);
@@ -51,6 +53,9 @@ class MST_LK {
         
         // Подключаем систему гидов
         require_once MST_LK_PLUGIN_DIR . 'includes/guide-system.php';
+        
+        // Подключаем Reviews API
+        require_once MST_LK_PLUGIN_DIR . 'includes/class-reviews-api.php';
         
         register_activation_hook(__FILE__, [$this, 'activate']);
     }
@@ -77,9 +82,30 @@ class MST_LK {
     public function register_endpoints() {
         add_rewrite_endpoint('mst-profile', EP_ROOT | EP_PAGES);
         
-        // Add rewrite rule for guide profiles: /guide/123 -> ?guide_id=123
+        // Russian version: /gid/{user_id}
+        add_rewrite_rule(
+            '^gid/([0-9]+)/?$',
+            'index.php?mst_guide_page=1&mst_guide_id=$matches[1]',
+            'top'
+        );
+        
+        // English version: /guide/{user_id}
+        add_rewrite_rule(
+            '^guide/([0-9]+)/?$',
+            'index.php?mst_guide_page=1&mst_guide_id=$matches[1]',
+            'top'
+        );
+        
+        // Add rewrite rule for guide profiles: /guide/123 -> ?guide_id=123 (legacy support)
         add_rewrite_rule('^guide/([0-9]+)/?$', 'index.php?guide_id=$matches[1]', 'top');
         add_rewrite_tag('%guide_id%', '([0-9]+)');
+    }
+    
+    public function add_query_vars($vars) {
+        $vars[] = 'mst_guide_page';
+        $vars[] = 'mst_guide_id';
+        $vars[] = 'guide_id';
+        return $vars;
     }
     
     public function add_hub_menu() {
@@ -95,7 +121,12 @@ class MST_LK {
     
     public function enqueue_frontend_assets() {
         if (is_account_page() || is_page() || has_shortcode(get_post_field('post_content', get_the_ID()), 'mst_lk')) {
+            // Enqueue original styles
             wp_enqueue_style('mst-lk-style', MST_LK_PLUGIN_URL . 'assets/css/style.css', [], MST_LK_VERSION);
+            
+            // Enqueue modern design CSS
+            wp_enqueue_style('mst-lk-modern', MST_LK_PLUGIN_URL . 'assets/css/lk-modern.css', ['mst-lk-style'], MST_LK_VERSION);
+            
             wp_enqueue_script('mst-lk-script', MST_LK_PLUGIN_URL . 'assets/js/script.js', ['jquery'], MST_LK_VERSION, true);
             
             // Подключаем IMask для форматирования телефона
@@ -305,6 +336,34 @@ class MST_LK {
     }
     
     public function handle_guide_template() {
+        // Check for new rewrite rule query vars first
+        $guide_id = get_query_var('mst_guide_id');
+        if ($guide_id && get_query_var('mst_guide_page')) {
+            // Show the guide profile directly
+            $guide_id = intval($guide_id);
+            
+            // Try to find a page with the guide profile shortcode
+            $pages = get_posts([
+                'post_type' => 'page',
+                'posts_per_page' => 1,
+                's' => '[mst_guide_profile]'
+            ]);
+            
+            if (!empty($pages)) {
+                // Redirect to the page with guide_id parameter
+                wp_safe_redirect(add_query_arg('guide_id', $guide_id, get_permalink($pages[0]->ID)));
+                exit;
+            } else {
+                // If no page found, display inline
+                $_GET['guide_id'] = $guide_id;
+                get_header();
+                echo do_shortcode('[mst_guide_profile]');
+                get_footer();
+                exit;
+            }
+        }
+        
+        // Legacy support for old guide_id query var
         $guide_id = get_query_var('guide_id');
         
         if ($guide_id) {

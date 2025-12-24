@@ -148,6 +148,48 @@ class Review_Carousel extends Widget_Base {
             ]
         );
 
+        $this->add_control(
+            'use_live_reviews',
+            [
+                'label' => __('Use Live Reviews', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => '',
+                'description' => __('Display real reviews from WooCommerce', 'my-super-tour-elementor'),
+            ]
+        );
+
+        $this->add_control(
+            'reviews_count',
+            [
+                'label' => __('Reviews Count', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 10,
+                'min' => 1,
+                'max' => 50,
+                'condition' => ['use_live_reviews' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'guide_id',
+            [
+                'label' => __('Guide ID', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'description' => __('Leave empty for all reviews, or enter guide user ID', 'my-super-tour-elementor'),
+                'condition' => ['use_live_reviews' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'product_id',
+            [
+                'label' => __('Product ID', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'description' => __('Leave empty for all reviews, or enter product ID', 'my-super-tour-elementor'),
+                'condition' => ['use_live_reviews' => 'yes'],
+            ]
+        );
+
         $this->end_controls_section();
 
         // More Reviews Button
@@ -514,8 +556,79 @@ class Review_Carousel extends Widget_Base {
         $this->end_controls_section();
     }
 
+    /**
+     * Get live reviews from WooCommerce
+     */
+    private function get_live_reviews($settings) {
+        $args = [
+            'type' => 'review',
+            'status' => 'approve',
+            'number' => isset($settings['reviews_count']) ? intval($settings['reviews_count']) : 10,
+            'orderby' => 'comment_date',
+            'order' => 'DESC',
+        ];
+        
+        // Filter by guide
+        if (!empty($settings['guide_id'])) {
+            $args['meta_query'] = [
+                ['key' => 'mst_guide_id', 'value' => intval($settings['guide_id'])]
+            ];
+        }
+        
+        // Filter by product
+        if (!empty($settings['product_id'])) {
+            $args['post_id'] = intval($settings['product_id']);
+        }
+        
+        $comments = get_comments($args);
+        $reviews = [];
+        
+        foreach ($comments as $c) {
+            $user = get_user_by('email', $c->comment_author_email);
+            $initials = '';
+            if ($user) {
+                $first = get_user_meta($user->ID, 'first_name', true);
+                $last = get_user_meta($user->ID, 'last_name', true);
+                if ($first && $last) {
+                    $initials = mb_substr($first, 0, 1) . mb_substr($last, 0, 1);
+                }
+            }
+            if (empty($initials)) {
+                $name_parts = explode(' ', $c->comment_author);
+                $initials = mb_substr($name_parts[0], 0, 1) . (isset($name_parts[1]) ? mb_substr($name_parts[1], 0, 1) : '');
+            }
+            
+            $rating = intval(get_comment_meta($c->comment_ID, 'rating', true));
+            
+            $reviews[] = [
+                'guest_initials' => mb_strtoupper($initials),
+                'guest_name' => $c->comment_author,
+                'date' => human_time_diff(strtotime($c->comment_date)) . ' ' . __('назад', 'my-super-tour-elementor'),
+                'rating' => $rating ?: 5,
+                'city' => '', // Could be extracted from user meta if available
+                'tour_title' => get_the_title($c->comment_post_ID),
+                'review_text' => $c->comment_content,
+                'photo_1' => '',
+                'photo_2' => '',
+                'total_photos' => 0,
+            ];
+        }
+        
+        return $reviews;
+    }
+
     protected function render() {
         $settings = $this->get_settings_for_display();
+        
+        // Check if using live reviews
+        $use_live = isset($settings['use_live_reviews']) && $settings['use_live_reviews'] === 'yes';
+        $reviews_data = $use_live ? $this->get_live_reviews($settings) : $settings['reviews'];
+        
+        if (empty($reviews_data)) {
+            echo '<div class="mst-no-reviews">' . __('Отзывов пока нет', 'my-super-tour-elementor') . '</div>';
+            return;
+        }
+        
         $arrows_inside = $settings['arrows_inside'] === 'yes';
         $show_arrows = $settings['show_arrows'] === 'yes';
         $arrows_offset = isset($settings['arrows_offset']['size']) ? $settings['arrows_offset']['size'] : -60;
@@ -552,7 +665,7 @@ class Review_Carousel extends Widget_Base {
         <div class="<?php echo esc_attr($container_class); ?>" data-items="<?php echo esc_attr($items_per_view); ?>" style="<?php echo !$arrows_inside ? 'overflow: visible; padding: 0 60px;' : ''; ?>">
             <div class="mst-review-carousel-wrapper" style="position: relative; overflow: hidden;">
                 <div class="mst-review-carousel-track" style="display: flex; gap: <?php echo esc_attr($gap); ?>px; transition: transform 0.5s ease;">
-                    <?php foreach ($settings['reviews'] as $review): 
+                    <?php foreach ($reviews_data as $review): 
                         $card_class = 'mst-review-carousel-card';
                         if ($liquid_glass) $card_class .= ' mst-liquid-glass';
                         $rating = intval($review['rating']);
