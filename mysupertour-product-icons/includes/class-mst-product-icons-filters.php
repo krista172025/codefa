@@ -148,7 +148,7 @@ class MST_Product_Icons_Filters {
         ob_start();
         ?>
         <div class="mst-filters-wrapper">
-            <form class="mst-filters-form" method="get" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
+            <form class="mst-filters-form" method="get" action="#" data-ajax-target=".mst-shop-grid">
                 
                 <div class="mst-filters-row mst-filters-main">
                     
@@ -382,8 +382,18 @@ class MST_Product_Icons_Filters {
     }
 
     public function apply_filters_query($query) {
+        // Don't apply filters in admin or if not main query
         if (is_admin() || !$query->is_main_query()) return;
+        
+        // Only apply on shop/category pages, not on other archive pages
         if (!is_shop() && !is_product_category() && !is_product_taxonomy()) return;
+        
+        // Don't apply if this is a standard WooCommerce archive (let WC handle it)
+        // Only apply for AJAX/custom filtering
+        if (!defined('DOING_AJAX') && !isset($_GET['mst_ajax_filter'])) {
+            // Standard page load - don't interfere with WooCommerce Archive Products
+            return;
+        }
 
         $meta_query = [];
         $tax_query = [];
