@@ -54,6 +54,9 @@ class MST_LK {
         // Подключаем систему гидов
         require_once MST_LK_PLUGIN_DIR . 'includes/guide-system.php';
         
+        // Подключаем Reviews API
+        require_once MST_LK_PLUGIN_DIR . 'includes/class-reviews-api.php';
+        
         register_activation_hook(__FILE__, [$this, 'activate']);
     }
     
@@ -118,7 +121,12 @@ class MST_LK {
     
     public function enqueue_frontend_assets() {
         if (is_account_page() || is_page() || has_shortcode(get_post_field('post_content', get_the_ID()), 'mst_lk')) {
+            // Enqueue original styles
             wp_enqueue_style('mst-lk-style', MST_LK_PLUGIN_URL . 'assets/css/style.css', [], MST_LK_VERSION);
+            
+            // Enqueue modern design CSS
+            wp_enqueue_style('mst-lk-modern', MST_LK_PLUGIN_URL . 'assets/css/lk-modern.css', ['mst-lk-style'], MST_LK_VERSION);
+            
             wp_enqueue_script('mst-lk-script', MST_LK_PLUGIN_URL . 'assets/js/script.js', ['jquery'], MST_LK_VERSION, true);
             
             // Подключаем IMask для форматирования телефона
