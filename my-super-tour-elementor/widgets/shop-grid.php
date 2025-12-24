@@ -1196,9 +1196,8 @@ class Shop_Grid extends Widget_Base {
             // Listen for filter changes (checkboxes)
             document.addEventListener('change', function(e) {
                 if (e.target.matches('#wcaf-filters-form input[type="checkbox"]')) {
-                    // Auto-submit on change (optional)
-                    // Uncomment the line below for instant filtering
-                    // e.target.form.dispatchEvent(new Event('submit', {bubbles: true}));
+                    // Auto-submit is disabled by default for better UX
+                    // Users can click "Apply" button to see results
                 }
             });
         })();

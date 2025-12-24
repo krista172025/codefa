@@ -22,7 +22,8 @@ class Ajax_Handler {
         $filters = array();
         
         // Get current language for localization - validate against allowed locales
-        $allowed_locales = array('en_US', 'en', 'ru_RU', 'ru', 'en_GB', 'de_DE', 'fr_FR', 'es_ES');
+        // Note: Currently supporting EN and RU. Additional locales can be added when translation files are created.
+        $allowed_locales = array('en_US', 'en', 'ru_RU', 'ru', 'en_GB');
         $current_lang = isset($_POST['lang']) ? sanitize_text_field(wp_unslash($_POST['lang'])) : determine_locale();
         
         // Validate locale
