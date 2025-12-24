@@ -9,6 +9,13 @@ if (!defined('ABSPATH')) exit;
 
 class MST_Guide_System {
     
+    // Default testimonials for new guides
+    const DEFAULT_TESTIMONIALS = [
+        ['author' => 'Анна С.', 'rating' => 5, 'text' => 'Невероятная экскурсия! Мария рассказала так много интересного об истории города. Рекомендую!', 'date' => '2 дня назад'],
+        ['author' => 'Джон М.', 'rating' => 5, 'text' => 'Best tour guide! Very knowledgeable and friendly.', 'date' => '1 неделю назад'],
+        ['author' => 'Елена К.', 'rating' => 5, 'text' => 'Профессионал своего дела. Время пролетело незаметно. Обязательно вернемся на другие туры!', 'date' => '2 недели назад']
+    ];
+    
     public function __construct() {
         add_action('add_meta_boxes', [$this, 'add_guide_metabox']);
         add_action('save_post', [$this, 'save_guide_meta']);
@@ -460,11 +467,7 @@ class MST_Guide_System {
                               class="large-text" rows="10" style="font-family:monospace;font-size:12px;"><?php 
                     $testimonials = get_user_meta($user->ID, 'mst_guide_testimonials', true);
                     if (empty($testimonials)) {
-                        $testimonials = [
-                            ['author' => 'Анна С.', 'rating' => 5, 'text' => 'Невероятная экскурсия! Мария рассказала так много интересного об истории города. Рекомендую!', 'date' => '2 дня назад'],
-                            ['author' => 'Джон М.', 'rating' => 5, 'text' => 'Best tour guide! Very knowledgeable and friendly.', 'date' => '1 неделю назад'],
-                            ['author' => 'Елена К.', 'rating' => 5, 'text' => 'Профессионал своего дела. Время пролетело незаметно. Обязательно вернемся на другие туры!', 'date' => '2 недели назад']
-                        ];
+                        $testimonials = self::DEFAULT_TESTIMONIALS;
                     }
                     echo esc_textarea(json_encode($testimonials, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)); 
                     ?></textarea>
@@ -524,6 +527,9 @@ class MST_Guide_System {
         $achievements = get_user_meta($guide_id, 'mst_guide_achievements', true) ?: '';
         $testimonials = get_user_meta($guide_id, 'mst_guide_testimonials', true) ?: '';
         
+        // Default testimonials if none set
+        $default_testimonials = self::DEFAULT_TESTIMONIALS;
+        
         $user_status = get_user_meta($guide_id, 'mst_user_status', true) ?: 'guide';
         $status_colors = [
             'bronze' => '#CD7F32',
@@ -580,12 +586,12 @@ class MST_Guide_System {
                                 <span class="mst-icon mst-icon-calendar"></span>
                                 Забронировать тур
                             </a>
-                            <a href="#" class="mst-btn-icon-action" onclick="return false;" title="Добавить в избранное">
+                            <button type="button" class="mst-btn-icon-action" title="Добавить в избранное" aria-label="Добавить в избранное">
                                 <span class="mst-icon mst-icon-heart"></span>
-                            </a>
-                            <a href="#" class="mst-btn-icon-action" onclick="return false;" title="Поделиться">
+                            </button>
+                            <button type="button" class="mst-btn-icon-action" title="Поделиться" aria-label="Поделиться профилем гида">
                                 <span class="mst-icon mst-icon-share"></span>
-                            </a>
+                            </button>
                         </div>
                         
                         <div class="mst-guide-stats">
@@ -686,8 +692,9 @@ class MST_Guide_System {
                 </div>
             <?php endif; ?>
             
-            <?php if ($testimonials): 
-                $testimonials_data = maybe_unserialize($testimonials);
+            <?php if (!empty($testimonials)): 
+                // Testimonials can be either array (from DB) or need to be decoded from JSON
+                $testimonials_data = is_array($testimonials) ? $testimonials : $default_testimonials;
                 if (is_array($testimonials_data) && !empty($testimonials_data)): ?>
                     <div class="mst-guide-section" style="background:#f8f9fa;">
                         <h2 class="mst-guide-section-title" style="font-size:30px;">Отзывы туристов</h2>

@@ -1391,6 +1391,7 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     color: #fff;
     text-decoration: none;
+    padding: 0;
 }
 
 .mst-btn-icon-action:hover {
@@ -1575,30 +1576,44 @@
 
 .mst-icon-calendar::before {
     content: "📅";
+    speak: none;
+    -webkit-font-smoothing: antialiased;
 }
 
 .mst-icon-heart::before {
     content: "❤️";
+    speak: none;
+    -webkit-font-smoothing: antialiased;
 }
 
 .mst-icon-share::before {
     content: "📤";
+    speak: none;
+    -webkit-font-smoothing: antialiased;
 }
 
 .mst-icon-star::before {
     content: "⭐";
+    speak: none;
+    -webkit-font-smoothing: antialiased;
 }
 
 .mst-icon-location::before {
     content: "📍";
+    speak: none;
+    -webkit-font-smoothing: antialiased;
 }
 
 .mst-icon-language::before {
     content: "🗣️";
+    speak: none;
+    -webkit-font-smoothing: antialiased;
 }
 
 .mst-icon-award::before {
     content: "🎯";
+    speak: none;
+    -webkit-font-smoothing: antialiased;
 }
 
 /* Responsive Design for Guide Profile */
