@@ -1168,7 +1168,7 @@ class Shop_Grid extends Widget_Base {
                     shopGrid.style.pointerEvents = 'none';
                     
                     // Make AJAX request
-                    fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+                    fetch('<?php echo esc_url(admin_url('admin-ajax.php')); ?>', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',

@@ -120,6 +120,10 @@ class MSTS_Shortcode {
         }
         
         /* ✅ MODAL OVERLAY */
+        /* Note: High z-index (9999999) is required for XStore theme compatibility.
+         * XStore uses z-indexes in the 999999 range for its mobile menu and overlays.
+         * This ensures the search modal appears above all theme elements.
+         */
         .msts-modal-v3 {
             position: fixed;
             top: 0;
@@ -162,6 +166,7 @@ class MSTS_Shortcode {
         }
         
         /* ✅ КРЕСТИК ЗАКРЫТИЯ МОДАЛКИ */
+        /* Note: z-index must be higher than modal overlay (10000001 > 9999999) */
         .msts-modal-v3-close {
             position: fixed !important;
             top: 30px !important;

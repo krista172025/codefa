@@ -21,19 +21,35 @@ class Ajax_Handler {
         // Get filter data from POST with proper sanitization
         $filters = array();
         
-        // Get current language for localization
+        // Get current language for localization - validate against allowed locales
+        $allowed_locales = array('en_US', 'en', 'ru_RU', 'ru', 'en_GB', 'de_DE', 'fr_FR', 'es_ES');
         $current_lang = isset($_POST['lang']) ? sanitize_text_field(wp_unslash($_POST['lang'])) : determine_locale();
+        
+        // Validate locale
+        if (!in_array($current_lang, $allowed_locales, true)) {
+            $current_lang = determine_locale();
+        }
         
         // Get widget settings - validate each setting individually
         $widget_settings = array();
         if (isset($_POST['widget_settings']) && is_array($_POST['widget_settings'])) {
             $settings = wp_unslash($_POST['widget_settings']);
+            
+            // Sanitize colors - provide defaults for non-hex values
+            $button_bg = isset($settings['button_bg_color']) ? $settings['button_bg_color'] : '';
+            if (strpos($button_bg, 'hsl') !== false || strpos($button_bg, 'rgb') !== false) {
+                // Keep HSL/RGB values as-is (already validated by Elementor)
+                $button_bg_color = sanitize_text_field($button_bg);
+            } else {
+                $button_bg_color = sanitize_hex_color($button_bg) ?: '#8b5cf6';
+            }
+            
             $widget_settings = array(
-                'card_bg_color' => isset($settings['card_bg_color']) ? sanitize_hex_color($settings['card_bg_color']) : '#ffffff',
-                'title_color' => isset($settings['title_color']) ? sanitize_hex_color($settings['title_color']) : '#1a1a1a',
-                'price_color' => isset($settings['price_color']) ? sanitize_hex_color($settings['price_color']) : '#1a1a1a',
-                'button_bg_color' => isset($settings['button_bg_color']) ? sanitize_hex_color($settings['button_bg_color']) : 'hsl(270, 70%, 60%)',
-                'button_text_color' => isset($settings['button_text_color']) ? sanitize_hex_color($settings['button_text_color']) : '#ffffff',
+                'card_bg_color' => sanitize_hex_color($settings['card_bg_color'] ?? '') ?: '#ffffff',
+                'title_color' => sanitize_hex_color($settings['title_color'] ?? '') ?: '#1a1a1a',
+                'price_color' => sanitize_hex_color($settings['price_color'] ?? '') ?: '#1a1a1a',
+                'button_bg_color' => $button_bg_color,
+                'button_text_color' => sanitize_hex_color($settings['button_text_color'] ?? '') ?: '#ffffff',
                 'button_text' => isset($settings['button_text']) ? sanitize_text_field($settings['button_text']) : 'Подробнее',
                 'show_rating' => isset($settings['show_rating']) ? (bool)$settings['show_rating'] : true,
                 'products_count' => isset($settings['products_count']) ? intval($settings['products_count']) : 12,
@@ -165,7 +181,7 @@ class Ajax_Handler {
                     </div>
                     <?php endif; ?>
                     <div class="mst-shop-grid-price" style="color: <?php echo esc_attr($price_color); ?>;">
-                        <?php echo $price_html; ?>
+                        <?php echo wp_kses_post($price_html); ?>
                     </div>
                 </div>
                 <div class="mst-shop-grid-footer">
