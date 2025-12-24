@@ -1,0 +1,51 @@
+# MySuperTour Search - English Translation
+# Copyright (C) 2024
+msgid ""
+msgstr ""
+"Project-Id-Version: MySuperTour Search 2.6.5\n"
+"Report-Msgid-Bugs-To: https://t.me/l1ghtsun\n"
+"POT-Creation-Date: 2024-12-24 14:00:00+0000\n"
+"PO-Revision-Date: 2024-12-24 14:00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: English\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: includes/class-msts-shortcode.php:30
+msgid "Очистить"
+msgstr "Clear"
+
+#: includes/class-msts-settings.php:19
+msgid "Куда вы собираетесь?"
+msgstr "Where are you going?"
+
+#: includes/class-msts-settings.php:19
+msgid "Найти"
+msgstr "Search"
+
+#: includes/class-msts-settings.php:25
+msgid "Популярные города"
+msgstr "Popular cities"
+
+#: includes/class-msts-settings.php:25
+msgid "Города"
+msgstr "Cities"
+
+#: includes/class-msts-settings.php:25
+msgid "Рубрики"
+msgstr "Categories"
+
+#: includes/class-msts-settings.php:25
+msgid "Продукты"
+msgstr "Products"
+
+#: includes/class-msts-settings.php:25
+msgid "Блог"
+msgstr "Blog"
+
+#: includes/class-msts-ajax.php:246
+msgid "Полезная информация если вы собираетесь в путешествие"
+msgstr "Useful information if you are going on a trip"

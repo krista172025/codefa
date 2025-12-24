@@ -943,7 +943,7 @@ class Shop_Grid extends Widget_Base {
         $card_hover_glow_size = isset($settings['card_hover_glow_size']['size']) ? $settings['card_hover_glow_size']['size'] : 8;
         $card_hover_border_color = isset($settings['card_hover_border_color']) ? $settings['card_hover_border_color'] : 'rgba(255, 255, 255, 0.25)';
         ?>
-        <div class="mst-shop-grid">
+        <div class="mst-shop-grid" data-widget-id="<?php echo esc_attr($this->get_id()); ?>">
             <?php foreach ($products as $product): 
                 $product_id = $product->get_id();
                 $image = wp_get_attachment_image_src(get_post_thumbnail_id($product_id), 'medium');
@@ -1118,29 +1118,91 @@ class Shop_Grid extends Widget_Base {
             </div>
             <?php endforeach; ?>
         </div>
+        
         <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('.mst-filters-form');
-            const results = document.getElementById('shop-grid-results');
+        // Shop Grid Filter Integration
+        (function() {
+            const shopGrid = document.querySelector('.mst-shop-grid');
+            if (!shopGrid) return;
             
-            form.addEventListener('change', function() {
-                const data = new FormData(this);
-
-                fetch('/wp-admin/admin-ajax.php?action=connect_shop_grid', {
-                    method: 'POST',
-                    body: JSON.stringify(Object.fromEntries(data)),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                .then(res => res.json())
-                .then(response => {
-                    results.innerHTML = response.data.html;
-                })
-                .catch(err => console.error('Error:', err));
+            // Store widget settings for AJAX requests
+            const widgetSettings = {
+                card_bg_color: '<?php echo esc_js($settings['card_bg_color']); ?>',
+                title_color: '<?php echo esc_js($settings['title_color']); ?>',
+                price_color: '<?php echo esc_js($settings['price_color']); ?>',
+                button_bg_color: '<?php echo esc_js($settings['button_bg_color']); ?>',
+                button_text_color: '<?php echo esc_js($settings['button_text_color']); ?>',
+                button_text: '<?php echo esc_js($settings['button_text']); ?>',
+                show_rating: <?php echo $show_rating ? 'true' : 'false'; ?>,
+                products_count: <?php echo intval($settings['products_count']); ?>,
+                orderby: '<?php echo esc_js($settings['orderby']); ?>',
+                order: '<?php echo esc_js($settings['order']); ?>'
+            };
+            
+            // Listen for filter form submissions
+            document.addEventListener('submit', function(e) {
+                if (e.target.matches('#wcaf-filters-form')) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(e.target);
+                    const data = {
+                        action: 'wcaf_filter_products',
+                        lang: document.documentElement.lang || 'ru',
+                        widget_settings: widgetSettings
+                    };
+                    
+                    // Add form data to request
+                    for (let [key, value] of formData.entries()) {
+                        if (data[key]) {
+                            if (!Array.isArray(data[key])) {
+                                data[key] = [data[key]];
+                            }
+                            data[key].push(value);
+                        } else {
+                            data[key] = value;
+                        }
+                    }
+                    
+                    // Add loading state
+                    shopGrid.style.opacity = '0.5';
+                    shopGrid.style.pointerEvents = 'none';
+                    
+                    // Make AJAX request
+                    fetch('<?php echo esc_url(admin_url('admin-ajax.php')); ?>', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams(data)
+                    })
+                    .then(res => res.json())
+                    .then(response => {
+                        if (response.success) {
+                            shopGrid.innerHTML = response.data.html;
+                        } else {
+                            console.error('Filter error:', response);
+                        }
+                        shopGrid.style.opacity = '1';
+                        shopGrid.style.pointerEvents = 'auto';
+                    })
+                    .catch(err => {
+                        console.error('AJAX error:', err);
+                        shopGrid.style.opacity = '1';
+                        shopGrid.style.pointerEvents = 'auto';
+                    });
+                }
             });
-        });
+            
+            // Listen for filter changes (checkboxes)
+            document.addEventListener('change', function(e) {
+                if (e.target.matches('#wcaf-filters-form input[type="checkbox"]')) {
+                    // Auto-submit is disabled by default for better UX
+                    // Users can click "Apply" button to see results
+                }
+            });
+        })();
         </script>
+        
         <?php if ($settings['show_pagination'] === 'yes' && $settings['pagination_type'] === 'load_more'): ?>
         <div class="mst-shop-grid-pagination">
             <button class="mst-shop-grid-load-more" style="background: <?php echo esc_attr($settings['button_bg_color']); ?>; color: <?php echo esc_attr($settings['button_text_color']); ?>;">
