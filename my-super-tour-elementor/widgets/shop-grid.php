@@ -1027,29 +1027,13 @@ class Shop_Grid extends Widget_Base {
                             $wishlist_style .= ' backdrop-filter: blur(' . esc_attr($wishlist_blur) . 'px); -webkit-backdrop-filter: blur(' . esc_attr($wishlist_blur) . 'px); box-shadow: 0 4px 12px rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.6);';
                         }
                     ?>
-                    <?php
-                        // Check if product is in XStore wishlist
-                        $user_id = get_current_user_id();
-                        $wishlist_key = 'xstore_wishlist_ids_0';
-                        $wishlist_ids = $user_id ? get_user_meta($user_id, $wishlist_key, true) : array();
-                        if (!is_array($wishlist_ids)) {
-                            $wishlist_ids = !empty($wishlist_ids) ? array($wishlist_ids) : array();
-                        }
-                        $is_in_wishlist = in_array($product_id, $wishlist_ids);
-                        $active_class = $is_in_wishlist ? ' mst-wishlist-active' : '';
-                        $active_fill = $is_in_wishlist ? $wishlist_stroke : $wishlist_icon;
-                        $active_stroke = $is_in_wishlist ? $wishlist_stroke : $wishlist_stroke;
-                    ?>
                     <button type="button"
-                       class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow<?php echo $active_class; ?>"
+                       class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow"
                        data-product-id="<?php echo esc_attr($product_id); ?>"
                        data-hover-bg="<?php echo esc_attr($wishlist_hover_bg); ?>"
-                       data-active-fill="<?php echo esc_attr($wishlist_stroke); ?>"
-                       data-inactive-fill="<?php echo esc_attr($wishlist_icon); ?>"
-                       data-stroke="<?php echo esc_attr($wishlist_stroke); ?>"
                        style="<?php echo $wishlist_style; ?>"
                        aria-label="Add to wishlist">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="<?php echo esc_attr($wishlist_icon_size); ?>" height="<?php echo esc_attr($wishlist_icon_size); ?>" viewBox="0 0 24 24" fill="<?php echo esc_attr($active_fill); ?>" stroke="<?php echo esc_attr($active_stroke); ?>" stroke-width="2" class="mst-heart-icon"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="<?php echo esc_attr($wishlist_icon_size); ?>" height="<?php echo esc_attr($wishlist_icon_size); ?>" viewBox="0 0 24 24" fill="<?php echo esc_attr($wishlist_icon); ?>" stroke="<?php echo esc_attr($wishlist_stroke); ?>" stroke-width="2" class="mst-heart-icon"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
                     </button>
                     <?php endif; ?>
                 </div>
@@ -1089,13 +1073,7 @@ class Shop_Grid extends Widget_Base {
                     <!-- Footer: Button + Guide -->
                     <?php 
                         $guide_position = isset($settings['guide_position']) ? $settings['guide_position'] : 'inside_button';
-                        // Get guide ID from product meta
-                        $product_guide_id = get_post_meta($product_id, '_mst_guide_id', true);
-                        if ($product_guide_id) {
-                            $guide_url = home_url('/guide/' . $product_guide_id);
-                        } else {
-                            $guide_url = !empty($settings['guide_link']['url']) ? $settings['guide_link']['url'] : '#';
-                        }
+                        $guide_url = !empty($settings['guide_link']['url']) ? $settings['guide_link']['url'] : '#';
                         $guide_border_color = isset($settings['guide_border_color']) ? $settings['guide_border_color'] : '#ffffff';
                         $guide_hover_border = isset($settings['guide_hover_border']) ? $settings['guide_hover_border'] : 'hsl(45, 98%, 60%)';
                     ?>
@@ -1110,7 +1088,6 @@ class Shop_Grid extends Widget_Base {
                         </a>
                         <a href="<?php echo esc_url($guide_url); ?>" 
                            class="mst-shop-grid-guide-inside mst-follow-glow" 
-                           onclick="event.stopPropagation();"
                            style="border-color: <?php echo esc_attr($guide_border_color); ?>;"
                            data-hover-border="<?php echo esc_attr($guide_hover_border); ?>"
                            title="<?php echo esc_attr($settings['guide_label']); ?>">
@@ -1129,7 +1106,6 @@ class Shop_Grid extends Widget_Base {
                         <?php if ($show_guide && !empty($settings['default_guide_photo']['url'])): ?>
                         <a href="<?php echo esc_url($guide_url); ?>" 
                            class="mst-shop-grid-guide" 
-                           onclick="event.stopPropagation();"
                            style="border-color: <?php echo esc_attr($guide_border_color); ?>;"
                            data-hover-border="<?php echo esc_attr($guide_hover_border); ?>"
                            title="<?php echo esc_attr($settings['guide_label']); ?>">
@@ -1142,153 +1118,28 @@ class Shop_Grid extends Widget_Base {
             </div>
             <?php endforeach; ?>
         </div>
-        <style>
-        .mst-wishlist-btn {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .mst-wishlist-btn:active {
-            transform: scale(0.9);
-        }
-        .mst-wishlist-btn.mst-adding {
-            animation: wishlist-pulse 0.6s ease;
-        }
-        @keyframes wishlist-pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-        }
-        .mst-heart-icon {
-            transition: fill 0.3s ease, stroke 0.3s ease;
-        }
-        </style>
         <script>
-        (function() {
-            'use strict';
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.mst-filters-form');
+            const results = document.getElementById('shop-grid-results');
             
-            // Wishlist functionality
-            function initWishlist() {
-                const wishlistBtns = document.querySelectorAll('.mst-wishlist-btn');
-                
-                wishlistBtns.forEach(function(btn) {
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        const productId = this.dataset.productId;
-                        const isActive = this.classList.contains('mst-wishlist-active');
-                        const heartIcon = this.querySelector('.mst-heart-icon');
-                        const activeFill = this.dataset.activeFill || '#ff4757';
-                        const inactiveFill = this.dataset.inactiveFill || '#ffffff';
-                        const strokeColor = this.dataset.stroke || '#ff4757';
-                        
-                        // Instant visual feedback
-                        this.classList.add('mst-adding');
-                        setTimeout(() => this.classList.remove('mst-adding'), 600);
-                        
-                        if (!isActive) {
-                            // Add to wishlist - instant feedback
-                            this.classList.add('mst-wishlist-active');
-                            if (heartIcon) {
-                                heartIcon.style.fill = activeFill;
-                                heartIcon.style.stroke = strokeColor;
-                            }
-                        } else {
-                            // Remove from wishlist - instant feedback
-                            this.classList.remove('mst-wishlist-active');
-                            if (heartIcon) {
-                                heartIcon.style.fill = inactiveFill;
-                                heartIcon.style.stroke = strokeColor;
-                            }
-                        }
-                        
-                        // AJAX request to backend
-                        const formData = new FormData();
-                        formData.append('action', 'mst_toggle_wishlist');
-                        formData.append('product_id', productId);
-                        formData.append('add', !isActive ? '1' : '0');
-                        formData.append('nonce', '<?php echo wp_create_nonce('mst_wishlist_nonce'); ?>');
-                        
-                        fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
-                            method: 'POST',
-                            credentials: 'same-origin',
-                            body: formData
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Update XStore wishlist counter in header
-                                const xstoreCounter = document.querySelector('.et_b_header-wishlist .et-quantity, .et-wishlist-count .et-quantity');
-                                if (xstoreCounter && data.data && typeof data.data.count !== 'undefined') {
-                                    xstoreCounter.textContent = data.data.count;
-                                }
-                            } else {
-                                // Revert on error
-                                if (!isActive) {
-                                    btn.classList.remove('mst-wishlist-active');
-                                    if (heartIcon) {
-                                        heartIcon.style.fill = inactiveFill;
-                                    }
-                                } else {
-                                    btn.classList.add('mst-wishlist-active');
-                                    if (heartIcon) {
-                                        heartIcon.style.fill = activeFill;
-                                    }
-                                }
-                                console.error('Wishlist error:', data.data);
-                            }
-                        })
-                        .catch(err => {
-                            console.error('Wishlist request failed:', err);
-                            // Revert on error
-                            if (!isActive) {
-                                btn.classList.remove('mst-wishlist-active');
-                                if (heartIcon) heartIcon.style.fill = inactiveFill;
-                            } else {
-                                btn.classList.add('mst-wishlist-active');
-                                if (heartIcon) heartIcon.style.fill = activeFill;
-                            }
-                        });
-                    });
-                });
-            }
-            
-            // Filter form handling
-            function initFilters() {
-                const form = document.querySelector('.mst-filters-form');
-                const results = document.getElementById('shop-grid-results');
-                
-                if (form && results) {
-                    form.addEventListener('change', function() {
-                        const data = new FormData(this);
+            form.addEventListener('change', function() {
+                const data = new FormData(this);
 
-                        fetch('/wp-admin/admin-ajax.php?action=connect_shop_grid', {
-                            method: 'POST',
-                            body: JSON.stringify(Object.fromEntries(data)),
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                        })
-                        .then(res => res.json())
-                        .then(response => {
-                            results.innerHTML = response.data.html;
-                            // Reinitialize wishlist buttons after content update
-                            initWishlist();
-                        })
-                        .catch(err => console.error('Error:', err));
-                    });
-                }
-            }
-            
-            // Initialize on DOM ready
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    initWishlist();
-                    initFilters();
-                });
-            } else {
-                initWishlist();
-                initFilters();
-            }
-        })();
+                fetch('/wp-admin/admin-ajax.php?action=connect_shop_grid', {
+                    method: 'POST',
+                    body: JSON.stringify(Object.fromEntries(data)),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(res => res.json())
+                .then(response => {
+                    results.innerHTML = response.data.html;
+                })
+                .catch(err => console.error('Error:', err));
+            });
+        });
         </script>
         <?php if ($settings['show_pagination'] === 'yes' && $settings['pagination_type'] === 'load_more'): ?>
         <div class="mst-shop-grid-pagination">

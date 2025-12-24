@@ -15,14 +15,10 @@ class MST_Guide_System {
         add_action('rest_api_init', [$this, 'register_rest_route']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
         add_shortcode('mst_guide_profile', [$this, 'render_guide_profile']);
-        add_shortcode('mst_guides_list', [$this, 'render_guides_list']);
         add_action('show_user_profile', [$this, 'add_guide_review_fields']);
         add_action('edit_user_profile', [$this, 'add_guide_review_fields']);
         add_action('personal_options_update', [$this, 'save_guide_review_fields']);
         add_action('edit_user_profile_update', [$this, 'save_guide_review_fields']);
-        add_action('init', [$this, 'add_rewrite_rules']);
-        add_filter('query_vars', [$this, 'add_query_vars']);
-        add_action('template_redirect', [$this, 'guide_profile_redirect']);
     }
     
     public function enqueue_assets() {
@@ -459,156 +455,6 @@ class MST_Guide_System {
             </tr>
         </table>
         <?php
-    }
-    
-    public function save_guide_review_fields($user_id) {
-        if (!current_user_can('edit_user', $user_id)) return false;
-        
-        update_user_meta($user_id, 'mst_guide_rating', sanitize_text_field($_POST['mst_guide_rating'] ?? '5.0'));
-        update_user_meta($user_id, 'mst_guide_reviews_count', intval($_POST['mst_guide_reviews_count'] ?? 0));
-        update_user_meta($user_id, 'mst_guide_experience', sanitize_textarea_field($_POST['mst_guide_experience'] ?? ''));
-        update_user_meta($user_id, 'mst_guide_languages', sanitize_text_field($_POST['mst_guide_languages'] ?? ''));
-        update_user_meta($user_id, 'mst_guide_specialization', sanitize_text_field($_POST['mst_guide_specialization'] ?? ''));
-        update_user_meta($user_id, 'mst_guide_city', sanitize_text_field($_POST['mst_guide_city'] ?? ''));
-        update_user_meta($user_id, 'mst_guide_experience_years', intval($_POST['mst_guide_experience_years'] ?? 0));
-        update_user_meta($user_id, 'mst_guide_tours_count', intval($_POST['mst_guide_tours_count'] ?? 0));
-        update_user_meta($user_id, 'mst_guide_achievements', sanitize_textarea_field($_POST['mst_guide_achievements'] ?? ''));
-    }
-    
-    // Add rewrite rules for /guide/{id}
-    public function add_rewrite_rules() {
-        add_rewrite_rule('^guide/([0-9]+)/?$', 'index.php?mst_guide_profile=1&guide_id=$matches[1]', 'top');
-        add_rewrite_rule('^guides/?$', 'index.php?mst_guides_list=1', 'top');
-    }
-    
-    // Add query vars
-    public function add_query_vars($vars) {
-        $vars[] = 'mst_guide_profile';
-        $vars[] = 'mst_guides_list';
-        $vars[] = 'guide_id';
-        return $vars;
-    }
-    
-    // Handle template redirect for guide profile
-    public function guide_profile_redirect() {
-        $guide_profile = get_query_var('mst_guide_profile');
-        $guides_list = get_query_var('mst_guides_list');
-        
-        if ($guide_profile) {
-            $guide_id = get_query_var('guide_id');
-            if ($guide_id) {
-                // Load guide profile template
-                include MST_LK_PLUGIN_DIR . 'templates/guide-profile-new.php';
-                exit;
-            }
-        }
-        
-        if ($guides_list) {
-            // Load guides list template
-            include MST_LK_PLUGIN_DIR . 'templates/guides-list.php';
-            exit;
-        }
-    }
-    
-    // Render guides list shortcode
-    public function render_guides_list($atts = []) {
-        $atts = shortcode_atts([
-            'per_page' => 12,
-            'orderby' => 'display_name',
-            'order' => 'ASC'
-        ], $atts);
-        
-        $guides = get_users([
-            'meta_key' => 'mst_user_status',
-            'meta_value' => 'guide',
-            'orderby' => $atts['orderby'],
-            'order' => $atts['order'],
-            'number' => $atts['per_page']
-        ]);
-        
-        if (empty($guides)) {
-            return '<p style="text-align:center;padding:60px 20px;">Гиды не найдены</p>';
-        }
-        
-        ob_start();
-        ?>
-        <div class="mst-guides-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:30px;max-width:1200px;margin:0 auto;padding:40px 20px;">
-            <?php foreach ($guides as $guide): 
-                $guide_id = $guide->ID;
-                $custom_avatar = get_user_meta($guide_id, 'mst_lk_avatar', true);
-                $avatar_url = $custom_avatar ? wp_get_attachment_url($custom_avatar) : get_avatar_url($guide_id, ['size' => 200]);
-                
-                $rating = get_user_meta($guide_id, 'mst_guide_rating', true) ?: '5.0';
-                $reviews_count = get_user_meta($guide_id, 'mst_guide_reviews_count', true) ?: '0';
-                $languages = get_user_meta($guide_id, 'mst_guide_languages', true) ?: '';
-                $specialization = get_user_meta($guide_id, 'mst_guide_specialization', true) ?: '';
-                $city = get_user_meta($guide_id, 'mst_guide_city', true) ?: '';
-                $experience_years = get_user_meta($guide_id, 'mst_guide_experience_years', true) ?: '0';
-                
-                $user_status = get_user_meta($guide_id, 'mst_user_status', true) ?: 'guide';
-                $status_colors = [
-                    'bronze' => '#CD7F32',
-                    'silver' => '#C0C0C0', 
-                    'gold' => '#FFD700',
-                    'guide' => '#00c896'
-                ];
-                $border_color = $status_colors[$user_status] ?? '#00c896';
-                $guide_url = home_url('/guide/' . $guide_id);
-            ?>
-            <a href="<?php echo esc_url($guide_url); ?>" style="text-decoration:none;color:inherit;">
-                <div style="background:#fff;border-radius:20px;padding:25px;box-shadow:0 2px 15px rgba(0,0,0,0.08);transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 25px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 15px rgba(0,0,0,0.08)';">
-                    <div style="text-align:center;margin-bottom:20px;">
-                        <div style="width:120px;height:120px;margin:0 auto 15px;border-radius:50%;padding:4px;background:<?php echo $border_color; ?>;box-shadow:0 6px 20px rgba(0,0,0,0.15);">
-                            <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php echo esc_attr($guide->display_name); ?>" style="width:112px;height:112px;border-radius:50%;object-fit:cover;border:4px solid #fff;">
-                        </div>
-                        <h3 style="font-size:22px;font-weight:700;margin:0 0 8px;color:#333;"><?php echo esc_html($guide->display_name); ?></h3>
-                        <?php if ($city): ?>
-                            <div style="color:#666;font-size:14px;margin-bottom:12px;">📍 <?php echo esc_html($city); ?></div>
-                        <?php endif; ?>
-                        <div style="display:flex;align-items:center;justify-content:center;gap:5px;font-size:18px;margin-bottom:15px;">
-                            <span style="color:#ffa500;">⭐</span>
-                            <span style="font-weight:700;"><?php echo esc_html($rating); ?></span>
-                            <span style="color:#999;font-size:14px;">(<?php echo esc_html($reviews_count); ?>)</span>
-                        </div>
-                    </div>
-                    
-                    <?php if ($languages): ?>
-                    <div style="margin-bottom:15px;">
-                        <div style="font-size:12px;color:#999;margin-bottom:8px;font-weight:600;">ЯЗЫКИ</div>
-                        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
-                            <?php foreach (explode(',', $languages) as $lang): ?>
-                                <span style="padding:6px 12px;border-radius:15px;font-size:12px;font-weight:600;background:#FFF4E6;color:#F59E0B;"><?php echo esc_html(trim($lang)); ?></span>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if ($specialization): ?>
-                    <div style="margin-bottom:15px;">
-                        <div style="font-size:12px;color:#999;margin-bottom:8px;font-weight:600;">СПЕЦИАЛИЗАЦИЯ</div>
-                        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
-                            <?php 
-                            $specs = explode(',', $specialization);
-                            $display_specs = array_slice($specs, 0, 2);
-                            foreach ($display_specs as $spec): ?>
-                                <span style="padding:6px 12px;border-radius:15px;font-size:12px;font-weight:600;background:#E0F2FE;color:#0EA5E9;"><?php echo esc_html(trim($spec)); ?></span>
-                            <?php endforeach; ?>
-                            <?php if (count($specs) > 2): ?>
-                                <span style="padding:6px 12px;border-radius:15px;font-size:12px;font-weight:600;background:#F3F4F6;color:#6B7280;">+<?php echo count($specs) - 2; ?></span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <div style="text-align:center;padding-top:15px;border-top:1px solid #f0f0f0;">
-                        <span style="color:#00c896;font-weight:600;font-size:14px;">Опыт: <?php echo esc_html($experience_years); ?> лет</span>
-                    </div>
-                </div>
-            </a>
-            <?php endforeach; ?>
-        </div>
-        <?php
-        return ob_get_clean();
     }
     
     public function save_guide_review_fields($user_id) {

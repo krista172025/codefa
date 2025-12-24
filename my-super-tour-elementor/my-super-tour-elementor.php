@@ -45,10 +45,6 @@ function mst_elementor_init() {
     // Enqueue styles and scripts
     add_action('wp_enqueue_scripts', 'mst_elementor_enqueue_assets');
     add_action('elementor/editor/before_enqueue_scripts', 'mst_elementor_editor_scripts');
-    
-    // AJAX handlers for wishlist
-    add_action('wp_ajax_mst_toggle_wishlist', 'mst_handle_wishlist_ajax');
-    add_action('wp_ajax_nopriv_mst_toggle_wishlist', 'mst_handle_wishlist_ajax');
 }
 add_action('plugins_loaded', 'mst_elementor_init');
 
@@ -154,6 +150,23 @@ function mst_elementor_enqueue_assets() {
         MST_ELEMENTOR_VERSION,
         true
     );
+    
+    // Enqueue Shop Grid script
+    wp_enqueue_script(
+        'mst-shop-grid',
+        MST_ELEMENTOR_URL . 'assets/js/shop-grid.js',
+        ['jquery'],
+        MST_ELEMENTOR_VERSION,
+        true
+    );
+    
+    // Localize script with AJAX data
+    wp_localize_script('mst-shop-grid', 'mstShopGrid', [
+        'ajaxUrl' => admin_url('admin-ajax.php'),
+        'restUrl' => rest_url(),
+        'nonce' => wp_create_nonce('mst_shop_grid_nonce'),
+        'userId' => get_current_user_id()
+    ]);
 }
 
 // Enqueue editor scripts
@@ -166,56 +179,141 @@ function mst_elementor_editor_scripts() {
     );
 }
 
-// AJAX handler for wishlist toggle
-function mst_handle_wishlist_ajax() {
-    // Verify nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'mst_wishlist_nonce')) {
-        wp_send_json_error('Invalid nonce');
-        return;
+// AJAX Handlers for Wishlist
+add_action('wp_ajax_mst_add_wishlist', 'mst_add_to_wishlist');
+add_action('wp_ajax_nopriv_mst_add_wishlist', 'mst_add_to_wishlist');
+
+function mst_add_to_wishlist() {
+    check_ajax_referer('mst_shop_grid_nonce', 'nonce');
+    
+    if (!is_user_logged_in()) {
+        wp_send_json_error('Необходимо войти в систему');
     }
     
-    // Get product ID
-    $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
-    if (!$product_id) {
-        wp_send_json_error('Invalid product ID');
-        return;
-    }
-    
-    // Get current user
     $user_id = get_current_user_id();
-    if (!$user_id) {
-        wp_send_json_error('User not logged in');
-        return;
+    $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
+    
+    if (!$product_id) {
+        wp_send_json_error('Неверный ID товара');
     }
     
-    // Check if adding or removing
-    $add_to_wishlist = isset($_POST['add']) && $_POST['add'] === '1';
+    // Get current wishlist
+    $wishlist_data = get_user_meta($user_id, 'xstore_wishlist_ids_0', true);
     
-    // Get XStore wishlist meta key
-    $wishlist_key = 'xstore_wishlist_ids_0';
-    $wishlist_ids = get_user_meta($user_id, $wishlist_key, true);
-    
-    // Ensure it's an array
-    if (!is_array($wishlist_ids)) {
-        $wishlist_ids = !empty($wishlist_ids) ? array($wishlist_ids) : array();
+    // Parse wishlist
+    $items = [];
+    if ($wishlist_data) {
+        $items = explode('|', $wishlist_data);
     }
     
-    // Add or remove product
-    if ($add_to_wishlist) {
-        if (!in_array($product_id, $wishlist_ids)) {
-            $wishlist_ids[] = $product_id;
+    // Check if already in wishlist
+    foreach ($items as $item) {
+        $decoded = json_decode($item, true);
+        if ($decoded && isset($decoded['id']) && $decoded['id'] == $product_id) {
+            wp_send_json_error('Товар уже в избранном');
         }
-    } else {
-        $wishlist_ids = array_diff($wishlist_ids, array($product_id));
     }
     
-    // Update user meta
-    update_user_meta($user_id, $wishlist_key, array_values($wishlist_ids));
+    // Add to wishlist
+    $items[] = json_encode(['id' => $product_id]);
+    $new_wishlist_data = implode('|', $items);
     
-    // Return success with count
-    wp_send_json_success(array(
-        'count' => count($wishlist_ids),
-        'product_id' => $product_id,
-        'action' => $add_to_wishlist ? 'added' : 'removed'
-    ));
+    update_user_meta($user_id, 'xstore_wishlist_ids_0', $new_wishlist_data);
+    
+    wp_send_json_success(['message' => 'Товар добавлен в избранное']);
+}
+
+add_action('wp_ajax_mst_remove_wishlist', 'mst_remove_from_wishlist');
+add_action('wp_ajax_nopriv_mst_remove_wishlist', 'mst_remove_from_wishlist');
+
+function mst_remove_from_wishlist() {
+    check_ajax_referer('mst_shop_grid_nonce', 'nonce');
+    
+    if (!is_user_logged_in()) {
+        wp_send_json_error('Необходимо войти в систему');
+    }
+    
+    $user_id = get_current_user_id();
+    $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
+    
+    if (!$product_id) {
+        wp_send_json_error('Неверный ID товара');
+    }
+    
+    // Get current wishlist
+    $wishlist_data = get_user_meta($user_id, 'xstore_wishlist_ids_0', true);
+    
+    if (!$wishlist_data) {
+        wp_send_json_error('Wishlist пуст');
+    }
+    
+    $items = explode('|', $wishlist_data);
+    $new_items = [];
+    
+    foreach ($items as $item) {
+        $decoded = json_decode($item, true);
+        if ($decoded && isset($decoded['id']) && $decoded['id'] != $product_id) {
+            $new_items[] = $item;
+        }
+    }
+    
+    if (empty($new_items)) {
+        delete_user_meta($user_id, 'xstore_wishlist_ids_0');
+        delete_user_meta($user_id, 'xstore_wishlist_u');
+    } else {
+        $new_wishlist_data = implode('|', $new_items);
+        update_user_meta($user_id, 'xstore_wishlist_ids_0', $new_wishlist_data);
+    }
+    
+    wp_send_json_success(['message' => 'Товар удален из избранного']);
+}
+
+add_action('wp_ajax_mst_check_wishlist', 'mst_check_wishlist_status');
+add_action('wp_ajax_nopriv_mst_check_wishlist', 'mst_check_wishlist_status');
+
+function mst_check_wishlist_status() {
+    check_ajax_referer('mst_shop_grid_nonce', 'nonce');
+    
+    if (!is_user_logged_in()) {
+        wp_send_json_success([]);
+    }
+    
+    $user_id = get_current_user_id();
+    $product_ids = isset($_POST['product_ids']) && is_array($_POST['product_ids']) ? $_POST['product_ids'] : [];
+    
+    if (empty($product_ids)) {
+        wp_send_json_success([]);
+    }
+    
+    // Sanitize and validate product IDs
+    $product_ids = array_map('intval', $product_ids);
+    $product_ids = array_filter($product_ids, function($id) {
+        return $id > 0;
+    });
+    
+    if (empty($product_ids)) {
+        wp_send_json_success([]);
+    }
+    
+    // Get wishlist
+    $wishlist_data = get_user_meta($user_id, 'xstore_wishlist_ids_0', true);
+    
+    if (!$wishlist_data) {
+        wp_send_json_success([]);
+    }
+    
+    $items = explode('|', $wishlist_data);
+    $wishlist_ids = [];
+    
+    foreach ($items as $item) {
+        $decoded = json_decode($item, true);
+        if ($decoded && isset($decoded['id'])) {
+            $wishlist_ids[] = intval($decoded['id']);
+        }
+    }
+    
+    // Filter to only requested products
+    $result = array_values(array_intersect($wishlist_ids, $product_ids));
+    
+    wp_send_json_success($result);
 }
