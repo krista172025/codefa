@@ -191,7 +191,7 @@ function mst_add_to_wishlist() {
     }
     
     $user_id = get_current_user_id();
-    $product_id = intval($_POST['product_id']);
+    $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
     
     if (!$product_id) {
         wp_send_json_error('Неверный ID товара');
@@ -234,7 +234,7 @@ function mst_remove_from_wishlist() {
     }
     
     $user_id = get_current_user_id();
-    $product_id = intval($_POST['product_id']);
+    $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
     
     if (!$product_id) {
         wp_send_json_error('Неверный ID товара');
@@ -279,7 +279,17 @@ function mst_check_wishlist_status() {
     }
     
     $user_id = get_current_user_id();
-    $product_ids = isset($_POST['product_ids']) ? $_POST['product_ids'] : [];
+    $product_ids = isset($_POST['product_ids']) && is_array($_POST['product_ids']) ? $_POST['product_ids'] : [];
+    
+    if (empty($product_ids)) {
+        wp_send_json_success([]);
+    }
+    
+    // Sanitize and validate product IDs
+    $product_ids = array_map('intval', $product_ids);
+    $product_ids = array_filter($product_ids, function($id) {
+        return $id > 0;
+    });
     
     if (empty($product_ids)) {
         wp_send_json_success([]);
@@ -298,12 +308,12 @@ function mst_check_wishlist_status() {
     foreach ($items as $item) {
         $decoded = json_decode($item, true);
         if ($decoded && isset($decoded['id'])) {
-            $wishlist_ids[] = $decoded['id'];
+            $wishlist_ids[] = intval($decoded['id']);
         }
     }
     
     // Filter to only requested products
-    $result = array_values(array_intersect($wishlist_ids, array_map('intval', $product_ids)));
+    $result = array_values(array_intersect($wishlist_ids, $product_ids));
     
     wp_send_json_success($result);
 }

@@ -40,9 +40,11 @@
                         // Update heart icon fill
                         const $icon = $btn.find('.mst-heart-icon');
                         if ($btn.hasClass('mst-wishlist-active')) {
-                            $icon.attr('fill', $icon.attr('stroke'));
+                            const strokeColor = $icon.attr('stroke') || 'hsl(0, 80%, 60%)';
+                            $icon.attr('fill', strokeColor);
                         } else {
-                            $icon.attr('fill', $btn.data('icon-fill') || '#ffffff');
+                            const defaultFill = $btn.data('icon-fill') || '#ffffff';
+                            $icon.attr('fill', defaultFill);
                         }
                         
                         // Update XStore header counter if exists
@@ -102,9 +104,12 @@
         
         if (productIds.length === 0) return;
         
+        // URL encode product IDs and construct URL
+        const encodedIds = productIds.map(id => encodeURIComponent(id)).join(',');
+        
         // Fetch guide data from REST API
         $.ajax({
-            url: mstShopGrid.restUrl + 'mst/v1/guides/' + productIds.join(','),
+            url: mstShopGrid.restUrl + 'mst/v1/guides/' + encodedIds,
             type: 'GET',
             success: function(guides) {
                 // Update each card with guide data
@@ -174,7 +179,8 @@
                         
                         // Update heart icon fill
                         const $icon = $btn.find('.mst-heart-icon');
-                        $icon.attr('fill', $icon.attr('stroke'));
+                        const strokeColor = $icon.attr('stroke') || 'hsl(0, 80%, 60%)';
+                        $icon.attr('fill', strokeColor);
                     });
                 }
             }
