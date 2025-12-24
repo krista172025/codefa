@@ -453,6 +453,24 @@ class MST_Guide_System {
                     <p class="description">По одному достижению на строку</p>
                 </td>
             </tr>
+            <tr>
+                <th><label for="mst_guide_testimonials">Отзывы туристов (JSON)</label></th>
+                <td>
+                    <textarea name="mst_guide_testimonials" id="mst_guide_testimonials" 
+                              class="large-text" rows="10" style="font-family:monospace;font-size:12px;"><?php 
+                    $testimonials = get_user_meta($user->ID, 'mst_guide_testimonials', true);
+                    if (empty($testimonials)) {
+                        $testimonials = [
+                            ['author' => 'Анна С.', 'rating' => 5, 'text' => 'Невероятная экскурсия! Мария рассказала так много интересного об истории города. Рекомендую!', 'date' => '2 дня назад'],
+                            ['author' => 'Джон М.', 'rating' => 5, 'text' => 'Best tour guide! Very knowledgeable and friendly.', 'date' => '1 неделю назад'],
+                            ['author' => 'Елена К.', 'rating' => 5, 'text' => 'Профессионал своего дела. Время пролетело незаметно. Обязательно вернемся на другие туры!', 'date' => '2 недели назад']
+                        ];
+                    }
+                    echo esc_textarea(json_encode($testimonials, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)); 
+                    ?></textarea>
+                    <p class="description">JSON массив с отзывами. Формат: [{"author": "Имя", "rating": 5, "text": "Текст отзыва", "date": "Дата"}]</p>
+                </td>
+            </tr>
         </table>
         <?php
     }
@@ -469,6 +487,15 @@ class MST_Guide_System {
         update_user_meta($user_id, 'mst_guide_experience_years', intval($_POST['mst_guide_experience_years'] ?? 0));
         update_user_meta($user_id, 'mst_guide_tours_count', intval($_POST['mst_guide_tours_count'] ?? 0));
         update_user_meta($user_id, 'mst_guide_achievements', sanitize_textarea_field($_POST['mst_guide_achievements'] ?? ''));
+        
+        // Save testimonials as JSON
+        if (isset($_POST['mst_guide_testimonials'])) {
+            $testimonials_json = stripslashes($_POST['mst_guide_testimonials']);
+            $testimonials = json_decode($testimonials_json, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($testimonials)) {
+                update_user_meta($user_id, 'mst_guide_testimonials', $testimonials);
+            }
+        }
     }
     
     public function render_guide_profile($atts) {
