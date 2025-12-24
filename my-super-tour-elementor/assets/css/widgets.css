@@ -8608,3 +8608,44 @@ body,
   background-size: 20px 20px;
   background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
 }
+
+/* ========================================
+   WOO CAROUSEL GUIDE PLACEHOLDER - DYNAMIC GUIDE INJECTION
+   ======================================== */
+.mst-woo-carousel-guide-placeholder {
+  position: absolute;
+  right: var(--guide-right-desktop, 0px);
+  bottom: var(--guide-bottom-desktop, 0px);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Guide photo will be injected dynamically by JavaScript */
+.mst-woo-carousel-guide-placeholder .mst-woo-carousel-guide-inside {
+  pointer-events: all;
+}
+
+/* Desktop - default */
+@media (min-width: 1025px) {
+  .mst-woo-carousel-guide-placeholder {
+    right: var(--guide-right-desktop, 0px);
+    bottom: var(--guide-bottom-desktop, 0px);
+  }
+}
+
+/* Tablet */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .mst-woo-carousel-guide-placeholder {
+    right: var(--guide-right-tablet, 0px);
+    bottom: var(--guide-bottom-tablet, 0px);
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .mst-woo-carousel-guide-placeholder {
+    right: var(--guide-right-mobile, 0px);
+    bottom: var(--guide-bottom-mobile, 0px);
+  }
+}
+
