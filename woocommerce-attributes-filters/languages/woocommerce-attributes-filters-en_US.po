@@ -1,0 +1,39 @@
+# WooCommerce Attributes Filters - English Translation
+# Copyright (C) 2024
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Attributes Filters 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-24 14:00:00+0000\n"
+"PO-Revision-Date: 2024-12-24 14:00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: English\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: includes/class-attributes-filters.php:15
+msgid "Фильтры не настроены"
+msgstr "Filters not configured"
+
+#: includes/class-attributes-filters.php:38
+msgid "Применить"
+msgstr "Apply"
+
+#: includes/class-attributes-filters.php:44
+msgid "Тип тура"
+msgstr "Tour Type"
+
+#: includes/class-attributes-filters.php:45
+msgid "Длительность тура"
+msgstr "Tour Duration"
+
+#: includes/class-attributes-filters.php:46
+msgid "Транспорт"
+msgstr "Transport"
+
+#: includes/class-ajax-handler.php:60
+msgid "Товары не найдены"
+msgstr "No products found"
