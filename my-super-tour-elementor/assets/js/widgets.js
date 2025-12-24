@@ -1260,6 +1260,74 @@
     }
   });
 
+  // ========================================
+  // WOO CAROUSEL - DYNAMIC GUIDE INJECTION
+  // ========================================
+  function initWooCarouselGuides() {
+    const $carouselCards = $('.mst-woo-carousel-card[data-product-id]');
+    if ($carouselCards.length === 0) return;
+
+    // Collect all product IDs that have guide placeholders
+    const productIds = [];
+    $carouselCards.each(function() {
+      const $card = $(this);
+      const $placeholder = $card.find('.mst-woo-carousel-guide-placeholder');
+      if ($placeholder.length > 0) {
+        const productId = $card.data('product-id');
+        if (productId) {
+          productIds.push(productId);
+        }
+      }
+    });
+
+    if (productIds.length === 0) return;
+
+    // Fetch guide data from REST API (same endpoint used by guide-system.php)
+    const restUrl = window.mstData?.restUrl || '/wp-json/';
+    $.ajax({
+      url: restUrl + 'mst/v1/guides/' + productIds.join(','),
+      type: 'GET',
+      success: function(guides) {
+        // Inject guide photos for each product
+        $carouselCards.each(function() {
+          const $card = $(this);
+          const productId = $card.data('product-id');
+          const $placeholder = $card.find('.mst-woo-carousel-guide-placeholder');
+          
+          if ($placeholder.length > 0 && guides[productId]) {
+            const guide = guides[productId];
+            
+            // Create guide photo element
+            const guideHTML = `
+              <a href="${guide.url}" 
+                 class="mst-woo-carousel-guide-inside" 
+                 onclick="event.stopPropagation();">
+                <img src="${guide.avatar}" 
+                     alt="${guide.name}" 
+                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+              </a>
+            `;
+            
+            $placeholder.html(guideHTML);
+          }
+        });
+      },
+      error: function(xhr, status, error) {
+        console.log('Guide fetch error:', error);
+      }
+    });
+  }
+
+  // Initialize guide injection
+  initWooCarouselGuides();
+  
+  // Re-initialize on Elementor preview updates
+  if (typeof elementorFrontend !== 'undefined') {
+    elementorFrontend.hooks.addAction('frontend/element_ready/widget', function() {
+      setTimeout(initWooCarouselGuides, 100);
+    });
+  }
+
   // Fallback for non-Elementor pages
   $(document).ready(function() {
     if (typeof elementorFrontend === 'undefined') {
