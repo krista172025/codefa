@@ -1130,3 +1130,528 @@
         width: 100%;
     }
 }
+
+/* ============================================
+   GUIDE PROFILE PAGE - LOVEABLE DESIGN SYSTEM
+   ============================================ */
+
+/* Glass Liquid Effects */
+.glass-liquid {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.7),
+        rgba(255, 255, 255, 0.5)
+    );
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 
+        0 8px 32px -8px rgba(102, 126, 234, 0.15),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.glass-liquid-hero {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.85),
+        rgba(255, 255, 255, 0.65)
+    );
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 
+        0 12px 40px -10px rgba(102, 126, 234, 0.2),
+        inset 0 2px 4px rgba(255, 255, 255, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+}
+
+/* Smooth Transitions */
+.transition-smooth {
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover Effects */
+.hover-lift-gentle {
+    transition: all 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+.hover-lift-gentle:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 12px 32px -8px rgba(102, 126, 234, 0.22),
+        0 0 0 1px rgba(255, 255, 255, 0.35),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+/* Badge Styles */
+.badge-warm {
+    background: #FFF4E6;
+    color: #F59E0B;
+    border: 1.5px solid #FED7AA;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-trust {
+    background: #E0F2FE;
+    color: #0EA5E9;
+    border: 1.5px solid #BAE6FD;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* Card Warm (for testimonials) */
+.card-warm {
+    background: linear-gradient(135deg, #ffffff, #FFFBF5);
+    border: 2px solid rgba(245, 158, 11, 0.2);
+    border-radius: 24px;
+    box-shadow: 0 8px 28px -6px rgba(245, 158, 11, 0.3);
+}
+
+/* Guide Profile Hero Section */
+.mst-guide-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 24px;
+    padding: 50px 40px;
+    color: #fff;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.mst-guide-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    pointer-events: none;
+}
+
+.mst-guide-hero-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.mst-guide-avatar-section {
+    flex-shrink: 0;
+}
+
+.mst-guide-avatar-wrapper {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    padding: 5px;
+    background: var(--mst-primary, #00c896);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: all 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+.mst-guide-avatar-wrapper:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+.mst-guide-avatar-ring {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    padding: 4px;
+    background: rgba(0, 200, 150, 0.2);
+    border: 4px solid rgba(255, 255, 255, 0.2);
+}
+
+.mst-guide-avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #fff;
+}
+
+.mst-guide-info {
+    flex: 1;
+    min-width: 300px;
+}
+
+.mst-guide-name {
+    font-size: 42px;
+    font-weight: 700;
+    margin: 0 0 10px;
+    color: #fff;
+}
+
+.mst-guide-location {
+    font-size: 18px;
+    margin-bottom: 15px;
+    opacity: 0.95;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mst-guide-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 22px;
+    margin-bottom: 30px;
+}
+
+.mst-guide-rating-star {
+    font-size: 26px;
+    color: #FBB040;
+}
+
+.mst-guide-rating-value {
+    font-weight: 700;
+}
+
+.mst-guide-rating-count {
+    opacity: 0.85;
+}
+
+.mst-guide-stats {
+    display: flex;
+    gap: 50px;
+    flex-wrap: wrap;
+}
+
+.mst-guide-stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.mst-guide-stat-label {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 5px;
+}
+
+.mst-guide-stat-value {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+/* Guide Action Buttons */
+.mst-guide-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.mst-btn-book-tour {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background: #00c896;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mst-btn-book-tour:hover {
+    background: #00a87a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 200, 150, 0.35);
+    color: #fff;
+}
+
+.mst-btn-icon-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #fff;
+    text-decoration: none;
+    padding: 0;
+}
+
+.mst-btn-icon-action:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
+
+/* Guide Content Sections */
+.mst-guide-section {
+    background: #fff;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.mst-guide-section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 20px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mst-guide-badges-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.mst-guide-description {
+    line-height: 1.8;
+    font-size: 16px;
+    color: #555;
+}
+
+/* Tour Cards Grid */
+.mst-guide-tours-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.mst-tour-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.mst-tour-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 12px 32px -8px rgba(102, 126, 234, 0.22),
+        0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.mst-tour-card-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+.mst-tour-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mst-tour-card:hover .mst-tour-card-image img {
+    transform: scale(1.1);
+}
+
+.mst-tour-card-content {
+    padding: 20px;
+}
+
+.mst-tour-card-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    color: #333;
+}
+
+.mst-tour-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mst-tour-card-price {
+    color: #00c896;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.mst-tour-card-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: #666;
+}
+
+.mst-tour-rating-star {
+    color: #FBB040;
+}
+
+/* Testimonials Section */
+.mst-testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.mst-testimonial-card {
+    background: linear-gradient(135deg, #ffffff, #FFFBF5);
+    border: 2px solid rgba(245, 158, 11, 0.2);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 8px 28px -6px rgba(245, 158, 11, 0.3);
+    transition: all 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+.mst-testimonial-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px -8px rgba(245, 158, 11, 0.4);
+}
+
+.mst-testimonial-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.mst-testimonial-author {
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+}
+
+.mst-testimonial-stars {
+    display: flex;
+    gap: 2px;
+}
+
+.mst-testimonial-star {
+    color: #FBB040;
+    font-size: 16px;
+}
+
+.mst-testimonial-text {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.mst-testimonial-date {
+    font-size: 12px;
+    color: #999;
+}
+
+/* Icons */
+.mst-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+.mst-icon-calendar::before {
+    content: "📅";
+    speak: never;
+    -webkit-font-smoothing: antialiased;
+}
+
+.mst-icon-heart::before {
+    content: "❤️";
+    speak: never;
+    -webkit-font-smoothing: antialiased;
+}
+
+.mst-icon-share::before {
+    content: "📤";
+    speak: never;
+    -webkit-font-smoothing: antialiased;
+}
+
+.mst-icon-star::before {
+    content: "⭐";
+    speak: never;
+    -webkit-font-smoothing: antialiased;
+}
+
+.mst-icon-location::before {
+    content: "📍";
+    speak: never;
+    -webkit-font-smoothing: antialiased;
+}
+
+.mst-icon-language::before {
+    content: "🗣️";
+    speak: never;
+    -webkit-font-smoothing: antialiased;
+}
+
+.mst-icon-award::before {
+    content: "🎯";
+    speak: never;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Responsive Design for Guide Profile */
+@media (max-width: 1024px) {
+    .mst-guide-hero-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .mst-guide-actions {
+        justify-content: center;
+    }
+    
+    .mst-guide-stats {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .mst-guide-name {
+        font-size: 32px;
+    }
+    
+    .mst-guide-stat-value {
+        font-size: 24px;
+    }
+    
+    .mst-guide-tours-grid,
+    .mst-testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .mst-guide-hero {
+        padding: 30px 20px;
+    }
+    
+    .mst-guide-section {
+        padding: 20px;
+    }
+}
