@@ -25,6 +25,9 @@ class MST_Shop_Filters {
     }
     
     private function __construct() {
+        // Load text domain for translations
+        add_action('plugins_loaded', [$this, 'load_textdomain']);
+        
         // Register assets
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
         
@@ -34,6 +37,10 @@ class MST_Shop_Filters {
         
         // Load includes
         $this->load_includes();
+    }
+    
+    public function load_textdomain() {
+        load_plugin_textdomain('mst-shop-filters', false, dirname(plugin_basename(__FILE__)) . '/languages/');
     }
     
     private function load_includes() {
