@@ -20,7 +20,13 @@ class MSTS_Shortcode {
         $atts=shortcode_atts(['noautofocus'=>false],$atts,'mst_search');
         $auto = $atts['noautofocus'] ? 0 : 1;
         $use_external=$this->s['use_external'];
-        $ph=esc_attr($this->s['placeholder']); $btn=esc_html($this->s['button_text']); $scope=esc_attr($this->s['search_scope']);
+        $ph=esc_attr($this->s['placeholder']); 
+        $btn=esc_html($this->s['button_text']); 
+        $scope=esc_attr($this->s['search_scope']);
+        
+        // Localized strings
+        $clear_text = __('Очистить', 'mysupertour-search');
+        
         ob_start(); ?>
         <div class="msts-search-container">
             <div class="msts-search-wrapper">
@@ -35,7 +41,7 @@ class MSTS_Shortcode {
 							<span class="msts-btn-icon">🔍</span>
 							<span class="msts-btn-text"><?php echo $btn;?></span>
 						</button>
-                        <button type="button" class="msts-clear-btn-fixed" aria-label="Очистить">×</button>
+                        <button type="button" class="msts-clear-btn-fixed" aria-label="<?php echo esc_attr($clear_text); ?>">×</button>
                         <div class="msts-suggestions"></div>
                     </form>
                 <?php endif; ?>

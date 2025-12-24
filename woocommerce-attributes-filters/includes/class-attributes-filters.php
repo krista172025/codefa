@@ -13,7 +13,7 @@ class Attributes_Filters {
     public function render_filters() {
         $active_filters = get_option('wcaf_active_filters', []);
         if (empty($active_filters)) {
-            return '<p>Фильтры не настроены.</p>';
+            return '<p>' . __('Фильтры не настроены', 'woocommerce-attributes-filters') . '</p>';
         }
 
         ob_start(); ?>
@@ -34,7 +34,7 @@ class Attributes_Filters {
                         </ul>
                     </div>
                 <?php endforeach; ?>
-                <button type="submit" class="wcaf-btn-apply">Применить</button>
+                <button type="submit" class="wcaf-btn-apply"><?php _e('Применить', 'woocommerce-attributes-filters'); ?></button>
             </form>
         </div>
         <?php
@@ -43,9 +43,9 @@ class Attributes_Filters {
 
     private function get_filter_label($taxonomy) {
         $labels = [
-            'pa_tour-type' => 'Тип тура',
-            'pa_duration' => 'Длительность тура',
-            'pa_transport' => 'Транспорт',
+            'pa_tour-type' => __('Тип тура', 'woocommerce-attributes-filters'),
+            'pa_duration' => __('Длительность тура', 'woocommerce-attributes-filters'),
+            'pa_transport' => __('Транспорт', 'woocommerce-attributes-filters'),
         ];
         return $labels[$taxonomy] ?? $taxonomy;
     }

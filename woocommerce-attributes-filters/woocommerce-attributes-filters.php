@@ -19,6 +19,9 @@ require_once WCAF_PATH . 'includes/class-admin-settings.php';
 
 // Инициализация плагина
 add_action('plugins_loaded', function() {
+    // Load translations
+    load_plugin_textdomain('woocommerce-attributes-filters', false, dirname(plugin_basename(__FILE__)) . '/languages');
+    
     Attributes_Filters::instance(); // Инициализация класса фильтров
     Ajax_Handler::instance();       // Инициализация класса обработки запросов
     Admin_Settings::instance();     // Инициализация класса настроек админки

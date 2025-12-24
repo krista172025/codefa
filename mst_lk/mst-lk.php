@@ -25,6 +25,9 @@ class MST_LK {
     }
     
     private function __construct() {
+        // Load translations
+        add_action('init', [$this, 'load_textdomain']);
+        
         add_action('admin_menu', [$this, 'add_hub_menu'], 20);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         add_action('init', [$this, 'register_endpoints']);
@@ -53,6 +56,10 @@ class MST_LK {
         require_once MST_LK_PLUGIN_DIR . 'includes/guide-system.php';
         
         register_activation_hook(__FILE__, [$this, 'activate']);
+    }
+    
+    public function load_textdomain() {
+        load_plugin_textdomain('mst-lk', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
     
     public function activate() {
