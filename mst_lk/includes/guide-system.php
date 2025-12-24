@@ -466,7 +466,7 @@ class MST_Guide_System {
                     <textarea name="mst_guide_testimonials" id="mst_guide_testimonials" 
                               class="large-text" rows="10" style="font-family:monospace;font-size:12px;"><?php 
                     $testimonials = get_user_meta($user->ID, 'mst_guide_testimonials', true);
-                    if (empty($testimonials)) {
+                    if (!is_array($testimonials) || empty($testimonials)) {
                         $testimonials = self::DEFAULT_TESTIMONIALS;
                     }
                     echo esc_textarea(json_encode($testimonials, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)); 
@@ -525,7 +525,7 @@ class MST_Guide_System {
         $experience_years = get_user_meta($guide_id, 'mst_guide_experience_years', true) ?: '8';
         $tours_count = get_user_meta($guide_id, 'mst_guide_tours_count', true) ?: '234';
         $achievements = get_user_meta($guide_id, 'mst_guide_achievements', true) ?: '';
-        $testimonials = get_user_meta($guide_id, 'mst_guide_testimonials', true) ?: '';
+        $testimonials = get_user_meta($guide_id, 'mst_guide_testimonials', true) ?: [];
         
         // Default testimonials if none set
         $default_testimonials = self::DEFAULT_TESTIMONIALS;
@@ -692,10 +692,10 @@ class MST_Guide_System {
                 </div>
             <?php endif; ?>
             
-            <?php if (!empty($testimonials)): 
-                // Testimonials can be either array (from DB) or need to be decoded from JSON
-                $testimonials_data = is_array($testimonials) ? $testimonials : $default_testimonials;
-                if (is_array($testimonials_data) && !empty($testimonials_data)): ?>
+            <?php if (!empty($testimonials) && is_array($testimonials)): 
+                // Use the testimonials from the database
+                $testimonials_data = $testimonials;
+                ?>
                     <div class="mst-guide-section" style="background:#f8f9fa;">
                         <h2 class="mst-guide-section-title" style="font-size:30px;">Отзывы туристов</h2>
                         <div class="mst-testimonials-grid">
@@ -717,8 +717,7 @@ class MST_Guide_System {
                             <?php endforeach; ?>
                         </div>
                     </div>
-                <?php endif;
-            endif; ?>
+            <?php endif; ?>
             
         </div>
         <?php

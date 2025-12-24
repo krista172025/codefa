@@ -1576,43 +1576,43 @@
 
 .mst-icon-calendar::before {
     content: "📅";
-    speak: none;
+    speak: never;
     -webkit-font-smoothing: antialiased;
 }
 
 .mst-icon-heart::before {
     content: "❤️";
-    speak: none;
+    speak: never;
     -webkit-font-smoothing: antialiased;
 }
 
 .mst-icon-share::before {
     content: "📤";
-    speak: none;
+    speak: never;
     -webkit-font-smoothing: antialiased;
 }
 
 .mst-icon-star::before {
     content: "⭐";
-    speak: none;
+    speak: never;
     -webkit-font-smoothing: antialiased;
 }
 
 .mst-icon-location::before {
     content: "📍";
-    speak: none;
+    speak: never;
     -webkit-font-smoothing: antialiased;
 }
 
 .mst-icon-language::before {
     content: "🗣️";
-    speak: none;
+    speak: never;
     -webkit-font-smoothing: antialiased;
 }
 
 .mst-icon-award::before {
     content: "🎯";
-    speak: none;
+    speak: never;
     -webkit-font-smoothing: antialiased;
 }
 
