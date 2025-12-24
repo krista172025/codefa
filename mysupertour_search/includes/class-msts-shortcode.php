@@ -123,7 +123,7 @@ class MSTS_Shortcode {
             background: rgba(0,0,0,0);
             backdrop-filter: blur(0px);
             -webkit-backdrop-filter: blur(0px);
-            z-index: 999999;
+            z-index: 9999999 !important;
             opacity: 0;
             pointer-events: none;
             transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
@@ -177,7 +177,7 @@ class MSTS_Shortcode {
             align-items: center !important;
             justify-content: center !important;
             padding: 0 !important;
-            z-index: 1000001 !important;
+            z-index: 10000001 !important;
         }
         
         .msts-modal-v3-close:hover {
