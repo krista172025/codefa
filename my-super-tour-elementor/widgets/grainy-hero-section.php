@@ -1047,7 +1047,7 @@ class Grainy_Hero_Section extends Widget_Base {
                             <div class="<?php echo $searchId; ?>-container">
                                 <div class="<?php echo $searchId; ?>-glass msts-search-wrapper">
                                     <form class="<?php echo $searchId; ?>-row" action="<?php echo $actionUrl; ?>" method="get">
-                                        <div class="<?php echo $searchId; ?>-input-wrap msts-search-input-wrap">
+                                        <div class="<?php echo $searchId; ?>-input-wrap">
                                             <input type="text" name="s" class="msts-search-input <?php echo $searchId; ?>-input" placeholder="<?php echo $placeholder; ?>" autocomplete="off">
                                         </div>
                                         <input type="hidden" name="post_type" value="product">
