@@ -32,6 +32,9 @@ class MST_LK {
         add_filter('woocommerce_account_menu_items', [$this, 'add_my_account_menu'], 40);
         add_action('woocommerce_account_mst-profile_endpoint', [$this, 'render_my_account_content']);
         
+        // Handle guide profile template redirect
+        add_action('template_redirect', [$this, 'handle_guide_template']);
+        
         // AJAX handlers
         add_action('wp_ajax_mst_lk_get_order_details', [$this, 'ajax_get_order_details']);
         add_action('wp_ajax_mst_lk_get_ticket', [$this, 'ajax_get_ticket']);
@@ -73,6 +76,10 @@ class MST_LK {
     
     public function register_endpoints() {
         add_rewrite_endpoint('mst-profile', EP_ROOT | EP_PAGES);
+        
+        // Add rewrite rule for guide profiles: /guide/123 -> ?guide_id=123
+        add_rewrite_rule('^guide/([0-9]+)/?$', 'index.php?guide_id=$matches[1]', 'top');
+        add_rewrite_tag('%guide_id%', '([0-9]+)');
     }
     
     public function add_hub_menu() {
@@ -295,6 +302,34 @@ class MST_LK {
         update_user_meta($user_id, 'mst_user_bonuses', intval($_POST['mst_user_bonuses']));
         update_user_meta($user_id, 'mst_user_status', sanitize_text_field($_POST['mst_user_status']));
         update_user_meta($user_id, 'mst_user_status_label', sanitize_text_field($_POST['mst_user_status_label']));
+    }
+    
+    public function handle_guide_template() {
+        $guide_id = get_query_var('guide_id');
+        
+        if ($guide_id) {
+            // Set up the guide_id in GET for compatibility with existing shortcode
+            $_GET['guide_id'] = $guide_id;
+            
+            // Try to find a page with the guide profile shortcode
+            $pages = get_posts([
+                'post_type' => 'page',
+                'posts_per_page' => 1,
+                's' => '[mst_guide_profile]'
+            ]);
+            
+            if (!empty($pages)) {
+                // Redirect to the page with guide_id parameter
+                wp_safe_redirect(add_query_arg('guide_id', $guide_id, get_permalink($pages[0]->ID)));
+                exit;
+            } else {
+                // If no page found, display inline
+                get_header();
+                echo do_shortcode('[mst_guide_profile]');
+                get_footer();
+                exit;
+            }
+        }
     }
     
     public function render_admin_page() {
