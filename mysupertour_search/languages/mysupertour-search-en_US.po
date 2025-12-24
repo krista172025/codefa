@@ -49,7 +49,3 @@ msgstr "Blog"
 #: includes/class-msts-ajax.php:246
 msgid "Полезная информация если вы собираетесь в путешествие"
 msgstr "Useful information if you are going on a trip"
-
-#: includes/class-msts-ajax.php:226
-msgid "предложений"
-msgstr "tours"

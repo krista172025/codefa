@@ -72,9 +72,7 @@ class Ajax_Handler {
         $html = '';
         
         if (empty($products)) {
-            $no_products_text = ($current_lang === 'en_US' || strpos($current_lang, 'en') === 0) 
-                ? 'No products found' 
-                : 'Товары не найдены';
+            $no_products_text = __('Товары не найдены', 'woocommerce-attributes-filters');
             $html = '<p class="mst-no-products">' . esc_html($no_products_text) . '</p>';
         } else {
             // Get widget settings from request (passed from frontend)
