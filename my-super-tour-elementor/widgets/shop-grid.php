@@ -1089,7 +1089,13 @@ class Shop_Grid extends Widget_Base {
                     <!-- Footer: Button + Guide -->
                     <?php 
                         $guide_position = isset($settings['guide_position']) ? $settings['guide_position'] : 'inside_button';
-                        $guide_url = !empty($settings['guide_link']['url']) ? $settings['guide_link']['url'] : '#';
+                        // Get guide ID from product meta
+                        $product_guide_id = get_post_meta($product_id, '_mst_guide_id', true);
+                        if ($product_guide_id) {
+                            $guide_url = home_url('/guide/' . $product_guide_id);
+                        } else {
+                            $guide_url = !empty($settings['guide_link']['url']) ? $settings['guide_link']['url'] : '#';
+                        }
                         $guide_border_color = isset($settings['guide_border_color']) ? $settings['guide_border_color'] : '#ffffff';
                         $guide_hover_border = isset($settings['guide_hover_border']) ? $settings['guide_hover_border'] : 'hsl(45, 98%, 60%)';
                     ?>
@@ -1104,6 +1110,7 @@ class Shop_Grid extends Widget_Base {
                         </a>
                         <a href="<?php echo esc_url($guide_url); ?>" 
                            class="mst-shop-grid-guide-inside mst-follow-glow" 
+                           onclick="event.stopPropagation();"
                            style="border-color: <?php echo esc_attr($guide_border_color); ?>;"
                            data-hover-border="<?php echo esc_attr($guide_hover_border); ?>"
                            title="<?php echo esc_attr($settings['guide_label']); ?>">
@@ -1122,6 +1129,7 @@ class Shop_Grid extends Widget_Base {
                         <?php if ($show_guide && !empty($settings['default_guide_photo']['url'])): ?>
                         <a href="<?php echo esc_url($guide_url); ?>" 
                            class="mst-shop-grid-guide" 
+                           onclick="event.stopPropagation();"
                            style="border-color: <?php echo esc_attr($guide_border_color); ?>;"
                            data-hover-border="<?php echo esc_attr($guide_hover_border); ?>"
                            title="<?php echo esc_attr($settings['guide_label']); ?>">
