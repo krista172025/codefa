@@ -22,6 +22,29 @@
             
             $btn.addClass('mst-wishlist-loading');
             
+            // INSTANT ANIMATION - Update UI immediately before AJAX
+            const $icon = $btn.find('.mst-heart-icon');
+            const strokeColor = $icon.attr('stroke') || 'hsl(0, 80%, 60%)';
+            const defaultFill = $btn.data('icon-fill') || '#ffffff';
+            
+            // Add animation class for scale effect
+            $btn.addClass('mst-wishlist-animating');
+            
+            if (isActive) {
+                // Removing from wishlist - animate out
+                $icon.attr('fill', defaultFill);
+                $btn.removeClass('mst-wishlist-active');
+            } else {
+                // Adding to wishlist - animate in
+                $icon.attr('fill', strokeColor);
+                $btn.addClass('mst-wishlist-active');
+            }
+            
+            // Remove animation class after animation completes
+            setTimeout(function() {
+                $btn.removeClass('mst-wishlist-animating');
+            }, 300);
+            
             const action = isActive ? 'mst_remove_wishlist' : 'mst_add_wishlist';
             
             $.ajax({
@@ -34,27 +57,30 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        // Toggle active state
-                        $btn.toggleClass('mst-wishlist-active');
-                        
-                        // Update heart icon fill
-                        const $icon = $btn.find('.mst-heart-icon');
-                        if ($btn.hasClass('mst-wishlist-active')) {
-                            const strokeColor = $icon.attr('stroke') || 'hsl(0, 80%, 60%)';
-                            $icon.attr('fill', strokeColor);
-                        } else {
-                            const defaultFill = $btn.data('icon-fill') || '#ffffff';
-                            $icon.attr('fill', defaultFill);
-                        }
-                        
                         // Update XStore header counter if exists
                         updateWishlistCounter(isActive ? -1 : 1);
                     } else {
+                        // Revert on error
                         console.error('Wishlist error:', response.data);
+                        if (isActive) {
+                            $icon.attr('fill', strokeColor);
+                            $btn.addClass('mst-wishlist-active');
+                        } else {
+                            $icon.attr('fill', defaultFill);
+                            $btn.removeClass('mst-wishlist-active');
+                        }
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error('AJAX error:', error);
+                    // Revert on error
+                    if (isActive) {
+                        $icon.attr('fill', strokeColor);
+                        $btn.addClass('mst-wishlist-active');
+                    } else {
+                        $icon.attr('fill', defaultFill);
+                        $btn.removeClass('mst-wishlist-active');
+                    }
                 },
                 complete: function() {
                     $btn.removeClass('mst-wishlist-loading');

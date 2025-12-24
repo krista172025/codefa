@@ -21,6 +21,9 @@ class MST_Product_Icons_Filters {
         add_action('pre_get_posts', [$this, 'apply_filters_query']);
         add_action('init', [$this, 'register_attributes_taxonomy']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_filters_assets']);
+        
+        // Hide WooCommerce "no products" message when using Shop Grid with filters
+        add_filter('woocommerce_no_products_found', [$this, 'hide_archive_no_products_message'], 10, 1);
     }
 
     public function enqueue_filters_assets() {
@@ -383,7 +386,22 @@ class MST_Product_Icons_Filters {
 
     public function apply_filters_query($query) {
         if (is_admin() || !$query->is_main_query()) return;
-        if (!is_shop() && !is_product_category() && !is_product_taxonomy()) return;
+        
+        // FIXED: Only apply filters when using Shop Grid widget, NOT WooCommerce Archive
+        // Check if this is a Shop Grid request by looking for the mst_shop_grid parameter
+        // or if it's being called in a context where filters should apply
+        $is_shop_grid_context = isset($_GET['mst_shop_grid']) || 
+                                 (isset($_GET['format']) || isset($_GET['transport']) || isset($_GET['attributes']) || isset($_GET['min_price']) || isset($_GET['max_price']));
+        
+        // Skip if it's standard WooCommerce archive without filter parameters
+        if (!$is_shop_grid_context && (is_shop() || is_product_category() || is_product_taxonomy())) {
+            return;
+        }
+        
+        // Only proceed if we have filter parameters
+        if (!isset($_GET['format']) && !isset($_GET['transport']) && !isset($_GET['attributes']) && !isset($_GET['min_price']) && !isset($_GET['max_price'])) {
+            return;
+        }
 
         $meta_query = [];
         $tax_query = [];
@@ -436,5 +454,18 @@ class MST_Product_Icons_Filters {
             $tax_query['relation'] = 'AND';
             $query->set('tax_query', $tax_query);
         }
+    }
+    
+    public function hide_archive_no_products_message($message) {
+        // Hide "no products" from archive when filters are active
+        $has_filters = isset($_GET['format']) || isset($_GET['transport']) || isset($_GET['attributes']) || isset($_GET['min_price']) || isset($_GET['max_price']);
+        
+        if ($has_filters && (is_shop() || is_product_category() || is_product_taxonomy())) {
+            // Return empty string to hide the default archive message
+            // Shop Grid widget should handle its own "no results" display
+            return '';
+        }
+        
+        return $message;
     }
 }
