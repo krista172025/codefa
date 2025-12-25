@@ -35,7 +35,7 @@ $location_text_color = apply_filters('mst_shop_grid_location_text', '#666666');
 $star_color = apply_filters('mst_shop_grid_star_color', 'hsl(45, 98%, 50%)');
 $price_color = apply_filters('mst_shop_grid_price_color', '#00c896');
 $button_bg_color = apply_filters('mst_shop_grid_button_bg', '#00c896');
-$button_text_color = apply_filters('mst_shop_grid_button_text', '#ffffff');
+$button_text_color = apply_filters('mst_shop_grid_button_text_color', '#ffffff');
 $button_text = apply_filters('mst_shop_grid_button_text', __('Подробнее', 'mst-shop-filters'));
 
 // Wishlist settings

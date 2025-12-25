@@ -114,8 +114,9 @@
                             initLiquidGlass();
                         }
                         
-                        // Trigger custom event for other scripts to hook into
+                        // Trigger custom event for other scripts to hook into (jQuery and native)
                         $(document).trigger('mst-shop-grid-updated', [$grid]);
+                        document.dispatchEvent(new CustomEvent('mst_shop_grid_updated', { detail: { grid: $grid[0] } }));
                     } else {
                         console.error('Filter error:', response.data);
                     }
