@@ -16,6 +16,7 @@ define('MST_PI_URL', plugin_dir_url(__FILE__));
 require_once MST_PI_PATH . 'includes/connect.php';
 require_once MST_PI_PATH . 'includes/class-mst-product-icons-sync.php';
 require_once MST_PI_PATH . 'includes/class-mst-product-icons-filters.php';
+require_once MST_PI_PATH . 'includes/class-mst-gift-metabox.php';
 
 add_action('plugins_loaded', function() {
     MST_Product_Icons_Sync::instance();
