@@ -1,0 +1,168 @@
+# MySuperTour - Personal Cabinet Translation
+# Copyright (C) 2024
+msgid ""
+msgstr ""
+"Project-Id-Version: MST LK 3.4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Common UI Elements
+msgid "Подробнее"
+msgstr "View Details"
+
+msgid "Найти"
+msgstr "Search"
+
+msgid "Куда вы собираетесь?"
+msgstr "Where are you going?"
+
+msgid "Применить"
+msgstr "Apply"
+
+msgid "Сброс"
+msgstr "Reset"
+
+msgid "Популярные города"
+msgstr "Popular Cities"
+
+msgid "Товары не найдены"
+msgstr "No products found"
+
+# Personal Cabinet
+msgid "Личный Кабинет"
+msgstr "My Account"
+
+msgid "Мой Профиль"
+msgstr "My Profile"
+
+msgid "Мои заказы"
+msgstr "My Orders"
+
+msgid "Бронирования"
+msgstr "Bookings"
+
+msgid "Сообщения"
+msgstr "Messages"
+
+msgid "Избранное"
+msgstr "Favorites"
+
+msgid "Оставить отзыв"
+msgstr "Leave Review"
+
+msgid "Открыть билет"
+msgstr "Open Ticket"
+
+msgid "Скачать подарок"
+msgstr "Download Gift"
+
+msgid "Реферальная программа"
+msgstr "Referral Program"
+
+# Guide System
+msgid "Гид"
+msgstr "Guide"
+
+msgid "Наши гиды"
+msgstr "Our Guides"
+
+msgid "Профиль гида"
+msgstr "Guide Profile"
+
+# Reviews
+msgid "Отзывов пока нет"
+msgstr "No reviews yet"
+
+msgid "Необходимо авторизоваться"
+msgstr "You need to log in"
+
+msgid "Вы не покупали этот тур"
+msgstr "You haven't purchased this tour"
+
+msgid "Некорректный рейтинг"
+msgstr "Invalid rating"
+
+msgid "Отзыв успешно добавлен"
+msgstr "Review successfully added"
+
+msgid "Ошибка при добавлении отзыва"
+msgstr "Error adding review"
+
+msgid "назад"
+msgstr "ago"
+
+# Orders & Status
+msgid "Заказ не найден"
+msgstr "Order not found"
+
+msgid "Завершен"
+msgstr "Completed"
+
+msgid "В ожидании"
+msgstr "Pending"
+
+msgid "В обработке"
+msgstr "Processing"
+
+msgid "Отменен"
+msgstr "Cancelled"
+
+msgid "Профиль обновлен"
+msgstr "Profile updated"
+
+msgid "Необходима авторизация"
+msgstr "Authentication required"
+
+msgid "Wishlist пуст"
+msgstr "Wishlist is empty"
+
+msgid "Товар удален из избранного"
+msgstr "Product removed from favorites"
+
+# Form Labels
+msgid "Имя"
+msgstr "First Name"
+
+msgid "Фамилия"
+msgstr "Last Name"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Телефон"
+msgstr "Phone"
+
+msgid "Новый пароль"
+msgstr "New Password"
+
+msgid "Сохранить"
+msgstr "Save"
+
+msgid "Отмена"
+msgstr "Cancel"
+
+# Buttons
+msgid "Загрузить ещё"
+msgstr "Load More"
+
+msgid "Показать больше"
+msgstr "Show More"
+
+msgid "Подробная информация"
+msgstr "Detailed Information"
+
+msgid "Забронировать"
+msgstr "Book Now"
+
+msgid "Добавить в корзину"
+msgstr "Add to Cart"
+
+msgid "Купить"
+msgstr "Buy Now"

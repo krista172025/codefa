@@ -1,0 +1,168 @@
+# MySuperTour - Personal Cabinet Translation
+# Copyright (C) 2024
+msgid ""
+msgstr ""
+"Project-Id-Version: MST LK 3.4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Common UI Elements
+msgid "Подробнее"
+msgstr "Подробнее"
+
+msgid "Найти"
+msgstr "Найти"
+
+msgid "Куда вы собираетесь?"
+msgstr "Куда вы собираетесь?"
+
+msgid "Применить"
+msgstr "Применить"
+
+msgid "Сброс"
+msgstr "Сброс"
+
+msgid "Популярные города"
+msgstr "Популярные города"
+
+msgid "Товары не найдены"
+msgstr "Товары не найдены"
+
+# Personal Cabinet
+msgid "Личный Кабинет"
+msgstr "Личный Кабинет"
+
+msgid "Мой Профиль"
+msgstr "Мой Профиль"
+
+msgid "Мои заказы"
+msgstr "Мои заказы"
+
+msgid "Бронирования"
+msgstr "Бронирования"
+
+msgid "Сообщения"
+msgstr "Сообщения"
+
+msgid "Избранное"
+msgstr "Избранное"
+
+msgid "Оставить отзыв"
+msgstr "Оставить отзыв"
+
+msgid "Открыть билет"
+msgstr "Открыть билет"
+
+msgid "Скачать подарок"
+msgstr "Скачать подарок"
+
+msgid "Реферальная программа"
+msgstr "Реферальная программа"
+
+# Guide System
+msgid "Гид"
+msgstr "Гид"
+
+msgid "Наши гиды"
+msgstr "Наши гиды"
+
+msgid "Профиль гида"
+msgstr "Профиль гида"
+
+# Reviews
+msgid "Отзывов пока нет"
+msgstr "Отзывов пока нет"
+
+msgid "Необходимо авторизоваться"
+msgstr "Необходимо авторизоваться"
+
+msgid "Вы не покупали этот тур"
+msgstr "Вы не покупали этот тур"
+
+msgid "Некорректный рейтинг"
+msgstr "Некорректный рейтинг"
+
+msgid "Отзыв успешно добавлен"
+msgstr "Отзыв успешно добавлен"
+
+msgid "Ошибка при добавлении отзыва"
+msgstr "Ошибка при добавлении отзыва"
+
+msgid "назад"
+msgstr "назад"
+
+# Orders & Status
+msgid "Заказ не найден"
+msgstr "Заказ не найден"
+
+msgid "Завершен"
+msgstr "Завершен"
+
+msgid "В ожидании"
+msgstr "В ожидании"
+
+msgid "В обработке"
+msgstr "В обработке"
+
+msgid "Отменен"
+msgstr "Отменен"
+
+msgid "Профиль обновлен"
+msgstr "Профиль обновлен"
+
+msgid "Необходима авторизация"
+msgstr "Необходима авторизация"
+
+msgid "Wishlist пуст"
+msgstr "Wishlist пуст"
+
+msgid "Товар удален из избранного"
+msgstr "Товар удален из избранного"
+
+# Form Labels
+msgid "Имя"
+msgstr "Имя"
+
+msgid "Фамилия"
+msgstr "Фамилия"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Телефон"
+msgstr "Телефон"
+
+msgid "Новый пароль"
+msgstr "Новый пароль"
+
+msgid "Сохранить"
+msgstr "Сохранить"
+
+msgid "Отмена"
+msgstr "Отмена"
+
+# Buttons
+msgid "Загрузить ещё"
+msgstr "Загрузить ещё"
+
+msgid "Показать больше"
+msgstr "Показать больше"
+
+msgid "Подробная информация"
+msgstr "Подробная информация"
+
+msgid "Забронировать"
+msgstr "Забронировать"
+
+msgid "Добавить в корзину"
+msgstr "Добавить в корзину"
+
+msgid "Купить"
+msgstr "Купить"

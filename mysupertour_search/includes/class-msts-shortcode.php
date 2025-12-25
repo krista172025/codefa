@@ -20,13 +20,7 @@ class MSTS_Shortcode {
         $atts=shortcode_atts(['noautofocus'=>false],$atts,'mst_search');
         $auto = $atts['noautofocus'] ? 0 : 1;
         $use_external=$this->s['use_external'];
-        $ph=esc_attr($this->s['placeholder']); 
-        $btn=esc_html($this->s['button_text']); 
-        $scope=esc_attr($this->s['search_scope']);
-        
-        // Localized strings
-        $clear_text = __('Очистить', 'mysupertour-search');
-        
+        $ph=esc_attr($this->s['placeholder']); $btn=esc_html($this->s['button_text']); $scope=esc_attr($this->s['search_scope']);
         ob_start(); ?>
         <div class="msts-search-container">
             <div class="msts-search-wrapper">
@@ -41,7 +35,7 @@ class MSTS_Shortcode {
 							<span class="msts-btn-icon">🔍</span>
 							<span class="msts-btn-text"><?php echo $btn;?></span>
 						</button>
-                        <button type="button" class="msts-clear-btn-fixed" aria-label="<?php echo esc_attr($clear_text); ?>">×</button>
+                        <button type="button" class="msts-clear-btn-fixed" aria-label="Очистить">×</button>
                         <div class="msts-suggestions"></div>
                     </form>
                 <?php endif; ?>
@@ -120,10 +114,6 @@ class MSTS_Shortcode {
         }
         
         /* ✅ MODAL OVERLAY */
-        /* Note: High z-index (9999999) is required for XStore theme compatibility.
-         * XStore uses z-indexes in the 999999 range for its mobile menu and overlays.
-         * This ensures the search modal appears above all theme elements.
-         */
         .msts-modal-v3 {
             position: fixed;
             top: 0;
@@ -133,7 +123,7 @@ class MSTS_Shortcode {
             background: rgba(0,0,0,0);
             backdrop-filter: blur(0px);
             -webkit-backdrop-filter: blur(0px);
-            z-index: 9999999 !important;
+            z-index: 999999;
             opacity: 0;
             pointer-events: none;
             transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
@@ -166,7 +156,6 @@ class MSTS_Shortcode {
         }
         
         /* ✅ КРЕСТИК ЗАКРЫТИЯ МОДАЛКИ */
-        /* Note: z-index must be higher than modal overlay (10000001 > 9999999) */
         .msts-modal-v3-close {
             position: fixed !important;
             top: 30px !important;
@@ -188,7 +177,7 @@ class MSTS_Shortcode {
             align-items: center !important;
             justify-content: center !important;
             padding: 0 !important;
-            z-index: 10000001 !important;
+            z-index: 1000001 !important;
         }
         
         .msts-modal-v3-close:hover {

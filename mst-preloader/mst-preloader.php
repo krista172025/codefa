@@ -11,11 +11,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Load translations
-add_action('plugins_loaded', function() {
-    load_plugin_textdomain('mst-preloader', false, dirname(plugin_basename(__FILE__)) . '/languages');
-});
-
 /**
  * Проверка: показывали ли прелоадер ранее (на стороне сервера) — смотрим cookie 'mst_preloader_shown'
  * Если cookie установлена и равна '1' — считаем, что показывать не нужно.
@@ -77,7 +72,7 @@ function mstp_insert_preloader_in_body() {
     // Выводим точную разметку (копия из standalone)
     ?>
     <div id="mst-preloader">
-        <button class="skip-button" onclick="skipPreloader()"><?php _e('Пропустить', 'mst-preloader'); ?></button>
+        <button class="skip-button" onclick="skipPreloader()">Пропустить</button>
         
         <div class="map-svg-container">
             <!-- Mobile: Vertical route -->
@@ -218,7 +213,7 @@ function mstp_insert_preloader_in_body() {
 
         <div class="logo-section">
             <h1 class="logo-title">MST</h1>
-            <p class="logo-text" id="dynamic-text"><?php _e('Находим лучшие направления', 'mst-preloader'); ?></p>
+            <p class="logo-text" id="dynamic-text">Находим лучшие направления</p>
         </div>
 
         <div class="progress-container">
@@ -226,7 +221,7 @@ function mstp_insert_preloader_in_body() {
                 <div class="progress-bar" id="progress-bar"></div>
             </div>
             <div class="progress-text">
-                <span><?php _e('Загрузка...', 'mst-preloader'); ?></span>
+                <span>Загрузка...</span>
                 <span><span id="progress-percent">0</span>%</span>
             </div>
         </div>

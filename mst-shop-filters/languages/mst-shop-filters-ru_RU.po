@@ -1,0 +1,77 @@
+# MST Shop Filters Translation
+# Copyright (C) 2024
+msgid ""
+msgstr ""
+"Project-Id-Version: MST Shop Filters 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Товары не найдены"
+msgstr "Товары не найдены"
+
+msgid "Фильтры"
+msgstr "Фильтры"
+
+msgid "Категории"
+msgstr "Категории"
+
+msgid "Тип тура"
+msgstr "Тип тура"
+
+msgid "Длительность"
+msgstr "Длительность"
+
+msgid "Транспорт"
+msgstr "Транспорт"
+
+msgid "Формат"
+msgstr "Формат"
+
+msgid "Цена"
+msgstr "Цена"
+
+msgid "От"
+msgstr "От"
+
+msgid "До"
+msgstr "До"
+
+msgid "Применить фильтры"
+msgstr "Применить фильтры"
+
+msgid "Сбросить фильтры"
+msgstr "Сбросить фильтры"
+
+msgid "Найдено товаров"
+msgstr "Найдено товаров"
+
+msgid "Групповая"
+msgstr "Групповая"
+
+msgid "Индивидуальная"
+msgstr "Индивидуальная"
+
+msgid "Пешком"
+msgstr "Пешком"
+
+msgid "Автобус"
+msgstr "Автобус"
+
+msgid "Авто"
+msgstr "Авто"
+
+msgid "Полдня"
+msgstr "Полдня"
+
+msgid "Полный день"
+msgstr "Полный день"
+
+msgid "Несколько дней"
+msgstr "Несколько дней"

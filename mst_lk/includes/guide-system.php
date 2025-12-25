@@ -63,9 +63,8 @@ class MST_Guide_System {
             ];
             $border_color = $status_colors[$user_status] ?? '#00c896';
             
-            // Use multilingual URL format
-            $mst_lk = MST_LK::instance();
-            $guide_url = $mst_lk->get_guide_url($guide_id);
+            // Use new /guide/{id} URL format
+            $guide_url = home_url('/guide/' . $guide_id);
             
             $result[$product_id] = [
                 'name' => $guide->display_name,

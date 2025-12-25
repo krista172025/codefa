@@ -1,0 +1,432 @@
+/* ===== MST LK Modern Design ===== */
+
+.mst-lk-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Header Profile Card */
+.mst-lk-header {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 24px;
+    color: #fff;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+}
+
+.mst-lk-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid rgba(255,255,255,0.3);
+    object-fit: cover;
+}
+
+.mst-lk-user-info h2 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.mst-lk-user-email {
+    opacity: 0.8;
+    font-size: 14px;
+}
+
+.mst-lk-badges {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.mst-lk-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    font-size: 13px;
+    backdrop-filter: blur(10px);
+}
+
+/* Layout */
+.mst-lk-content {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 30px;
+}
+
+/* Sidebar */
+.mst-lk-sidebar {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+}
+
+.mst-lk-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-bottom: 6px;
+}
+
+.mst-lk-menu-item:hover {
+    background: #f5f5f5;
+}
+
+.mst-lk-menu-item.active {
+    background: linear-gradient(135deg, #00c896 0%, #00a67d 100%);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 200, 150, 0.3);
+}
+
+.mst-lk-menu-icon {
+    font-size: 18px;
+}
+
+/* Main Content */
+.mst-lk-main {
+    background: #fff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.mst-lk-section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #1a1a1a;
+}
+
+/* Order Cards */
+.mst-lk-order-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: #fafafa;
+    border-radius: 16px;
+    margin-bottom: 15px;
+    transition: all 0.2s ease;
+}
+
+.mst-lk-order-card:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.mst-lk-order-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.mst-lk-order-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.mst-lk-order-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #1a1a1a;
+}
+
+.mst-lk-order-meta {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.mst-lk-order-status {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.mst-lk-order-status.completed {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.mst-lk-order-status.pending {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+.mst-lk-order-status.processing {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.mst-lk-order-status.cancelled {
+    background: #ffebee;
+    color: #c62828;
+}
+
+/* Action Buttons */
+.mst-lk-order-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.mst-lk-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    text-decoration: none;
+}
+
+.mst-lk-btn-primary {
+    background: linear-gradient(135deg, #00c896 0%, #00a67d 100%);
+    color: #fff;
+}
+
+.mst-lk-btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.mst-lk-btn-outline {
+    background: transparent;
+    border: 1.5px solid #ddd;
+    color: #666;
+}
+
+.mst-lk-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.mst-lk-btn-primary:hover {
+    box-shadow: 0 4px 16px rgba(0, 200, 150, 0.4);
+}
+
+/* Wishlist Cards */
+.mst-lk-wishlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.mst-lk-wishlist-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.mst-lk-wishlist-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.mst-lk-wishlist-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.mst-lk-wishlist-content {
+    padding: 15px;
+}
+
+.mst-lk-wishlist-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1a1a1a;
+}
+
+.mst-lk-wishlist-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 12px;
+}
+
+/* Profile Edit Form */
+.mst-lk-form-group {
+    margin-bottom: 20px;
+}
+
+.mst-lk-form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.mst-lk-form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.mst-lk-form-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.mst-lk-form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 14px;
+    min-height: 100px;
+    resize: vertical;
+    transition: all 0.2s ease;
+}
+
+.mst-lk-form-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Empty State */
+.mst-lk-empty {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.mst-lk-empty-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+}
+
+.mst-lk-empty-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.mst-lk-empty-text {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+/* Stats Cards */
+.mst-lk-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.mst-lk-stat-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.mst-lk-stat-label {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-bottom: 8px;
+}
+
+.mst-lk-stat-value {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .mst-lk-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .mst-lk-sidebar {
+        position: static;
+    }
+    
+    .mst-lk-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .mst-lk-order-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .mst-lk-order-actions {
+        justify-content: center;
+    }
+    
+    .mst-lk-wishlist-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .mst-lk-wrapper {
+        padding: 20px 15px;
+    }
+    
+    .mst-lk-main {
+        padding: 20px;
+    }
+    
+    .mst-lk-header {
+        padding: 20px;
+    }
+    
+    .mst-lk-avatar {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .mst-lk-user-info h2 {
+        font-size: 22px;
+    }
+}

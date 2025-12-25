@@ -26,9 +26,6 @@ require_once MSTS_PATH.'includes/class-msts-ajax.php';
 require_once MSTS_PATH.'includes/class-msts-shortcode.php';
 
 add_action('plugins_loaded', function(){
-    // Load translations
-    load_plugin_textdomain('mysupertour-search', false, dirname(plugin_basename(__FILE__)) . '/languages');
-    
     MSTS_Settings::instance();
     MSTS_Ajax::instance();
     MSTS_Shortcode::instance();
