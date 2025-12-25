@@ -60,7 +60,7 @@ if ($guide_id) {
 // Guide settings
 $guide_border_color = !empty($elementor_settings['guide_border_color']) ? $elementor_settings['guide_border_color'] : apply_filters('mst_shop_grid_guide_border', '#ffffff');
 $guide_hover_border = !empty($elementor_settings['guide_hover_border']) ? $elementor_settings['guide_hover_border'] : apply_filters('mst_shop_grid_guide_hover', 'hsl(45, 98%, 60%)');
-$default_guide_photo = !empty($elementor_settings['default_guide_photo']) ? $elementor_settings['default_guide_photo'] : ($guide_photo ?: apply_filters('mst_shop_grid_default_guide_photo', ''));
+$default_guide_photo = !empty($elementor_settings['default_guide_photo']) ? esc_url($elementor_settings['default_guide_photo']) : ($guide_photo ?: apply_filters('mst_shop_grid_default_guide_photo', ''));
 
 // Card hover glow settings
 $card_hover_glow_color = !empty($elementor_settings['card_hover_glow_color']) ? $elementor_settings['card_hover_glow_color'] : apply_filters('mst_shop_grid_card_hover_glow', 'rgba(255, 255, 255, 0.15)');

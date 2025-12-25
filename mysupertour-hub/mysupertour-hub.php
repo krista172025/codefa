@@ -118,8 +118,8 @@ class MySuperTour_Hub {
      */
     public function handle_old_tags_cleanup() {
         if (!isset($_GET['mst_cleanup_old_tags'])) return;
+        if (!wp_verify_nonce(wp_unslash($_GET['_wpnonce'] ?? ''), 'mst_cleanup')) return;
         if (!current_user_can('manage_options')) return;
-        if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'mst_cleanup')) return;
         
         $deleted_tags = 0;
         $deleted_brands = 0;

@@ -89,7 +89,7 @@ class MST_Shop_Filters {
         // Get Elementor settings
         $elementor_settings = [];
         if (!empty($_POST['elementor_settings'])) {
-            $elementor_settings = json_decode(stripslashes($_POST['elementor_settings']), true);
+            $elementor_settings = json_decode(wp_unslash($_POST['elementor_settings']), true);
             if (!is_array($elementor_settings)) {
                 $elementor_settings = [];
             }

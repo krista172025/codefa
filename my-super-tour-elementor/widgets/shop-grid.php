@@ -944,7 +944,7 @@ class Shop_Grid extends Widget_Base {
         $card_hover_border_color = isset($settings['card_hover_border_color']) ? $settings['card_hover_border_color'] : 'rgba(255, 255, 255, 0.25)';
         ?>
         <div class="mst-shop-grid" 
-             data-settings='<?php echo esc_attr(json_encode([
+             data-settings='<?php echo esc_attr(wp_json_encode([
                  'button_bg_color' => $settings['button_bg_color'],
                  'button_text_color' => $settings['button_text_color'],
                  'price_color' => $settings['price_color'],
@@ -969,7 +969,7 @@ class Shop_Grid extends Widget_Base {
                  'wishlist_size' => isset($settings['wishlist_size']['size']) ? $settings['wishlist_size']['size'] : 36,
                  'wishlist_icon_size' => isset($settings['wishlist_icon_size']['size']) ? $settings['wishlist_icon_size']['size'] : 18,
                  'wishlist_blur' => isset($settings['wishlist_blur']['size']) ? $settings['wishlist_blur']['size'] : 12,
-                 'default_guide_photo' => !empty($settings['default_guide_photo']['url']) ? $settings['default_guide_photo']['url'] : '',
+                 'default_guide_photo' => !empty($settings['default_guide_photo']['url']) ? esc_url($settings['default_guide_photo']['url']) : '',
              ])); ?>'>
             <?php foreach ($products as $product): 
                 $product_id = $product->get_id();
