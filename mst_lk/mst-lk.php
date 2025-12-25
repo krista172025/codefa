@@ -47,6 +47,8 @@ class MST_LK {
         add_action('wp_ajax_mst_lk_update_profile', [$this, 'ajax_update_profile']);
         add_action('wp_ajax_mst_lk_get_latepoint_booking', [$this, 'ajax_get_latepoint_booking']);
         add_action('wp_ajax_mst_lk_remove_from_wishlist', [$this, 'ajax_remove_from_wishlist']);
+        add_action('wp_ajax_mst_lk_submit_review', [$this, 'ajax_submit_review']);
+        add_action('wp_ajax_mst_lk_download_gift', [$this, 'ajax_download_gift']);
         
         // Admin actions
         add_action('show_user_profile', [$this, 'add_user_meta_fields']);
@@ -291,6 +293,100 @@ class MST_LK {
         }
         
         wp_send_json_success(['message' => 'Товар удален из избранного']);
+    }
+    
+    public function ajax_submit_review() {
+        check_ajax_referer('mst_lk_nonce', 'nonce');
+        
+        if (!is_user_logged_in()) {
+            wp_send_json_error(__('Необходимо авторизоваться', 'mst-lk'));
+        }
+        
+        $product_id = intval($_POST['product_id'] ?? 0);
+        $rating = intval($_POST['rating'] ?? 5);
+        $comment = sanitize_textarea_field($_POST['comment'] ?? '');
+        
+        // Проверка что пользователь купил товар
+        $user_id = get_current_user_id();
+        $orders = wc_get_orders([
+            'customer_id' => $user_id,
+            'status' => ['completed', 'processing'],
+            'limit' => -1,
+        ]);
+        
+        $has_purchased = false;
+        foreach ($orders as $order) {
+            foreach ($order->get_items() as $item) {
+                if ($item->get_product_id() == $product_id) {
+                    $has_purchased = true;
+                    break 2;
+                }
+            }
+        }
+        
+        if (!$has_purchased) {
+            wp_send_json_error(__('Вы не покупали этот тур', 'mst-lk'));
+        }
+        
+        // Проверка рейтинга
+        if ($rating < 1 || $rating > 5) {
+            wp_send_json_error(__('Некорректный рейтинг', 'mst-lk'));
+        }
+        
+        // Создаём отзыв (комментарий с типом review)
+        $user = get_userdata($user_id);
+        $comment_data = [
+            'comment_post_ID' => $product_id,
+            'comment_author' => $user->display_name,
+            'comment_author_email' => $user->user_email,
+            'comment_content' => $comment,
+            'comment_type' => 'review',
+            'comment_approved' => 0, // На модерацию!
+            'user_id' => $user_id,
+        ];
+        
+        $comment_id = wp_insert_comment($comment_data);
+        
+        if ($comment_id) {
+            // Добавляем рейтинг
+            update_comment_meta($comment_id, 'rating', $rating);
+            
+            wp_send_json_success([
+                'message' => __('Отзыв успешно добавлен и отправлен на модерацию', 'mst-lk'),
+                'comment_id' => $comment_id
+            ]);
+        } else {
+            wp_send_json_error(__('Ошибка при добавлении отзыва', 'mst-lk'));
+        }
+    }
+    
+    public function ajax_download_gift() {
+        check_ajax_referer('mst_lk_nonce', 'nonce');
+        
+        $order_id = intval($_POST['order_id'] ?? 0);
+        $order = wc_get_order($order_id);
+        
+        if (!$order || $order->get_customer_id() != get_current_user_id()) {
+            wp_send_json_error(__('Заказ не найден', 'mst-lk'));
+        }
+        
+        // Находим первый товар с подарком
+        foreach ($order->get_items() as $item) {
+            $product_id = $item->get_product_id();
+            $gift_id = get_post_meta($product_id, '_mst_gift_file', true);
+            
+            if ($gift_id) {
+                $gift_url = wp_get_attachment_url($gift_id);
+                if ($gift_url) {
+                    wp_send_json_success([
+                        'url' => $gift_url,
+                        'filename' => basename($gift_url)
+                    ]);
+                }
+            }
+        }
+        
+        wp_send_json_error(__('Подарок не найден', 'mst-lk'));
     }
     
     public function add_user_meta_fields($user) {

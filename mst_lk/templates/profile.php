@@ -147,11 +147,14 @@ $border_color = $status_colors[$user_status] ?? '#CD7F32';
                 📋 Подробнее
             </button>
             
-            <button type="button" class="mst-lk-btn mst-lk-btn-outline">
+            <button type="button" class="mst-lk-btn mst-lk-btn-outline mst-lk-download-gift" 
+                    data-order-id="<?php echo $order->get_id(); ?>">
                 💝 Скачать подарок
             </button>
             
-            <button type="button" class="mst-lk-btn mst-lk-btn-outline">
+            <button type="button" class="mst-lk-btn mst-lk-btn-outline mst-lk-open-review" 
+                    data-product-id="<?php echo $product ? $product->get_id() : 0; ?>"
+                    data-order-id="<?php echo $order->get_id(); ?>">
                 ⭐ Оставить отзыв
             </button>
         </div>
@@ -248,39 +251,67 @@ $border_color = $status_colors[$user_status] ?? '#CD7F32';
                     }
                     
                     if (!empty($product_ids)): ?>
-                        <div class="xstore-wishlist-grid">
+                        <div class="mst-shop-grid mst-wishlist-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
                             <?php foreach ($product_ids as $product_id):
                                 $product = wc_get_product($product_id);
                                 if (!$product) continue;
-                            ?>
-                            <div class="xstore-wishlist-item" data-product-id="<?php echo $product_id; ?>">
-                                <a href="<?php echo get_permalink($product->get_id()); ?>" class="xstore-wishlist-item-image">
-                                    <?php echo $product->get_image('medium'); ?>
-                                </a>
                                 
-                                <div class="xstore-wishlist-item-details">
-                                    <h4 class="xstore-wishlist-item-title">
-                                        <a href="<?php echo get_permalink($product->get_id()); ?>">
-                                            <?php echo $product->get_name(); ?>
-                                        </a>
-                                    </h4>
+                                $image_url = wp_get_attachment_image_src(get_post_thumbnail_id($product_id), 'medium');
+                                $image_url = $image_url ? $image_url[0] : wc_placeholder_img_src('medium');
+                                $rating = $product->get_average_rating();
+                                $rating_count = $product->get_review_count();
+                                
+                                // Получаем гида
+                                $guide_id = get_post_meta($product_id, '_mst_guide_id', true);
+                                $guide_photo = '';
+                                if ($guide_id) {
+                                    $custom_avatar = get_user_meta($guide_id, 'mst_lk_avatar', true);
+                                    $guide_photo = $custom_avatar ? wp_get_attachment_url($custom_avatar) : get_avatar_url($guide_id, ['size' => 80]);
+                                }
+                            ?>
+                            <div class="mst-shop-grid-card mst-liquid-glass" style="background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.08);">
+                                <div class="mst-shop-grid-image" style="position: relative; height: 180px;">
+                                    <a href="<?php echo get_permalink($product_id); ?>">
+                                        <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                                    </a>
                                     
-                                    <div class="xstore-wishlist-item-price">
-                                        <?php echo $product->get_price_html(); ?>
+                                    <!-- Wishlist remove button -->
+                                    <button type="button" class="mst-remove-from-wishlist" 
+                                            data-product-id="<?php echo $product_id; ?>"
+                                            style="position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; background: rgba(255,255,255,0.9); border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                                        ❤️
+                                    </button>
+                                </div>
+                                
+                                <div class="mst-shop-grid-content" style="padding: 16px;">
+                                    <h3 style="font-size: 16px; font-weight: 600; margin: 0 0 8px;">
+                                        <a href="<?php echo get_permalink($product_id); ?>" style="color: #1d1d1f; text-decoration: none;">
+                                            <?php echo esc_html($product->get_name()); ?>
+                                        </a>
+                                    </h3>
+                                    
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <div style="display: flex; align-items: center; gap: 4px;">
+                                            <span style="color: #ffc107;">★</span>
+                                            <span style="font-weight: 600;"><?php echo esc_html($rating ?: '5.0'); ?></span>
+                                            <span style="color: #999;">(<?php echo esc_html($rating_count ?: '0'); ?>)</span>
+                                        </div>
+                                        <div style="color: var(--mst-primary, #8b5cf6); font-weight: 700;">
+                                            <?php echo $product->get_price_html(); ?>
+                                        </div>
                                     </div>
                                     
-                                    <div class="xstore-wishlist-item-actions">
-                                        <?php if ($product->is_in_stock()): ?>
-                                        <a href="<?php echo esc_url($product->add_to_cart_url()); ?>" 
-                                           class="mst-lk-btn mst-lk-btn-primary">
-                                            🛒 В корзину
+                                    <div style="position: relative;">
+                                        <a href="<?php echo get_permalink($product_id); ?>" 
+                                           class="mst-lk-btn mst-lk-btn-primary"
+                                           style="display: block; text-align: center;">
+                                            Подробнее
                                         </a>
+                                        <?php if ($guide_photo): ?>
+                                        <img src="<?php echo esc_url($guide_photo); ?>" 
+                                             alt="Гид" 
+                                             style="position: absolute; right: -8px; bottom: -8px; width: 50px; height: 50px; border-radius: 50%; border: 3px solid #fff; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
                                         <?php endif; ?>
-                                        
-                                        <button type="button" class="mst-lk-btn mst-lk-btn-outline mst-remove-from-wishlist" 
-                                                data-product-id="<?php echo $product->get_id(); ?>">
-                                            🗑️ Удалить
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -386,4 +417,36 @@ $border_color = $status_colors[$user_status] ?? '#CD7F32';
         <button type="button" class="mst-lk-modal-close">×</button>
         <div class="mst-lk-modal-body"></div>
     </div>
+</div>
+
+<!-- Модальное окно отзыва -->
+<div id="mst-lk-review-modal" class="mst-lk-modal">
+    <div class="mst-lk-modal-content">
+        <button type="button" class="mst-lk-modal-close">×</button>
+        <div class="mst-lk-modal-body">
+            <h2>⭐ Оставить отзыв</h2>
+            <form id="mst-review-form">
+                <input type="hidden" name="product_id" id="review-product-id">
+                
+                <div class="mst-form-group">
+                    <label>Оценка</label>
+                    <div class="mst-star-rating">
+                        <input type="radio" name="rating" value="5" id="star5" checked><label for="star5">★</label>
+                        <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+                        <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+                        <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+                        <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+                    </div>
+                </div>
+                
+                <div class="mst-form-group">
+                    <label>Ваш отзыв</label>
+                    <textarea name="comment" rows="4" placeholder="Расскажите о вашем опыте..." required></textarea>
+                </div>
+                
+                <button type="submit" class="mst-lk-btn mst-lk-btn-primary">Отправить отзыв</button>
+            </form>
+        </div>
+    </div>
+</div>
 </div>
