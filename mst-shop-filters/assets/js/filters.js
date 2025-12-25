@@ -80,18 +80,42 @@
                             $('.mst-products-found').text(response.data.found);
                         }
                         
-                        // Reinitialize Shop Grid effects
+                        // Reinitialize all Shop Grid effects
                         if (typeof MSTShopGrid !== 'undefined' && MSTShopGrid.reinit) {
                             MSTShopGrid.reinit();
                         }
                         
-                        // Reinitialize general widgets if available
+                        // Reinitialize guides
                         if (typeof initShopGridGuides === 'function') {
                             initShopGridGuides();
                         }
+                        
+                        // Reinitialize wishlist
                         if (typeof initWishlistHover === 'function') {
                             initWishlistHover();
                         }
+                        
+                        // Reinitialize glow effects
+                        if (typeof initFollowGlow === 'function') {
+                            initFollowGlow();
+                        }
+                        
+                        if (typeof initCursorGlow === 'function') {
+                            initCursorGlow();
+                        }
+                        
+                        // Reinitialize badge auto-positioning
+                        if (typeof initBadgeAutoPosition === 'function') {
+                            initBadgeAutoPosition();
+                        }
+                        
+                        // Reinitialize liquid glass effects
+                        if (typeof initLiquidGlass === 'function') {
+                            initLiquidGlass();
+                        }
+                        
+                        // Trigger custom event for other scripts to hook into
+                        $(document).trigger('mst-shop-grid-updated', [$grid]);
                     } else {
                         console.error('Filter error:', response.data);
                     }

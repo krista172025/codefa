@@ -5053,7 +5053,21 @@ body,
 .mst-shop-grid-wishlist .mst-heart-icon {
   width: var(--wishlist-icon-size, 18px) !important;
   height: var(--wishlist-icon-size, 18px) !important;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), fill 0.2s ease;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              fill 0.3s ease,
+              stroke 0.3s ease;
+}
+
+/* Wishlist states - separate add and remove animations */
+.mst-shop-grid-wishlist.active .mst-heart-icon,
+.mst-shop-grid-wishlist.mst-wishlist-active .mst-heart-icon {
+  fill: #ef4444;
+  stroke: #ef4444;
+}
+
+.mst-shop-grid-wishlist:not(.active):not(.mst-wishlist-active) .mst-heart-icon {
+  fill: transparent;
+  stroke: currentColor;
 }
 
 /* Wishlist hover - use data-hover-bg from element, fallback subtle */
@@ -5065,36 +5079,68 @@ body,
   transform: scale(1.12);
 }
 
-/* Wishlist click animation - instant scale + fill */
+/* Wishlist click animation - smooth heart beat */
 .mst-shop-grid-wishlist.mst-wishlist-animating {
-  animation: mst-wishlist-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: mst-wishlist-pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .mst-shop-grid-wishlist.mst-wishlist-animating .mst-heart-icon {
-  animation: mst-heart-fill 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: mst-heart-beat 0.6s ease;
 }
 
 @keyframes mst-wishlist-pop {
   0% {
     transform: scale(1);
   }
+  25% {
+    transform: scale(1.15);
+  }
   50% {
-    transform: scale(1.2);
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.08);
   }
   100% {
     transform: scale(1);
   }
 }
 
-@keyframes mst-heart-fill {
+@keyframes mst-heart-beat {
   0% {
     transform: scale(1);
   }
-  50% {
+  25% {
     transform: scale(1.3);
+  }
+  50% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.15);
   }
   100% {
     transform: scale(1);
+  }
+}
+
+/* Animation for removing from wishlist - fade out effect */
+.mst-shop-grid-wishlist.mst-wishlist-removing .mst-heart-icon {
+  animation: mst-heart-empty 0.4s ease;
+}
+
+@keyframes mst-heart-empty {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
