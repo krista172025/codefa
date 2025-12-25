@@ -64,6 +64,48 @@ if(isset($_POST['mst_fix_slugs']) && check_admin_referer('mst_fix_slugs', 'mst_f
     
     echo '<div class="notice notice-success"><p>✅ Исправлено форматов: ' . $fixed_formats . ', транспорта: ' . $fixed_transports . '</p></div>';
 }
+
+// ✅ ОЧИСТКА СТАРЫХ ДАННЫХ (mst-format-*, mst-transport-*)
+if(isset($_POST['mst_cleanup_old_data']) && check_admin_referer('mst_cleanup', 'mst_cleanup_nonce')){
+    $deleted_tags = 0;
+    $deleted_brands = 0;
+    
+    // Удаляем старые mst-format-* теги
+    $old_format_tags = get_terms([
+        'taxonomy' => 'product_tag',
+        'hide_empty' => false,
+        'fields' => 'all',
+    ]);
+    
+    if (!is_wp_error($old_format_tags)) {
+        foreach ($old_format_tags as $tag) {
+            if (strpos($tag->slug, 'mst-format-') === 0) {
+                wp_delete_term($tag->term_id, 'product_tag');
+                $deleted_tags++;
+            }
+        }
+    }
+    
+    // Удаляем старые mst-transport-* бренды (если таксономия brand существует)
+    if (taxonomy_exists('brand')) {
+        $old_transport_brands = get_terms([
+            'taxonomy' => 'brand',
+            'hide_empty' => false,
+            'fields' => 'all',
+        ]);
+        
+        if (!is_wp_error($old_transport_brands)) {
+            foreach ($old_transport_brands as $brand) {
+                if (strpos($brand->slug, 'mst-transport-') === 0) {
+                    wp_delete_term($brand->term_id, 'brand');
+                    $deleted_brands++;
+                }
+            }
+        }
+    }
+    
+    echo '<div class="notice notice-success"><p>✅ Удалено старых меток: ' . $deleted_tags . ', брендов: ' . $deleted_brands . '</p></div>';
+}
 ?>
 <div class="wrap mst-hub-wrap">
     <div class="mst-hub-header">
@@ -77,6 +119,16 @@ if(isset($_POST['mst_fix_slugs']) && check_admin_referer('mst_fix_slugs', 'mst_f
         <form method="post" action="">
             <?php wp_nonce_field('mst_fix_slugs', 'mst_fix_slugs_nonce'); ?>
             <button type="submit" name="mst_fix_slugs" class="mst-btn mst-btn-primary" style="background:linear-gradient(135deg,#ff6b6b 0%,#ee5a52 100%);" onclick="return confirm('Вы уверены? Это обновит все форматы и транспорт!');">🔧 Исправить латинские slug</button>
+        </form>
+    </div>
+    
+    <!-- ОЧИСТКА СТАРЫХ ДАННЫХ -->
+    <div style="background:#fff;padding:20px;border-radius:12px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);border-left:4px solid #f59e0b;">
+        <h3 style="margin:0 0 10px;color:#f59e0b;">🗑️ Очистка старых данных</h3>
+        <p style="color:#666;margin:0 0 15px;">Удалить старые метки товаров (product_tag) с префиксом <code>mst-format-*</code> и бренды (brand) с префиксом <code>mst-transport-*</code> из базы данных.</p>
+        <form method="post" action="">
+            <?php wp_nonce_field('mst_cleanup', 'mst_cleanup_nonce'); ?>
+            <button type="submit" name="mst_cleanup_old_data" class="mst-btn mst-btn-primary" style="background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);" onclick="return confirm('Вы уверены? Это удалит все старые метки mst-format-* и mst-transport-* из БД. Это действие необратимо!');">🗑️ Очистить старые данные</button>
         </form>
     </div>
     

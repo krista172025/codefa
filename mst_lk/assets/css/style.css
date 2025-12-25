@@ -232,6 +232,8 @@
 }
 
 .mst-lk-order-card {
+    display: flex;
+    flex-direction: column;
     background: var(--mst-glass-bg);
     backdrop-filter: blur(20px);
     border-radius: 20px;
@@ -268,13 +270,20 @@
 
 .mst-lk-order-info-wrap {
     flex: 1;
+    min-width: 0; /* Important for text-overflow to work properly */
 }
 
 .mst-lk-order-top {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 12px;
     margin-bottom: 16px;
+}
+
+.mst-lk-order-info {
+    flex: 1;
+    min-width: 0;
 }
 
 .mst-lk-order-info h4 {
@@ -282,6 +291,8 @@
     font-weight: 700;
     color: #1d1d1f;
     margin: 0 0 4px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .mst-lk-order-meta {
@@ -295,6 +306,7 @@
     font-size: 12px;
     font-weight: 600;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .mst-lk-order-status.completed,

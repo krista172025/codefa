@@ -47,10 +47,20 @@ $wishlist_size = apply_filters('mst_shop_grid_wishlist_size', 36);
 $wishlist_icon_size = apply_filters('mst_shop_grid_wishlist_icon_size', 18);
 $wishlist_blur = apply_filters('mst_shop_grid_wishlist_blur', 12);
 
+// Get guide data from product meta
+$guide_id = get_post_meta($product_id, '_mst_guide_id', true);
+$guide_photo = '';
+$guide_url = '#';
+if ($guide_id) {
+    $custom_avatar = get_user_meta($guide_id, 'mst_lk_avatar', true);
+    $guide_photo = $custom_avatar ? wp_get_attachment_url($custom_avatar) : get_avatar_url($guide_id, ['size' => 80]);
+    $guide_url = home_url('/guide/' . $guide_id);
+}
+
 // Guide settings
 $guide_border_color = apply_filters('mst_shop_grid_guide_border', '#ffffff');
 $guide_hover_border = apply_filters('mst_shop_grid_guide_hover', 'hsl(45, 98%, 60%)');
-$default_guide_photo = apply_filters('mst_shop_grid_default_guide_photo', '');
+$default_guide_photo = apply_filters('mst_shop_grid_default_guide_photo', $guide_photo);
 
 // Card hover glow settings
 $card_hover_glow_color = apply_filters('mst_shop_grid_card_hover_glow', 'rgba(255, 255, 255, 0.15)');
@@ -142,7 +152,7 @@ $card_hover_border_color = apply_filters('mst_shop_grid_card_hover_border', 'rgb
                 <?php echo esc_html($button_text); ?>
             </a>
             <?php if (!empty($default_guide_photo)): ?>
-            <a href="#" 
+            <a href="<?php echo esc_url($guide_url); ?>" 
                class="mst-shop-grid-guide-inside mst-follow-glow" 
                style="border-color: <?php echo esc_attr($guide_border_color); ?>;"
                data-hover-border="<?php echo esc_attr($guide_hover_border); ?>"
