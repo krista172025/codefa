@@ -943,7 +943,34 @@ class Shop_Grid extends Widget_Base {
         $card_hover_glow_size = isset($settings['card_hover_glow_size']['size']) ? $settings['card_hover_glow_size']['size'] : 8;
         $card_hover_border_color = isset($settings['card_hover_border_color']) ? $settings['card_hover_border_color'] : 'rgba(255, 255, 255, 0.25)';
         ?>
-        <div class="mst-shop-grid">
+        <div class="mst-shop-grid" 
+             data-settings='<?php echo esc_attr(json_encode([
+                 'button_bg_color' => $settings['button_bg_color'],
+                 'button_text_color' => $settings['button_text_color'],
+                 'price_color' => $settings['price_color'],
+                 'title_color' => $settings['title_color'],
+                 'badge_bg_color' => $settings['badge_bg_color'],
+                 'badge_text_color' => $settings['badge_text_color'],
+                 'star_color' => $settings['star_color'],
+                 'location_icon_color' => $settings['location_icon_color'],
+                 'location_text_color' => $settings['location_text_color'],
+                 'guide_border_color' => $settings['guide_border_color'],
+                 'guide_hover_border' => $settings['guide_hover_border'],
+                 'card_bg_color' => $settings['card_bg_color'],
+                 'button_text' => $settings['button_text'],
+                 'badge_border_radius' => isset($settings['badge_border_radius']['size']) ? $settings['badge_border_radius']['size'] : 10,
+                 'card_hover_glow_color' => isset($settings['card_hover_glow_color']) ? $settings['card_hover_glow_color'] : 'rgba(255, 255, 255, 0.15)',
+                 'card_hover_glow_size' => isset($settings['card_hover_glow_size']['size']) ? $settings['card_hover_glow_size']['size'] : 8,
+                 'card_hover_border_color' => isset($settings['card_hover_border_color']) ? $settings['card_hover_border_color'] : 'rgba(255, 255, 255, 0.25)',
+                 'wishlist_bg_color' => isset($settings['wishlist_bg_color']) ? $settings['wishlist_bg_color'] : 'rgba(255,255,255,0.85)',
+                 'wishlist_hover_bg' => isset($settings['wishlist_hover_bg']) ? $settings['wishlist_hover_bg'] : 'rgba(255,255,255,0.95)',
+                 'wishlist_icon_color' => isset($settings['wishlist_icon_color']) ? $settings['wishlist_icon_color'] : '#ffffff',
+                 'wishlist_icon_stroke' => isset($settings['wishlist_icon_stroke']) ? $settings['wishlist_icon_stroke'] : 'hsl(0, 80%, 60%)',
+                 'wishlist_size' => isset($settings['wishlist_size']['size']) ? $settings['wishlist_size']['size'] : 36,
+                 'wishlist_icon_size' => isset($settings['wishlist_icon_size']['size']) ? $settings['wishlist_icon_size']['size'] : 18,
+                 'wishlist_blur' => isset($settings['wishlist_blur']['size']) ? $settings['wishlist_blur']['size'] : 12,
+                 'default_guide_photo' => !empty($settings['default_guide_photo']['url']) ? $settings['default_guide_photo']['url'] : '',
+             ])); ?>'>
             <?php foreach ($products as $product): 
                 $product_id = $product->get_id();
                 $image = wp_get_attachment_image_src(get_post_thumbnail_id($product_id), 'medium');

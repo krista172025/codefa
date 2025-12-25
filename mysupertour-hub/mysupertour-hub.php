@@ -25,6 +25,7 @@ class MySuperTour_Hub {
         add_action('admin_enqueue_scripts', [$this, 'admin_assets']);
         add_action('wp_head', [$this, 'output_icon_positioning_css'], 999);
         add_action('admin_init', [$this, 'handle_settings_save']);
+        add_action('admin_init', [$this, 'handle_old_tags_cleanup']);
 		add_action('admin_bar_menu', [$this, 'remove_latepoint_from_admin_bar'], 999);
     }
     
@@ -110,6 +111,60 @@ class MySuperTour_Hub {
         $new_excludes = array_unique(array_merge($current_excludes, $format_names, $transport_names));
         $search_settings['exclude_city_slugs'] = implode(',', $new_excludes);
         update_option('mysupertour_search_settings', $search_settings);
+    }
+    
+    /**
+     * Handle cleanup of old mst-format-* and mst-transport-* tags
+     */
+    public function handle_old_tags_cleanup() {
+        if (!isset($_GET['mst_cleanup_old_tags'])) return;
+        if (!current_user_can('manage_options')) return;
+        if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'mst_cleanup')) return;
+        
+        $deleted_tags = 0;
+        $deleted_brands = 0;
+        
+        // Remove old mst-format-* product tags
+        $format_tags = get_terms([
+            'taxonomy' => 'product_tag',
+            'hide_empty' => false,
+            'number' => 100,
+        ]);
+        
+        if (!is_wp_error($format_tags)) {
+            foreach ($format_tags as $tag) {
+                if (strpos($tag->slug, 'mst-format-') === 0) {
+                    wp_delete_term($tag->term_id, 'product_tag');
+                    $deleted_tags++;
+                }
+            }
+        }
+        
+        // Remove old mst-transport-* brands
+        if (taxonomy_exists('brand')) {
+            $brands = get_terms([
+                'taxonomy' => 'brand',
+                'hide_empty' => false,
+                'number' => 100,
+            ]);
+            
+            if (!is_wp_error($brands)) {
+                foreach ($brands as $brand) {
+                    if (strpos($brand->slug, 'mst-transport-') === 0) {
+                        wp_delete_term($brand->term_id, 'brand');
+                        $deleted_brands++;
+                    }
+                }
+            }
+        }
+        
+        wp_redirect(add_query_arg([
+            'page' => 'mysupertour-hub',
+            'cleaned' => 1,
+            'deleted_tags' => $deleted_tags,
+            'deleted_brands' => $deleted_brands,
+        ], admin_url('admin.php')));
+        exit;
     }
 }
 

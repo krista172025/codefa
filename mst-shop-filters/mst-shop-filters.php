@@ -86,6 +86,15 @@ class MST_Shop_Filters {
         
         $filters = $_POST;
         
+        // Get Elementor settings
+        $elementor_settings = [];
+        if (!empty($_POST['elementor_settings'])) {
+            $elementor_settings = json_decode(stripslashes($_POST['elementor_settings']), true);
+            if (!is_array($elementor_settings)) {
+                $elementor_settings = [];
+            }
+        }
+        
         $args = [
             'post_type' => 'product',
             'posts_per_page' => intval($filters['per_page'] ?? 12),
