@@ -122,8 +122,8 @@
 /* Order Cards */
 .mst-lk-order-card {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: column; /* Changed from row to column for better mobile layout */
+    align-items: flex-start; /* Changed from center to flex-start for vertical layout */
     gap: 20px;
     padding: 20px;
     background: #fafafa;
@@ -205,8 +205,9 @@
 .mst-lk-order-actions {
     display: flex;
     gap: 10px;
-    width: 100%;
+    width: 100%; /* Full width to stretch buttons properly */
     flex-wrap: wrap;
+    /* Removed margin-top as gap in parent .mst-lk-order-card handles spacing */
 }
 
 .mst-lk-btn {

@@ -233,7 +233,7 @@
 
 .mst-lk-order-card {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Vertical layout for better content flow */
     background: var(--mst-glass-bg);
     backdrop-filter: blur(20px);
     border-radius: 20px;
@@ -270,20 +270,20 @@
 
 .mst-lk-order-info-wrap {
     flex: 1;
-    min-width: 0; /* Important for text-overflow to work properly */
+    min-width: 0; /* Important for text-overflow to work properly in flex containers */
 }
 
 .mst-lk-order-top {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: flex-start; /* Align to top to prevent status badge from affecting title position */
+    gap: 12px; /* Add gap for better spacing between elements */
     margin-bottom: 16px;
 }
 
 .mst-lk-order-info {
     flex: 1;
-    min-width: 0;
+    min-width: 0; /* Allow text to wrap/truncate properly */
 }
 
 .mst-lk-order-info h4 {
