@@ -61,9 +61,13 @@
                 $grid.append('<div class="mst-loader"><div class="mst-spinner"></div></div>');
             }
             
+            // Get Elementor settings from data attribute
+            const gridSettings = $grid.data('settings') || {};
+            
             const formData = new FormData($form[0]);
             formData.append('action', 'mst_filter_shop_grid');
             formData.append('nonce', mstFiltersData.nonce);
+            formData.append('elementor_settings', JSON.stringify(gridSettings));
             
             $.ajax({
                 url: mstFiltersData.ajaxurl,

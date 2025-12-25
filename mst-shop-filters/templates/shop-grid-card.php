@@ -24,28 +24,28 @@ $badge_1 = $product->get_attribute('pa_tour-type');
 $badge_2 = $product->get_attribute('pa_duration');
 $badge_3 = $product->get_attribute('pa_transport');
 
-// Default styling values - can be overridden via filter hook
-$card_bg_color = apply_filters('mst_shop_grid_card_bg', '#ffffff');
-$badge_bg_color = apply_filters('mst_shop_grid_badge_bg', 'rgba(255, 255, 255, 0.85)');
-$badge_text_color = apply_filters('mst_shop_grid_badge_text', '#333333');
-$badge_border_radius = apply_filters('mst_shop_grid_badge_radius', 20);
-$title_color = apply_filters('mst_shop_grid_title_color', '#1d1d1f');
-$location_icon_color = apply_filters('mst_shop_grid_location_icon', 'hsl(45, 98%, 50%)');
-$location_text_color = apply_filters('mst_shop_grid_location_text', '#666666');
-$star_color = apply_filters('mst_shop_grid_star_color', 'hsl(45, 98%, 50%)');
-$price_color = apply_filters('mst_shop_grid_price_color', '#00c896');
-$button_bg_color = apply_filters('mst_shop_grid_button_bg', '#00c896');
-$button_text_color = apply_filters('mst_shop_grid_button_text_color', '#ffffff');
-$button_text = apply_filters('mst_shop_grid_button_text', __('Подробнее', 'mst-shop-filters'));
+// Use $elementor_settings if available, otherwise use default values via filters
+$card_bg_color = !empty($elementor_settings['card_bg_color']) ? $elementor_settings['card_bg_color'] : apply_filters('mst_shop_grid_card_bg', '#ffffff');
+$badge_bg_color = !empty($elementor_settings['badge_bg_color']) ? $elementor_settings['badge_bg_color'] : apply_filters('mst_shop_grid_badge_bg', 'rgba(255, 255, 255, 0.9)');
+$badge_text_color = !empty($elementor_settings['badge_text_color']) ? $elementor_settings['badge_text_color'] : apply_filters('mst_shop_grid_badge_text', '#1a1a1a');
+$badge_border_radius = !empty($elementor_settings['badge_border_radius']) ? $elementor_settings['badge_border_radius'] : apply_filters('mst_shop_grid_badge_radius', 10);
+$title_color = !empty($elementor_settings['title_color']) ? $elementor_settings['title_color'] : apply_filters('mst_shop_grid_title_color', '#1a1a1a');
+$location_icon_color = !empty($elementor_settings['location_icon_color']) ? $elementor_settings['location_icon_color'] : apply_filters('mst_shop_grid_location_icon', 'hsl(45, 98%, 50%)');
+$location_text_color = !empty($elementor_settings['location_text_color']) ? $elementor_settings['location_text_color'] : apply_filters('mst_shop_grid_location_text', '#666666');
+$star_color = !empty($elementor_settings['star_color']) ? $elementor_settings['star_color'] : apply_filters('mst_shop_grid_star_color', 'hsl(45, 98%, 50%)');
+$price_color = !empty($elementor_settings['price_color']) ? $elementor_settings['price_color'] : apply_filters('mst_shop_grid_price_color', '#1a1a1a');
+$button_bg_color = !empty($elementor_settings['button_bg_color']) ? $elementor_settings['button_bg_color'] : apply_filters('mst_shop_grid_button_bg', 'hsl(270, 70%, 60%)');
+$button_text_color = !empty($elementor_settings['button_text_color']) ? $elementor_settings['button_text_color'] : apply_filters('mst_shop_grid_button_text_color', '#ffffff');
+$button_text = !empty($elementor_settings['button_text']) ? $elementor_settings['button_text'] : apply_filters('mst_shop_grid_button_text', __('Подробнее', 'mst-shop-filters'));
 
 // Wishlist settings
-$wishlist_bg = apply_filters('mst_shop_grid_wishlist_bg', 'rgba(255,255,255,0.85)');
-$wishlist_hover_bg = apply_filters('mst_shop_grid_wishlist_hover', 'rgba(255,255,255,0.95)');
-$wishlist_icon_color = apply_filters('mst_shop_grid_wishlist_icon', '#ffffff');
-$wishlist_stroke = apply_filters('mst_shop_grid_wishlist_stroke', 'hsl(0, 80%, 60%)');
-$wishlist_size = apply_filters('mst_shop_grid_wishlist_size', 36);
-$wishlist_icon_size = apply_filters('mst_shop_grid_wishlist_icon_size', 18);
-$wishlist_blur = apply_filters('mst_shop_grid_wishlist_blur', 12);
+$wishlist_bg = !empty($elementor_settings['wishlist_bg_color']) ? $elementor_settings['wishlist_bg_color'] : apply_filters('mst_shop_grid_wishlist_bg', 'rgba(255,255,255,0.85)');
+$wishlist_hover_bg = !empty($elementor_settings['wishlist_hover_bg']) ? $elementor_settings['wishlist_hover_bg'] : apply_filters('mst_shop_grid_wishlist_hover', 'rgba(255,255,255,0.95)');
+$wishlist_icon_color = !empty($elementor_settings['wishlist_icon_color']) ? $elementor_settings['wishlist_icon_color'] : apply_filters('mst_shop_grid_wishlist_icon', '#ffffff');
+$wishlist_stroke = !empty($elementor_settings['wishlist_icon_stroke']) ? $elementor_settings['wishlist_icon_stroke'] : apply_filters('mst_shop_grid_wishlist_stroke', 'hsl(0, 80%, 60%)');
+$wishlist_size = !empty($elementor_settings['wishlist_size']) ? $elementor_settings['wishlist_size'] : apply_filters('mst_shop_grid_wishlist_size', 36);
+$wishlist_icon_size = !empty($elementor_settings['wishlist_icon_size']) ? $elementor_settings['wishlist_icon_size'] : apply_filters('mst_shop_grid_wishlist_icon_size', 18);
+$wishlist_blur = !empty($elementor_settings['wishlist_blur']) ? $elementor_settings['wishlist_blur'] : apply_filters('mst_shop_grid_wishlist_blur', 12);
 
 // Get guide data from product meta
 $guide_id = get_post_meta($product_id, '_mst_guide_id', true);
@@ -58,14 +58,14 @@ if ($guide_id) {
 }
 
 // Guide settings
-$guide_border_color = apply_filters('mst_shop_grid_guide_border', '#ffffff');
-$guide_hover_border = apply_filters('mst_shop_grid_guide_hover', 'hsl(45, 98%, 60%)');
-$default_guide_photo = apply_filters('mst_shop_grid_default_guide_photo', $guide_photo);
+$guide_border_color = !empty($elementor_settings['guide_border_color']) ? $elementor_settings['guide_border_color'] : apply_filters('mst_shop_grid_guide_border', '#ffffff');
+$guide_hover_border = !empty($elementor_settings['guide_hover_border']) ? $elementor_settings['guide_hover_border'] : apply_filters('mst_shop_grid_guide_hover', 'hsl(45, 98%, 60%)');
+$default_guide_photo = !empty($elementor_settings['default_guide_photo']) ? esc_url($elementor_settings['default_guide_photo']) : ($guide_photo ?: apply_filters('mst_shop_grid_default_guide_photo', ''));
 
 // Card hover glow settings
-$card_hover_glow_color = apply_filters('mst_shop_grid_card_hover_glow', 'rgba(255, 255, 255, 0.15)');
-$card_hover_glow_size = apply_filters('mst_shop_grid_card_hover_glow_size', 8);
-$card_hover_border_color = apply_filters('mst_shop_grid_card_hover_border', 'rgba(255, 255, 255, 0.25)');
+$card_hover_glow_color = !empty($elementor_settings['card_hover_glow_color']) ? $elementor_settings['card_hover_glow_color'] : apply_filters('mst_shop_grid_card_hover_glow', 'rgba(255, 255, 255, 0.15)');
+$card_hover_glow_size = !empty($elementor_settings['card_hover_glow_size']) ? $elementor_settings['card_hover_glow_size'] : apply_filters('mst_shop_grid_card_hover_glow_size', 8);
+$card_hover_border_color = !empty($elementor_settings['card_hover_border_color']) ? $elementor_settings['card_hover_border_color'] : apply_filters('mst_shop_grid_card_hover_border', 'rgba(255, 255, 255, 0.25)');
 ?>
 <div class="mst-shop-grid-card mst-liquid-glass" 
      style="background-color: <?php echo esc_attr($card_bg_color); ?>; overflow: hidden; --card-hover-glow-color: <?php echo esc_attr($card_hover_glow_color); ?>; --card-hover-glow-size: <?php echo esc_attr($card_hover_glow_size); ?>px; --card-hover-border-color: <?php echo esc_attr($card_hover_border_color); ?>;">
