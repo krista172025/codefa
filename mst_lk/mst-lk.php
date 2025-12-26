@@ -332,8 +332,6 @@ class MST_LK {
             // Provide specific messages based on order status
             if ($order_status === 'pending') {
                 wp_send_json_error(__('⏳ Заказ ожидает оплаты. Вы сможете оставить отзыв после оплаты.', 'mst-lk'));
-            } elseif ($order_status === 'on-hold') {
-                wp_send_json_error(__('⏳ Подождите, пока ваша транзакция обработается', 'mst-lk'));
             } elseif ($order_status === 'cancelled' || $order_status === 'failed') {
                 wp_send_json_error(__('❌ Этот заказ был отменен. Вы не можете оставить отзыв.', 'mst-lk'));
             } else {
@@ -397,12 +395,7 @@ class MST_LK {
             update_post_meta($product_id, '_wc_average_rating', round($average, 2));
             update_post_meta($product_id, '_wc_review_count', count($comments));
             
-            // Trigger WooCommerce to recount ratings
-            if (function_exists('WC_Comments')) {
-                WC_Comments::clear_transients($product_id);
-            }
-            
-            // Clear product cache
+            // Clear product cache for immediate visibility
             if (function_exists('wc_delete_product_transients')) {
                 wc_delete_product_transients($product_id);
             }
