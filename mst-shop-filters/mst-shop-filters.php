@@ -112,8 +112,8 @@ class MST_Shop_Filters {
             ];
         }
         
-        // Filter by WooCommerce attributes
-        $wc_attributes = ['pa_tour-type', 'pa_duration', 'pa_transport', 'pa_format'];
+        // Filter by WooCommerce attributes (without pa_ prefix)
+        $wc_attributes = ['tour-type', 'duration', 'transport', 'format'];
         foreach ($wc_attributes as $attr) {
             if (!empty($filters[$attr]) && is_array($filters[$attr])) {
                 $args['tax_query'][] = [
