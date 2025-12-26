@@ -395,23 +395,23 @@ class MST_Product_Icons_Filters {
         $meta_query = [];
         $tax_query = [];
 
-        // FIXED: Use WooCommerce taxonomy attributes instead of meta fields
-        // Format filter - use pa_tour-type taxonomy
+        // FIXED: Use WooCommerce taxonomy attributes without pa_ prefix
+        // Format filter - use tour-type taxonomy
         if (!empty($_GET['format'])) {
             $formats = is_array($_GET['format']) ? array_map('sanitize_text_field', $_GET['format']) : [sanitize_text_field($_GET['format'])];
             $tax_query[] = [
-                'taxonomy' => 'pa_tour-type',
+                'taxonomy' => 'tour-type',
                 'field' => 'slug',
                 'terms' => $formats,
                 'operator' => 'IN'
             ];
         }
 
-        // Transport filter - use pa_transport taxonomy
+        // Transport filter - use transport taxonomy
         if (!empty($_GET['transport'])) {
             $transports = is_array($_GET['transport']) ? array_map('sanitize_text_field', $_GET['transport']) : [sanitize_text_field($_GET['transport'])];
             $tax_query[] = [
-                'taxonomy' => 'pa_transport',
+                'taxonomy' => 'transport',
                 'field' => 'slug',
                 'terms' => $transports,
                 'operator' => 'IN'
@@ -429,11 +429,11 @@ class MST_Product_Icons_Filters {
             ];
         }
 
-        // Duration filter - use pa_duration taxonomy if provided
+        // Duration filter - use duration taxonomy if provided
         if (!empty($_GET['duration'])) {
             $durations = is_array($_GET['duration']) ? array_map('sanitize_text_field', $_GET['duration']) : [sanitize_text_field($_GET['duration'])];
             $tax_query[] = [
-                'taxonomy' => 'pa_duration',
+                'taxonomy' => 'duration',
                 'field' => 'slug',
                 'terms' => $durations,
                 'operator' => 'IN'
