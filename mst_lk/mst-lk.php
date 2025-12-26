@@ -306,26 +306,39 @@ class MST_LK {
         $rating = intval($_POST['rating'] ?? 5);
         $comment = sanitize_textarea_field($_POST['comment'] ?? '');
         
-        // Проверка что пользователь купил товар
+        // Проверка что пользователь купил товар - include on-hold status
         $user_id = get_current_user_id();
         $orders = wc_get_orders([
             'customer_id' => $user_id,
-            'status' => ['completed', 'processing'],
             'limit' => -1,
         ]);
         
         $has_purchased = false;
+        $order_status = null;
         foreach ($orders as $order) {
             foreach ($order->get_items() as $item) {
                 if ($item->get_product_id() == $product_id) {
-                    $has_purchased = true;
-                    break 2;
+                    $order_status = $order->get_status();
+                    // Allow reviews for completed, processing, and on-hold orders
+                    if (in_array($order_status, ['completed', 'processing', 'on-hold'])) {
+                        $has_purchased = true;
+                        break 2;
+                    }
                 }
             }
         }
         
         if (!$has_purchased) {
-            wp_send_json_error(__('Вы не покупали этот тур', 'mst-lk'));
+            // Provide specific messages based on order status
+            if ($order_status === 'pending') {
+                wp_send_json_error(__('⏳ Заказ ожидает оплаты. Вы сможете оставить отзыв после оплаты.', 'mst-lk'));
+            } elseif ($order_status === 'on-hold') {
+                wp_send_json_error(__('⏳ Подождите, пока ваша транзакция обработается', 'mst-lk'));
+            } elseif ($order_status === 'cancelled' || $order_status === 'failed') {
+                wp_send_json_error(__('❌ Этот заказ был отменен. Вы не можете оставить отзыв.', 'mst-lk'));
+            } else {
+                wp_send_json_error(__('❌ Вы не покупали этот тур', 'mst-lk'));
+            }
         }
         
         // Проверка рейтинга
@@ -341,7 +354,7 @@ class MST_LK {
             'comment_author_email' => $user->user_email,
             'comment_content' => $comment,
             'comment_type' => 'review',
-            'comment_approved' => 0, // На модерацию!
+            'comment_approved' => 1, // Auto-approve for purchased products
             'user_id' => $user_id,
         ];
         
@@ -351,12 +364,38 @@ class MST_LK {
             // Добавляем рейтинг
             update_comment_meta($comment_id, 'rating', $rating);
             
+            // Update product rating count and average
+            $this->update_product_review_stats($product_id);
+            
             wp_send_json_success([
-                'message' => __('Отзыв успешно добавлен и отправлен на модерацию', 'mst-lk'),
+                'message' => __('Отзыв успешно добавлен', 'mst-lk'),
                 'comment_id' => $comment_id
             ]);
         } else {
             wp_send_json_error(__('Ошибка при добавлении отзыва', 'mst-lk'));
+        }
+    }
+    
+    /**
+     * Update product review statistics
+     */
+    private function update_product_review_stats($product_id) {
+        $comments = get_comments([
+            'post_id' => $product_id,
+            'type' => 'review',
+            'status' => 'approve',
+        ]);
+        
+        if (count($comments) > 0) {
+            $total = 0;
+            foreach ($comments as $comment) {
+                $rating = intval(get_comment_meta($comment->comment_ID, 'rating', true));
+                $total += $rating ?: 5;
+            }
+            $average = $total / count($comments);
+            
+            update_post_meta($product_id, '_wc_average_rating', round($average, 2));
+            update_post_meta($product_id, '_wc_review_count', count($comments));
         }
     }
     

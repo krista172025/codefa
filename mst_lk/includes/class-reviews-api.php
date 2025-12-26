@@ -34,10 +34,40 @@ class MST_Reviews_API {
             wp_send_json_error(['message' => __('Некорректный рейтинг', 'mst-lk')]);
         }
         
-        // Check if user bought this product
+        // Check if user bought this product - include on-hold status
         $user_id = get_current_user_id();
-        if (function_exists('wc_customer_bought_product') && !wc_customer_bought_product('', $user_id, $product_id)) {
-            wp_send_json_error(['message' => __('Вы не покупали этот тур', 'mst-lk')]);
+        
+        // Get user orders with different statuses
+        $orders = wc_get_orders([
+            'customer_id' => $user_id,
+            'limit' => -1,
+        ]);
+        
+        $has_purchased = false;
+        $order_status = null;
+        
+        foreach ($orders as $order) {
+            foreach ($order->get_items() as $item) {
+                if ($item->get_product_id() == $product_id) {
+                    $order_status = $order->get_status();
+                    // Allow reviews for completed, processing, and on-hold orders
+                    if (in_array($order_status, ['completed', 'processing', 'on-hold'])) {
+                        $has_purchased = true;
+                        break 2;
+                    }
+                }
+            }
+        }
+        
+        if (!$has_purchased) {
+            // Provide specific messages based on order status
+            if ($order_status === 'pending') {
+                wp_send_json_error(['message' => __('⏳ Заказ ожидает оплаты. Вы сможете оставить отзыв после оплаты.', 'mst-lk')]);
+            } elseif ($order_status === 'cancelled' || $order_status === 'failed') {
+                wp_send_json_error(['message' => __('❌ Этот заказ был отменен. Вы не можете оставить отзыв.', 'mst-lk')]);
+            } else {
+                wp_send_json_error(['message' => __('❌ Вы не покупали этот тур', 'mst-lk')]);
+            }
         }
         
         // Create WooCommerce review
