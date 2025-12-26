@@ -978,18 +978,10 @@ class Shop_Grid extends Widget_Base {
                 $rating = $product->get_average_rating();
                 $rating_count = $product->get_review_count();
                 
-                // Get price HTML and add "от" prefix
+                // Get price HTML and add "от" (from) prefix to price
                 $price_html = $product->get_price_html();
-                // Add "от" (from) prefix to price
                 if (!empty($price_html)) {
-                    // Check if it's a price range (contains &ndash; or -)
-                    if (strpos($price_html, '&ndash;') !== false || strpos($price_html, '–') !== false) {
-                        // For price ranges, add "от" before the range
-                        $price_html = 'от ' . $price_html;
-                    } else {
-                        // For single prices, add "от" prefix
-                        $price_html = 'от ' . $price_html;
-                    }
+                    $price_html = 'от ' . $price_html;
                 }
                 
                 // Get location from settings or WooCommerce attribute
