@@ -1224,7 +1224,8 @@
 }
 
 .mst-order-buttons-row {
-    display: flex;
+    display: flex !important;
+    flex-direction: row !important;
     flex-wrap: wrap;
     gap: 10px;
     align-items: center;
