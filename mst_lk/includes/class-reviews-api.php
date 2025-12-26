@@ -180,6 +180,14 @@ class MST_Reviews_API {
                 
                 update_post_meta($product_id, '_wc_average_rating', round($average, 2));
                 update_post_meta($product_id, '_wc_review_count', count($comments));
+                
+                // Trigger WooCommerce to recount ratings
+                if (function_exists('WC_Comments')) {
+                    WC_Comments::clear_transients($product_id);
+                }
+                
+                // Clear product cache
+                wc_delete_product_transients($product_id);
             }
         }
     }
