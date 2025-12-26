@@ -238,7 +238,7 @@
         // Удаление из избранного
         $(document).on('click', '.mst-remove-from-wishlist', function() {
             const productId = $(this).data('product-id');
-            const item = $(this).closest('.xstore-wishlist-item');
+            const item = $(this).closest('.mst-shop-grid-card, .xstore-wishlist-item');
             
             if (!confirm('Удалить товар из избранного?')) {
                 return;
@@ -256,7 +256,7 @@
                     if (response.success) {
                         item.fadeOut(300, function() {
                             $(this).remove();
-                            if ($('.xstore-wishlist-item').length === 0) {
+                            if ($('.mst-shop-grid-card, .xstore-wishlist-item').length === 0) {
                                 location.reload();
                             }
                         });
@@ -266,6 +266,93 @@
                 },
                 error: function() {
                     alert('❌ Ошибка удаления');
+                }
+            });
+        });
+        
+        // Открытие модального окна отзыва
+        $(document).on('click', '.mst-lk-open-review', function(e) {
+            e.preventDefault();
+            const productId = $(this).data('product-id');
+            
+            if (!productId || productId == 0) {
+                alert('❌ Не удалось определить товар');
+                return;
+            }
+            
+            $('#review-product-id').val(productId);
+            $('#mst-lk-review-modal').addClass('active');
+        });
+        
+        // Отправка отзыва
+        $('#mst-review-form').on('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            formData.append('action', 'mst_lk_submit_review');
+            formData.append('nonce', mstLK.nonce);
+            
+            const submitBtn = $(this).find('button[type="submit"]');
+            submitBtn.prop('disabled', true).text('⏳ Отправка...');
+            
+            $.ajax({
+                url: mstLK.ajax_url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        alert('✅ ' + response.data.message);
+                        $('#mst-lk-review-modal').removeClass('active');
+                        $('#mst-review-form')[0].reset();
+                    } else {
+                        alert('❌ ' + response.data);
+                    }
+                    submitBtn.prop('disabled', false).text('Отправить отзыв');
+                },
+                error: function() {
+                    alert('❌ Ошибка отправки отзыва');
+                    submitBtn.prop('disabled', false).text('Отправить отзыв');
+                }
+            });
+        });
+        
+        // Скачать подарок
+        $(document).on('click', '.mst-lk-download-gift', function(e) {
+            e.preventDefault();
+            const orderId = $(this).data('order-id');
+            const btn = $(this);
+            
+            btn.prop('disabled', true).text('⏳ Загрузка...');
+            
+            $.ajax({
+                url: mstLK.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'mst_lk_download_gift',
+                    nonce: mstLK.nonce,
+                    order_id: orderId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Скачиваем файл
+                        const link = document.createElement('a');
+                        link.href = response.data.url;
+                        link.download = response.data.filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        alert('✅ Подарок скачан!');
+                    } else {
+                        alert('❌ ' + response.data);
+                    }
+                    btn.prop('disabled', false).text('💝 Скачать подарок');
+                },
+                error: function() {
+                    alert('❌ Ошибка скачивания');
+                    btn.prop('disabled', false).text('💝 Скачать подарок');
                 }
             });
         });
