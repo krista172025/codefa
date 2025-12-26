@@ -5268,8 +5268,7 @@ body,
 .mst-shop-grid-guide-inside {
   position: absolute;
   right: var(--guide-right, 0px);
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: var(--guide-bottom, 0px);
   width: var(--guide-size, 64px);
   height: var(--guide-size, 64px);
   border-radius: 50%;
@@ -5290,7 +5289,7 @@ body,
 }
 
 .mst-shop-grid-guide-inside:hover {
-  transform: translateY(-50%) scale(1.08);
+  transform: scale(1.08);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 

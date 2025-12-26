@@ -977,12 +977,7 @@ class Shop_Grid extends Widget_Base {
                 $image_url = $image ? $image[0] : wc_placeholder_img_src('medium');
                 $rating = $product->get_average_rating();
                 $rating_count = $product->get_review_count();
-                
-                // Get price HTML and add "от" (from) prefix to price
                 $price_html = $product->get_price_html();
-                if (!empty($price_html)) {
-                    $price_html = 'от ' . $price_html;
-                }
                 
                 // Get location from settings or WooCommerce attribute
                 $location = $location_setting;
