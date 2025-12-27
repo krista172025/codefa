@@ -2,14 +2,14 @@
 /**
  * Plugin Name: MST Filters
  * Description: Фильтры для Shop Grid виджета с поддержкой WooCommerce атрибутов
- * Version: 1.0.1
- * Author: MySuperTour
+ * Version: 1.0.2
+ * Author:  MySuperTour
  * Text Domain: mst-filters
  */
 
 if (!defined('ABSPATH')) exit;
 
-define('MST_FILTERS_VERSION', '1.0.1');
+define('MST_FILTERS_VERSION', '1.0.2');
 define('MST_FILTERS_PATH', plugin_dir_path(__FILE__));
 define('MST_FILTERS_URL', plugin_dir_url(__FILE__));
 
@@ -63,7 +63,7 @@ class MST_Filters {
         $meta_query = [];
         
         // Формат тура (pa_tour-type)
-        if (!empty($_POST['tour_type']) && is_array($_POST['tour_type'])) {
+        if (! empty($_POST['tour_type']) && is_array($_POST['tour_type'])) {
             $tax_query[] = [
                 'taxonomy' => 'pa_tour-type',
                 'field' => 'slug',
@@ -89,8 +89,7 @@ class MST_Filters {
             ];
         }
         
-        // Добавляем tax_query если есть
-        if (! empty($tax_query)) {
+        if (!empty($tax_query)) {
             $tax_query['relation'] = 'AND';
             $args['tax_query'] = $tax_query;
         }
@@ -108,7 +107,6 @@ class MST_Filters {
             ];
         }
         
-        // Добавляем meta_query если есть
         if (!empty($meta_query)) {
             $meta_query['relation'] = 'AND';
             $args['meta_query'] = $meta_query;

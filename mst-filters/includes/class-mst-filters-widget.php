@@ -36,19 +36,19 @@ class MST_Filters_Widget extends Widget_Base {
         
         $this->add_control('show_price', [
             'label' => 'Показать цену',
-            'type' => Controls_Manager::SWITCHER,
+            'type' => Controls_Manager:: SWITCHER,
             'default' => 'yes',
         ]);
         
         $this->add_control('show_transport', [
             'label' => 'Показать транспорт',
-            'type' => Controls_Manager::SWITCHER,
+            'type' => Controls_Manager:: SWITCHER,
             'default' => 'yes',
         ]);
         
         $this->add_control('show_categories', [
             'label' => 'Показать рубрики',
-            'type' => Controls_Manager::SWITCHER,
+            'type' => Controls_Manager:: SWITCHER,
             'default' => 'yes',
         ]);
         
@@ -86,7 +86,7 @@ class MST_Filters_Widget extends Widget_Base {
             FROM {$wpdb->postmeta} 
             WHERE meta_key = '_price' AND meta_value != '' AND meta_value > 0
         ");
-        $min_price = $price_range ?  floor($price_range->min_price) : 0;
+        $min_price = $price_range ? floor($price_range->min_price) : 0;
         $max_price = $price_range ?  ceil($price_range->max_price) : 1000;
         ?>
         
