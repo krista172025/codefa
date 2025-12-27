@@ -2,14 +2,14 @@
 /**
  * Plugin Name: MST Filters
  * Description: Фильтры для Shop Grid виджета с поддержкой WooCommerce атрибутов
- * Version: 1.0.2
+ * Version: 1.1.0
  * Author: MySuperTour
  * Text Domain: mst-filters
  */
 
 if (!defined('ABSPATH')) exit;
 
-define('MST_FILTERS_VERSION', '1.0.2');
+define('MST_FILTERS_VERSION', '1.1.0');
 define('MST_FILTERS_PATH', plugin_dir_path(__FILE__));
 define('MST_FILTERS_URL', plugin_dir_url(__FILE__));
 
@@ -33,7 +33,7 @@ class MST_Filters {
     
     public function enqueue_assets() {
         wp_enqueue_style('mst-filters', MST_FILTERS_URL . 'assets/css/filters.css', [], MST_FILTERS_VERSION);
-        wp_enqueue_script('mst-filters', MST_FILTERS_URL . 'assets/js/filters.js', ['jquery'], MST_FILTERS_VERSION, true);
+        wp_enqueue_script('mst-filters', MST_FILTERS_URL 'assets/js/filters.js', ['jquery'], MST_FILTERS_VERSION, true);
         wp_localize_script('mst-filters', 'MST_FILTERS', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('mst_filters_nonce')
@@ -46,7 +46,6 @@ class MST_Filters {
     }
     
     public function ajax_filter() {
-        // Проверяем nonce
         if (! isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'mst_filters_nonce')) {
             wp_send_json_error(['message' => 'Invalid nonce']);
             return;
@@ -71,25 +70,25 @@ class MST_Filters {
             ];
         }
         
-        // Транспорт (pa_transport)
-        if (!empty($_POST['transport'])) {
+        // Транспорт (pa_transport) - теперь массив
+        if (! empty($_POST['transport']) && is_array($_POST['transport'])) {
             $tax_query[] = [
                 'taxonomy' => 'pa_transport',
                 'field' => 'slug',
-                'terms' => [sanitize_text_field($_POST['transport'])],
+                'terms' => array_map('sanitize_text_field', $_POST['transport']),
             ];
         }
         
-        // Рубрики (product_cat)
-        if (!empty($_POST['categories']) && is_array($_POST['categories'])) {
+        // Рубрики через метки (product_tag)
+        if (!empty($_POST['tags']) && is_array($_POST['tags'])) {
             $tax_query[] = [
-                'taxonomy' => 'product_cat',
-                'field' => 'term_id',
-                'terms' => array_map('intval', $_POST['categories']),
+                'taxonomy' => 'product_tag',
+                'field' => 'slug',
+                'terms' => array_map('sanitize_text_field', $_POST['tags']),
             ];
         }
         
-        if (!empty($tax_query)) {
+        if (! empty($tax_query)) {
             $tax_query['relation'] = 'AND';
             $args['tax_query'] = $tax_query;
         }
@@ -122,5 +121,5 @@ class MST_Filters {
 }
 
 add_action('plugins_loaded', function() {
-    MST_Filters::instance();
+    MST_Filters:: instance();
 });

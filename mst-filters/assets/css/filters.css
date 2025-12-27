@@ -1,6 +1,6 @@
 .mst-filters-container {
     background: #fff;
-    border-radius:  16px;
+    border-radius: 16px;
     padding: 24px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     margin-bottom: 30px;
@@ -11,6 +11,7 @@
     flex-wrap: wrap;
     gap: 24px;
     margin-bottom: 20px;
+    align-items: flex-start;
 }
 
 .mst-filter-group {
@@ -19,13 +20,14 @@
 }
 
 .mst-filter-full {
-    flex:  100%;
+    flex-basis: 100%;
+    width: 100%;
 }
 
 .mst-filter-label {
     font-size: 12px;
     font-weight: 600;
-    color:  #666;
+    color: #666;
     margin-bottom: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -33,60 +35,180 @@
 
 .mst-filter-chips {
     display: flex;
-    flex-wrap:  wrap;
+    flex-wrap: wrap;
     gap: 8px;
 }
 
+/* Чипы БЕЗ чекбоксов */
 .mst-chip {
     cursor: pointer;
+    display: inline-block;
 }
 
 .mst-chip input {
-    display: none;
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
 }
 
 .mst-chip-inner {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 8px 16px;
+    padding: 10px 18px;
     background: #fff;
-    border:  1px solid #e0e0e0;
+    border: 2px solid #e0e0e0;
     border-radius: 24px;
     font-size: 14px;
     color: #333;
     transition: all 0.2s ease;
+    user-select: none;
 }
 
 .mst-chip input:checked + .mst-chip-inner {
     background: #f3e8ff;
     border-color: #9b59b6;
     color: #9b59b6;
+    box-shadow: 0 2px 8px rgba(155, 89, 182, 0.25);
 }
 
 .mst-chip-inner:hover {
     border-color: #9b59b6;
+    background: #faf5ff;
 }
 
 .mst-chip-icon {
-    font-size:  16px;
+    font-size: 16px;
+    line-height: 1;
 }
 
+/* Селекты - исправленные */
 .mst-select {
-    width:  100%;
-    padding: 12px 16px;
-    border: 1px solid #e0e0e0;
-    border-radius:  8px;
-    font-size:  14px;
+    width: 100%;
+    padding: 12px 40px 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
     color: #333;
-    background: #fff;
+    background-color: #fff;
     cursor: pointer;
     appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 12px center;
+    background-position: right 14px center;
+    background-size: 12px;
 }
 
+.mst-select:focus {
+    outline: none;
+    border-color: #9b59b6;
+}
+
+/* Слайдер цены */
+.mst-price-slider-container {
+    padding: 10px 0;
+}
+
+.mst-price-slider {
+    position: relative;
+    height: 40px;
+    margin-bottom: 10px;
+}
+
+.mst-price-track {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: #e0e0e0;
+    border-radius: 3px;
+    transform: translateY(-50%);
+}
+
+.mst-price-range {
+    position: absolute;
+    top: 50%;
+    height: 6px;
+    background: linear-gradient(90deg, #9b59b6, #8e44ad);
+    border-radius: 3px;
+    transform: translateY(-50%);
+}
+
+.mst-price-inputs {
+    display: flex;
+    gap: 10px;
+}
+
+.mst-price-inputs input[type="range"] {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 6px;
+    background: transparent;
+    pointer-events: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.mst-price-inputs input[type="range"]::-webkit-slider-thumb {
+    pointer-events: auto;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #9b59b6;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    border: 3px solid #fff;
+}
+
+.mst-price-inputs input[type="range"]::-moz-range-thumb {
+    pointer-events: auto;
+    width: 20px;
+    height: 20px;
+    background: #9b59b6;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    border: 3px solid #fff;
+}
+
+.mst-price-values {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.mst-price-histogram {
+    display: flex;
+    align-items: flex-end;
+    height: 30px;
+    gap: 2px;
+    margin-bottom: 8px;
+}
+
+.mst-price-bar {
+    flex: 1;
+    background: #e0e0e0;
+    border-radius: 2px 2px 0 0;
+    min-height: 4px;
+    transition: background 0.2s ease;
+}
+
+.mst-price-bar.active {
+    background: #9b59b6;
+}
+
+/* Кнопки */
 .mst-filters-actions {
     display: flex;
     gap: 12px;
@@ -96,45 +218,55 @@
 .mst-btn-search {
     flex: 1;
     padding: 14px 24px;
-    background: #9b59b6;
+    background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
     color: #fff;
     border: none;
     border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
-    cursor:  pointer;
+    cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .mst-btn-search:hover {
     opacity: 0.9;
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(155, 89, 182, 0.4);
 }
 
 .mst-btn-reset {
     padding: 14px 24px;
     background: #fff;
-    color:  #333;
-    border:  1px solid #e0e0e0;
+    color: #333;
+    border: 2px solid #e0e0e0;
     border-radius: 8px;
     font-size: 14px;
     font-weight: 500;
-    cursor:  pointer;
+    cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .mst-btn-reset:hover {
     background: #f5f5f5;
+    border-color: #ccc;
 }
 
-/* Loading state */
+/* Loading и hidden */
 .mst-shop-grid.mst-loading {
     opacity: 0.5;
     pointer-events: none;
 }
 
 .mst-shop-grid-card.mst-hidden {
-    display:  none ! important;
+    display: none ! important;
+}
+
+.mst-no-results {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 16px;
+    grid-column: 1 / -1;
 }
 
 /* Responsive */
