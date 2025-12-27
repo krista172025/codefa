@@ -33,7 +33,7 @@ class MST_Filters {
     
     public function enqueue_assets() {
         wp_enqueue_style('mst-filters', MST_FILTERS_URL . 'assets/css/filters.css', [], MST_FILTERS_VERSION);
-        wp_enqueue_script('mst-filters', MST_FILTERS_URL 'assets/js/filters.js', ['jquery'], MST_FILTERS_VERSION, true);
+        wp_enqueue_script('mst-filters', MST_FILTERS_URL . 'assets/js/filters.js', ['jquery'], MST_FILTERS_VERSION, true);
         wp_localize_script('mst-filters', 'MST_FILTERS', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('mst_filters_nonce')
