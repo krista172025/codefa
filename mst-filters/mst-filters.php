@@ -1,15 +1,15 @@
 <?php
 /**
  * Plugin Name: MST Filters
- * Description:  Фильтры для Shop Grid виджета с поддержкой WooCommerce атрибутов
- * Version: 1.0.0
- * Author:  MySuperTour
+ * Description: Фильтры для Shop Grid виджета с поддержкой WooCommerce атрибутов
+ * Version: 1.0.1
+ * Author: MySuperTour
  * Text Domain: mst-filters
  */
 
 if (!defined('ABSPATH')) exit;
 
-define('MST_FILTERS_VERSION', '1.0.0');
+define('MST_FILTERS_VERSION', '1.0.1');
 define('MST_FILTERS_PATH', plugin_dir_path(__FILE__));
 define('MST_FILTERS_URL', plugin_dir_url(__FILE__));
 
@@ -33,7 +33,7 @@ class MST_Filters {
     
     public function enqueue_assets() {
         wp_enqueue_style('mst-filters', MST_FILTERS_URL . 'assets/css/filters.css', [], MST_FILTERS_VERSION);
-        wp_enqueue_script('mst-filters', MST_FILTERS_URL .  'assets/js/filters.js', ['jquery'], MST_FILTERS_VERSION, true);
+        wp_enqueue_script('mst-filters', MST_FILTERS_URL . 'assets/js/filters.js', ['jquery'], MST_FILTERS_VERSION, true);
         wp_localize_script('mst-filters', 'MST_FILTERS', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('mst_filters_nonce')
@@ -46,41 +46,53 @@ class MST_Filters {
     }
     
     public function ajax_filter() {
-        check_ajax_referer('mst_filters_nonce', 'nonce');
+        // Проверяем nonce
+        if (! isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'mst_filters_nonce')) {
+            wp_send_json_error(['message' => 'Invalid nonce']);
+            return;
+        }
         
         $args = [
             'post_type' => 'product',
             'post_status' => 'publish',
-            'posts_per_page' => intval($_POST['per_page'] ?? 12),
-            'tax_query' => ['relation' => 'AND'],
-            'meta_query' => ['relation' => 'AND'],
+            'posts_per_page' => -1,
+            'fields' => 'ids',
         ];
         
+        $tax_query = [];
+        $meta_query = [];
+        
         // Формат тура (pa_tour-type)
-        if (! empty($_POST['tour_type'])) {
-            $args['tax_query'][] = [
+        if (!empty($_POST['tour_type']) && is_array($_POST['tour_type'])) {
+            $tax_query[] = [
                 'taxonomy' => 'pa_tour-type',
                 'field' => 'slug',
-                'terms' => array_map('sanitize_text_field', (array)$_POST['tour_type']),
+                'terms' => array_map('sanitize_text_field', $_POST['tour_type']),
             ];
         }
         
         // Транспорт (pa_transport)
         if (!empty($_POST['transport'])) {
-            $args['tax_query'][] = [
+            $tax_query[] = [
                 'taxonomy' => 'pa_transport',
                 'field' => 'slug',
-                'terms' => array_map('sanitize_text_field', (array)$_POST['transport']),
+                'terms' => [sanitize_text_field($_POST['transport'])],
             ];
         }
         
         // Рубрики (product_cat)
-        if (!empty($_POST['categories'])) {
-            $args['tax_query'][] = [
+        if (!empty($_POST['categories']) && is_array($_POST['categories'])) {
+            $tax_query[] = [
                 'taxonomy' => 'product_cat',
                 'field' => 'term_id',
-                'terms' => array_map('intval', (array)$_POST['categories']),
+                'terms' => array_map('intval', $_POST['categories']),
             ];
+        }
+        
+        // Добавляем tax_query если есть
+        if (! empty($tax_query)) {
+            $tax_query['relation'] = 'AND';
+            $args['tax_query'] = $tax_query;
         }
         
         // Цена
@@ -88,7 +100,7 @@ class MST_Filters {
         $max_price = isset($_POST['max_price']) ? floatval($_POST['max_price']) : 999999;
         
         if ($min_price > 0 || $max_price < 999999) {
-            $args['meta_query'][] = [
+            $meta_query[] = [
                 'key' => '_price',
                 'value' => [$min_price, $max_price],
                 'compare' => 'BETWEEN',
@@ -96,19 +108,16 @@ class MST_Filters {
             ];
         }
         
-        $query = new WP_Query($args);
-        $product_ids = [];
-        
-        if ($query->have_posts()) {
-            while ($query->have_posts()) {
-                $query->the_post();
-                $product_ids[] = get_the_ID();
-            }
+        // Добавляем meta_query если есть
+        if (!empty($meta_query)) {
+            $meta_query['relation'] = 'AND';
+            $args['meta_query'] = $meta_query;
         }
-        wp_reset_postdata();
+        
+        $query = new WP_Query($args);
         
         wp_send_json_success([
-            'product_ids' => $product_ids,
+            'product_ids' => $query->posts,
             'found' => $query->found_posts,
         ]);
     }

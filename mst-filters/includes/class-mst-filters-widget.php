@@ -53,9 +53,9 @@ class MST_Filters_Widget extends Widget_Base {
         ]);
         
         $this->add_control('target_grid', [
-            'label' => 'ID контейнера Shop Grid',
+            'label' => 'CSS селектор Shop Grid',
             'type' => Controls_Manager::TEXT,
-            'default' => '. mst-shop-grid',
+            'default' => '.mst-shop-grid',
             'description' => 'CSS селектор контейнера с товарами',
         ]);
         
@@ -84,7 +84,7 @@ class MST_Filters_Widget extends Widget_Base {
             SELECT MIN(CAST(meta_value AS DECIMAL(10,2))) as min_price, 
                    MAX(CAST(meta_value AS DECIMAL(10,2))) as max_price 
             FROM {$wpdb->postmeta} 
-            WHERE meta_key = '_price' AND meta_value != ''
+            WHERE meta_key = '_price' AND meta_value != '' AND meta_value > 0
         ");
         $min_price = $price_range ?  floor($price_range->min_price) : 0;
         $max_price = $price_range ?  ceil($price_range->max_price) : 1000;
@@ -119,7 +119,7 @@ class MST_Filters_Widget extends Widget_Base {
                             <option value="0-50">0 — 50 €</option>
                             <option value="50-100">50 — 100 €</option>
                             <option value="100-200">100 — 200 €</option>
-                            <option value="200-99999">200+ €</option>
+                            <option value="200-999999">200+ €</option>
                         </select>
                     </div>
                 </div>
@@ -171,8 +171,8 @@ class MST_Filters_Widget extends Widget_Base {
                 </button>
             </div>
             
-            <input type="hidden" name="min_price" value="<?php echo $min_price; ?>">
-            <input type="hidden" name="max_price" value="<?php echo $max_price; ?>">
+            <input type="hidden" name="min_price" value="<?php echo $min_price; ?>" data-default="<?php echo $min_price; ?>">
+            <input type="hidden" name="max_price" value="<?php echo $max_price; ?>" data-default="<?php echo $max_price; ?>">
         </div>
         <?php
     }

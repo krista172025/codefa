@@ -1007,7 +1007,7 @@ class Shop_Grid extends Widget_Base {
                 $card_class = 'mst-shop-grid-card';
                 if ($liquid_glass) $card_class .= ' mst-liquid-glass';
             ?>
-            <div class="<?php echo esc_attr($card_class); ?>" style="background-color: <?php echo esc_attr($settings['card_bg_color']); ?>; overflow: hidden; --card-hover-glow-color: <?php echo esc_attr($card_hover_glow_color); ?>; --card-hover-glow-size: <?php echo esc_attr($card_hover_glow_size); ?>px; --card-hover-border-color: <?php echo esc_attr($card_hover_border_color); ?>;">
+            <div class="<? php echo esc_attr($card_class); ?>" data-product-id="<?php echo esc_attr($product_id); ?>" style="background-color: <?php echo esc_attr($settings['card_bg_color']); ?>; overflow: hidden; --card-hover-glow-color: <?php echo esc_attr($card_hover_glow_color); ?>; --card-hover-glow-size: <?php echo esc_attr($card_hover_glow_size); ?>px; --card-hover-border-color: <?php echo esc_attr($card_hover_border_color); ?>;">
                 <!-- Image with Badges -->
                 <div class="mst-shop-grid-image">
                     <a href="<?php echo esc_url(get_permalink($product_id)); ?>">
