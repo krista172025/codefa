@@ -2,14 +2,14 @@
 /**
  * Plugin Name: MST Filters
  * Description: Фильтры для Shop Grid виджета с поддержкой WooCommerce атрибутов
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: MySuperTour
  * Text Domain: mst-filters
  */
 
 if (!defined('ABSPATH')) exit;
 
-define('MST_FILTERS_VERSION', '1.1.0');
+define('MST_FILTERS_VERSION', '1.2.0');
 define('MST_FILTERS_PATH', plugin_dir_path(__FILE__));
 define('MST_FILTERS_URL', plugin_dir_url(__FILE__));
 
@@ -18,10 +18,10 @@ class MST_Filters {
     private static $instance = null;
     
     public static function instance() {
-        if (is_null(self:: $instance)) {
+        if (is_null(self::$instance)) {
             self::$instance = new self();
         }
-        return self::$instance;
+        return self:: $instance;
     }
     
     private function __construct() {
@@ -61,7 +61,7 @@ class MST_Filters {
         $tax_query = [];
         $meta_query = [];
         
-        // Формат тура (pa_tour-type)
+        // Формат тура
         if (! empty($_POST['tour_type']) && is_array($_POST['tour_type'])) {
             $tax_query[] = [
                 'taxonomy' => 'pa_tour-type',
@@ -70,8 +70,8 @@ class MST_Filters {
             ];
         }
         
-        // Транспорт (pa_transport) - теперь массив
-        if (! empty($_POST['transport']) && is_array($_POST['transport'])) {
+        // Транспорт
+        if (!empty($_POST['transport']) && is_array($_POST['transport'])) {
             $tax_query[] = [
                 'taxonomy' => 'pa_transport',
                 'field' => 'slug',
@@ -79,7 +79,7 @@ class MST_Filters {
             ];
         }
         
-        // Рубрики через метки (product_tag)
+        // Рубрики (метки)
         if (!empty($_POST['tags']) && is_array($_POST['tags'])) {
             $tax_query[] = [
                 'taxonomy' => 'product_tag',
@@ -88,7 +88,7 @@ class MST_Filters {
             ];
         }
         
-        if (! empty($tax_query)) {
+        if (!empty($tax_query)) {
             $tax_query['relation'] = 'AND';
             $args['tax_query'] = $tax_query;
         }
