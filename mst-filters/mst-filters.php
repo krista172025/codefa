@@ -3,7 +3,7 @@
  * Plugin Name: MST Filters
  * Description: Фильтры для Shop Grid виджета с поддержкой WooCommerce атрибутов
  * Version: 1.0.2
- * Author:  MySuperTour
+ * Author: MySuperTour
  * Text Domain: mst-filters
  */
 
@@ -41,7 +41,7 @@ class MST_Filters {
     }
     
     public function register_widget($widgets_manager) {
-        require_once MST_FILTERS_PATH .  'includes/class-mst-filters-widget.php';
+        require_once MST_FILTERS_PATH . 'includes/class-mst-filters-widget.php';
         $widgets_manager->register(new \MST_Filters_Widget());
     }
     
@@ -122,5 +122,5 @@ class MST_Filters {
 }
 
 add_action('plugins_loaded', function() {
-    MST_Filters:: instance();
+    MST_Filters::instance();
 });

@@ -87,7 +87,7 @@ class MST_Filters_Widget extends Widget_Base {
             WHERE meta_key = '_price' AND meta_value != '' AND meta_value > 0
         ");
         $min_price = $price_range ? floor($price_range->min_price) : 0;
-        $max_price = $price_range ?  ceil($price_range->max_price) : 1000;
+        $max_price = $price_range ? ceil($price_range->max_price) : 1000;
         ?>
         
         <div class="mst-filters-container" data-target="<?php echo $target; ?>">
@@ -163,7 +163,7 @@ class MST_Filters_Widget extends Widget_Base {
             <?php endif; ?>
             
             <div class="mst-filters-actions">
-                <button type="button" class="mst-btn-search" style="background:  <?php echo $btn_color; ?>;">
+                <button type="button" class="mst-btn-search" style="background: <?php echo $btn_color; ?>;">
                     НАЙТИ
                 </button>
                 <button type="button" class="mst-btn-reset">

@@ -53,7 +53,7 @@
                 tourTypes.push($(this).val());
             });
             
-            $container.find('input[name="categories[]"]: checked').each(function() {
+            $container.find('input[name="categories[]"]:checked').each(function() {
                 categories.push($(this).val());
             });
             
@@ -64,7 +64,7 @@
             console.log('MST Filters: запрос', {
                 tour_type: tourTypes,
                 transport: transport,
-                categories:  categories,
+                categories: categories,
                 min_price: minPrice,
                 max_price: maxPrice
             });
@@ -73,18 +73,18 @@
             
             $.ajax({
                 url: MST_FILTERS.ajax_url,
-                type:  'POST',
+                type: 'POST',
                 data: {
                     action: 'mst_filter_products',
                     nonce: MST_FILTERS.nonce,
-                    tour_type:  tourTypes,
+                    tour_type: tourTypes,
                     transport: transport,
-                    categories:  categories,
+                    categories: categories,
                     min_price: minPrice,
                     max_price: maxPrice
                 },
                 success: function(response) {
-                    console.log('MST Filters:  ответ', response);
+                    console.log('MST Filters: ответ', response);
                     if (response.success) {
                         filterGridByIds(response.data.product_ids);
                         console.log('MST Filters: найдено', response.data.found);
@@ -95,7 +95,7 @@
                 },
                 error: function(xhr, status, error) {
                     $grid.removeClass('mst-loading');
-                    console.error('MST Filters:  AJAX ошибка', status, error);
+                    console.error('MST Filters: AJAX ошибка', status, error);
                 }
             });
         }
