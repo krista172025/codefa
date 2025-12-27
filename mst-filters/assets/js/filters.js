@@ -133,7 +133,7 @@
         
         $grid.addClass('mst-loading');
         
-        $ajax({
+        $.ajax({
             url: MST_FILTERS.ajax_url,
             type: 'POST',
             data: {
