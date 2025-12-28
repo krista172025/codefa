@@ -304,6 +304,69 @@ class Shop_Grid extends Widget_Base {
                 'condition' => ['show_wishlist' => 'yes'],
             ]
         );
+        
+        $this->add_control(
+            'wishlist_bg_color',
+            [
+                'label' => __('Background Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => 'rgba(255,255,255,0.85)',
+                'condition' => ['show_wishlist' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'wishlist_icon_color',
+            [
+                'label' => __('Heart Fill Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#ffffff',
+                'condition' => ['show_wishlist' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'wishlist_icon_stroke',
+            [
+                'label' => __('Heart Stroke Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => 'hsl(0, 80%, 60%)',
+                'condition' => ['show_wishlist' => 'yes'],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'wishlist_size',
+            [
+                'label' => __('Button Size', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => 24, 'max' => 56]],
+                'default' => ['size' => 36, 'unit' => 'px'],
+                'condition' => ['show_wishlist' => 'yes'],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'wishlist_icon_size',
+            [
+                'label' => __('Icon Size', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => 12, 'max' => 32]],
+                'default' => ['size' => 18, 'unit' => 'px'],
+                'condition' => ['show_wishlist' => 'yes'],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'wishlist_blur',
+            [
+                'label' => __('Blur Amount', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => 0, 'max' => 30]],
+                'default' => ['size' => 12, 'unit' => 'px'],
+                'condition' => ['show_wishlist' => 'yes', 'wishlist_liquid_glass' => 'yes'],
+            ]
+        );
 
         $this->end_controls_section();
 
@@ -363,35 +426,22 @@ class Shop_Grid extends Widget_Base {
         );
         
         $this->add_responsive_control(
-            'title_margin_bottom',
+            'title_row_margin_bottom',
             [
-                'label' => __('Title Bottom Margin', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::SLIDER,
+                'label' => __('Title Row Bottom Margin', 'my-super-tour-elementor'),
+                'type' => Controls_Manager:: SLIDER,
                 'range' => ['px' => ['min' => 0, 'max' => 30]],
-                'default' => ['size' => 4, 'unit' => 'px'],
+                'default' => ['size' => 6, 'unit' => 'px'],
                 'selectors' => [
-                    '{{WRAPPER}} .mst-shop-grid-title' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .mst-shop-grid-title-row' => 'margin-bottom:  {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
 
         $this->add_responsive_control(
-            'location_margin_bottom',
+            'meta_row_margin_bottom',
             [
-                'label' => __('Location Bottom Margin', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::SLIDER,
-                'range' => ['px' => ['min' => 0, 'max' => 30]],
-                'default' => ['size' => 8, 'unit' => 'px'],
-                'selectors' => [
-                    '{{WRAPPER}} .mst-shop-grid-location' => 'margin-bottom: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'meta_margin_bottom',
-            [
-                'label' => __('Rating/Price Bottom Margin', 'my-super-tour-elementor'),
+                'label' => __('Location/Rating Row Bottom Margin', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::SLIDER,
                 'range' => ['px' => ['min' => 0, 'max' => 30]],
                 'default' => ['size' => 12, 'unit' => 'px'],
@@ -629,203 +679,250 @@ class Shop_Grid extends Widget_Base {
         return null;
     }   
 
-protected function render() {
-    $settings = $this->get_settings_for_display();
-    
-    if (! function_exists('wc_get_products')) {
-        echo '<p>WooCommerce не активен.</p>';
-        return;
-    }
-
-    $args = [
-        'status' => 'publish',
-        'limit' => $settings['products_count'],
-        'orderby' => $settings['orderby'],
-        'order' => $settings['order'],
-    ];
-
-    $source = $settings['source'];
-    
-    if ($source === 'auto') {
-        $current_url = $_SERVER['REQUEST_URI'];
-        $url_parts = explode('/', trim($current_url, '/'));
-        foreach ($url_parts as $slug) {
-            if (empty($slug)) continue;
-            $term = get_term_by('slug', $slug, 'product_cat');
-            if ($term && ! is_wp_error($term)) {
-                $args['category'] = [$term->slug];
-                break;
-            }
+    protected function render() {
+        $settings = $this->get_settings_for_display();
+        
+        if (!function_exists('wc_get_products')) {
+            echo '<p>WooCommerce не активен.</p>';
+            return;
         }
-    } elseif ($source === 'category' && !empty($settings['category'])) {
-        $cat_slugs = [];
-        foreach ($settings['category'] as $cat_id) {
-            $term = get_term($cat_id, 'product_cat');
-            if ($term && !is_wp_error($term)) {
-                $cat_slugs[] = $term->slug;
+
+        $args = [
+            'status' => 'publish',
+            'limit' => $settings['products_count'],
+            'orderby' => $settings['orderby'],
+            'order' => $settings['order'],
+        ];
+
+        $source = $settings['source'];
+        
+        if ($source === 'auto') {
+            $current_url = $_SERVER['REQUEST_URI'];
+            $url_parts = explode('/', trim($current_url, '/'));
+            foreach ($url_parts as $slug) {
+                if (empty($slug)) continue;
+                $term = get_term_by('slug', $slug, 'product_cat');
+                if ($term && ! is_wp_error($term)) {
+                    $args['category'] = [$term->slug];
+                    break;
+                }
             }
+        } elseif ($source === 'category' && !empty($settings['category'])) {
+            $cat_slugs = [];
+            foreach ($settings['category'] as $cat_id) {
+                $term = get_term($cat_id, 'product_cat');
+                if ($term && !is_wp_error($term)) {
+                    $cat_slugs[] = $term->slug;
+                }
+            }
+            if (!empty($cat_slugs)) {
+                $args['category'] = $cat_slugs;
+            }
+        } elseif ($source === 'manual' && !empty($settings['manual_products'])) {
+            $args['include'] = $settings['manual_products'];
+        } elseif ($source === 'featured') {
+            $args['featured'] = true;
+        } elseif ($source === 'sale') {
+            $args['on_sale'] = true;
         }
-        if (!empty($cat_slugs)) {
-            $args['category'] = $cat_slugs;
+
+        $products = wc_get_products($args);
+
+        if (empty($products)) {
+            echo '<p>Товары не найдены.</p>';
+            return;
         }
-    } elseif ($source === 'manual' && !empty($settings['manual_products'])) {
-        $args['include'] = $settings['manual_products'];
-    } elseif ($source === 'featured') {
-        $args['featured'] = true;
-    } elseif ($source === 'sale') {
-        $args['on_sale'] = true;
-    }
 
-    $products = wc_get_products($args);
+        // Settings
+        $show_badges = ($settings['show_badges'] ?? '') === 'yes';
+        $show_wishlist = ($settings['show_wishlist'] ?? '') === 'yes';
+        $show_guide = ($settings['show_guide'] ?? '') === 'yes';
+        $liquid_glass = ($settings['enable_liquid_glass'] ?? '') === 'yes';
+        $cursor_glow = ($settings['enable_cursor_glow'] ?? '') === 'yes';
+        $wishlist_liquid = ($settings['wishlist_liquid_glass'] ?? '') === 'yes';
+        
+        // Card settings
+        $card_bg = $settings['card_bg_color'] ?? '#ffffff';
+        $card_radius = $settings['card_border_radius']['size'] ?? 24;
+        $image_height = $settings['image_height']['size'] ?? 200;
+        $gap = $settings['gap']['size'] ?? 24;
+        $columns = intval($settings['columns'] ?? 4);
+        
+        // Guide settings
+        $guide_size = $settings['guide_photo_size']['size'] ?? 64;
+        $guide_border_width = $settings['guide_border_width']['size'] ?? 3;
+        $guide_right = $settings['guide_offset_right']['size'] ?? 0;
+        $guide_bottom = $settings['guide_offset_bottom']['size'] ?? 0;
+        $guide_border_color = $settings['guide_border_color'] ?? 'hsl(45, 98%, 50%)';
 
-    if (empty($products)) {
-        echo '<p>Товары не найдены.</p>';
-        return;
-    }
+        // Colors
+        $title_color = $settings['title_color'] ?? '#1a1a1a';
+        $price_color = $settings['price_color'] ?? '#1a1a1a';
+        $location_icon_color = $settings['location_icon_color'] ?? 'hsl(45, 98%, 50%)';
+        $location_text_color = $settings['location_text_color'] ?? '#666666';
+        $star_color = $settings['star_color'] ?? 'hsl(45, 98%, 50%)';
+        $button_bg = $settings['button_bg_color'] ?? 'hsl(270, 70%, 60%)';
+        $button_text = $settings['button_text_color'] ?? '#ffffff';
+        $button_radius = $settings['button_border_radius']['size'] ?? 25;
 
-    $show_badges = $settings['show_badges'] === 'yes';
-    $show_wishlist = $settings['show_wishlist'] === 'yes';
-    $show_guide = $settings['show_guide'] === 'yes';
-    $liquid_glass = isset($settings['enable_liquid_glass']) && $settings['enable_liquid_glass'] === 'yes';
-    $cursor_glow = isset($settings['enable_cursor_glow']) && $settings['enable_cursor_glow'] === 'yes';
-    $wishlist_liquid = isset($settings['wishlist_liquid_glass']) && $settings['wishlist_liquid_glass'] === 'yes';
-    
-    $card_bg = isset($settings['card_bg_color']) ? $settings['card_bg_color'] : '#ffffff';
-    $card_radius = isset($settings['card_border_radius']['size']) ? $settings['card_border_radius']['size'] : 24;
-    $image_height = isset($settings['image_height']['size']) ? $settings['image_height']['size'] : 200;
-    $gap = isset($settings['gap']['size']) ? $settings['gap']['size'] : 24;
-    $columns = isset($settings['columns']) ? intval($settings['columns']) : 4;
-    
-    $guide_size = isset($settings['guide_photo_size']['size']) ? $settings['guide_photo_size']['size'] : 64;
-    $guide_border = isset($settings['guide_border_width']['size']) ? $settings['guide_border_width']['size'] : 3;
-    $guide_right = isset($settings['guide_offset_right']['size']) ? $settings['guide_offset_right']['size'] : 0;
-    $guide_bottom = isset($settings['guide_offset_bottom']['size']) ? $settings['guide_offset_bottom']['size'] : 0;
+        // Colors from settings
+        $title_color = $settings['title_color'] ?? '#1a1a1a';
+        $price_color = $settings['price_color'] ?? '#1a1a1a';
+        $location_icon_color = $settings['location_icon_color'] ?? 'hsl(45, 98%, 50%)';
+        $location_text_color = $settings['location_text_color'] ??  '#666666';
+        $star_color = $settings['star_color'] ?? 'hsl(45, 98%, 50%)';
+        $button_bg = $settings['button_bg_color'] ?? 'hsl(270, 70%, 60%)';
+        $button_text_color = $settings['button_text_color'] ??  '#ffffff';
+        $guide_border_color = $settings['guide_border_color'] ?? 'hsl(45, 98%, 50%)';
 
-    $container_class = 'mst-shop-grid';
-    if ($cursor_glow) $container_class .= ' mst-cursor-glow-enabled';
-    ?>
-    <div class="<?php echo esc_attr($container_class); ?>" style="display: grid; grid-template-columns: repeat(<?php echo $columns; ?>, 1fr); gap: <?php echo $gap; ?>px;">
-        <?php foreach ($products as $product):
-            $product_id = $product->get_id();
-            $image_url = wp_get_attachment_url($product->get_image_id());
-            if (! $image_url) $image_url = wc_placeholder_img_src();
-            
-            $terms = get_the_terms($product_id, 'product_cat');
-            $location = '';
-            if ($terms && !is_wp_error($terms)) {
-                foreach ($terms as $term) {
-                    if ($term->parent > 0) {
-                        $location = $term->name;
-                        break;
-                    }
-                }
-                if (empty($location) && !empty($terms[0])) {
-                    $location = $terms[0]->name;
-                }
-            }
-            
-            $rating = $product->get_average_rating() ?: 5;
-            $review_count = $product->get_review_count() ?: 0;
-            $price = $product->get_price_html();
-            
-            $badge_1 = $product->get_attribute(isset($settings['badge_attr_1']) ? $settings['badge_attr_1'] : 'pa_tour-type');
-            $badge_2 = $product->get_attribute(isset($settings['badge_attr_2']) ? $settings['badge_attr_2'] : 'pa_duration');
-            $badge_3 = $product->get_attribute(isset($settings['badge_attr_3']) ? $settings['badge_attr_3'] : 'pa_transport');
-            
-            // Получаем гида товара из mst_lk
-            $guide_photo_url = '';
-            $guide_name = '';
-            $guide_rating = '';
-            $guide_profile_url = '#';
-
-            if ($show_guide) {
-                // 1. Пробуем получить guide_id из meta товара
-                $guide_user_id = get_post_meta($product_id, '_guide_user_id', true);
-                
-                if (! $guide_user_id) {
-                    // Альтернативные meta ключи
-                    $guide_user_id = get_post_meta($product_id, 'guide_id', true);
-                }
-                
-                if ($guide_user_id) {
-                    // Получаем данные гида из mst_lk
-                    $guide_photo_id = get_user_meta($guide_user_id, 'mst_guide_photo_id', true);
-                    if ($guide_photo_id) {
-                        $guide_photo_url = wp_get_attachment_url($guide_photo_id);
-                    }
-                    
-                    if (empty($guide_photo_url)) {
-                        // Fallback на аватар WordPress, если фото не найдено
-                        $guide_photo_url = get_avatar_url($guide_user_id, ['size' => 128]);
-                    }
-                    
-                    // Имя и рейтинг гида
-                    $user = get_userdata($guide_user_id);
-                    if ($user) {
-                        $guide_name = $user->display_name;
-                        $guide_profile_url = home_url('/guide/' . $guide_user_id);
-                    }
-                    
-                    // Получаем рейтинг гида
-                    $guide_rating = get_user_meta($guide_user_id, 'mst_guide_rating', true);
-                }
-                
-                // Fallback на дефолтное фото из настроек виджета, если ничего не найдено
-                if (empty($guide_photo_url) && ! empty($settings['guide_photo']['url'])) {
-                    $guide_photo_url = $settings['guide_photo']['url'];
-                }
-                
-                // Fallback на guide_link из настроек
-                if ($guide_profile_url === '#' && ! empty($settings['guide_link']['url'])) {
-                    $guide_profile_url = $settings['guide_link']['url'];
-                }
-            }
-            
-            $card_class = 'mst-shop-grid-card';
-            if ($liquid_glass) $card_class .= ' mst-liquid-glass';
+        $container_class = 'mst-shop-grid';
+        if ($cursor_glow) $container_class .= ' mst-cursor-glow-enabled';
         ?>
-        <div class="<?php echo esc_attr($card_class); ?>" data-product-id="<?php echo esc_attr($product_id); ?>" style="background-color: <?php echo esc_attr($card_bg); ?>; border-radius: <?php echo $card_radius; ?>px; overflow: hidden; display: flex; flex-direction: column;">
-            <div class="mst-shop-grid-image" style="height: <?php echo $image_height; ?>px; position: relative; overflow: hidden;">
-                <a href="<?php echo esc_url($product->get_permalink()); ?>">
-                    <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>" style="width: 100%; height: 100%; object-fit: cover;">
-                </a>
+        <div class="<?php echo esc_attr($container_class); ?>" style="display: grid; grid-template-columns: repeat(<?php echo $columns; ?>, 1fr); gap: <?php echo $gap; ?>px;">
+            <?php foreach ($products as $product):
+                $product_id = $product->get_id();
+                $image_url = wp_get_attachment_url($product->get_image_id());
+                if (! $image_url) $image_url = wc_placeholder_img_src();
                 
-                <?php if ($show_badges): 
-                    $badge_bg = isset($settings['badge_bg_color']) ? $settings['badge_bg_color'] : 'rgba(255,255,255,0.15)';
-                    $badge_text = isset($settings['badge_text_color']) ? $settings['badge_text_color'] : '#ffffff';
-                    $badge_size = isset($settings['badge_font_size']['size']) ? $settings['badge_font_size']['size'] : 12;
-                    $badge_icon_size = isset($settings['badge_icon_size']['size']) ? $settings['badge_icon_size']['size'] : 14;
-                    $badge_border_radius = isset($settings['badge_border_radius']['size']) ? $settings['badge_border_radius']['size'] : 20;
-                ?>
-                <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; --badge-size: <?php echo esc_attr($badge_size); ?>px; --badge-icon-size: <?php echo esc_attr($badge_icon_size); ?>px;">
-                    <?php if (!empty($badge_1)): ?>
-                    <span class="mst-shop-grid-badge mst-follow-glow" style="background: <?php echo esc_attr($badge_bg); ?>; color: <?php echo esc_attr($badge_text); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: <?php echo esc_attr($badge_border_radius); ?>px; border: 1px solid rgba(255,255,255,0.3);">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                        <?php echo esc_html($badge_1); ?>
-                    </span>
-                    <?php endif; ?>
-                    
-                    <?php if (!empty($badge_2)): ?>
-                    <span class="mst-shop-grid-badge mst-follow-glow" style="background: <?php echo esc_attr($badge_bg); ?>; color: <?php echo esc_attr($badge_text); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: <?php echo esc_attr($badge_border_radius); ?>px; border: 1px solid rgba(255,255,255,0.3);">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        <?php echo esc_html($badge_2); ?>
-                    </span>
-                    <?php endif; ?>
-                    
-                    <?php if (!empty($badge_3)): ?>
-                    <span class="mst-shop-grid-badge mst-follow-glow" style="background: <?php echo esc_attr($badge_bg); ?>; color: <?php echo esc_attr($badge_text); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: <?php echo esc_attr($badge_border_radius); ?>px; border: 1px solid rgba(255,255,255,0.3);">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"/><path d="M16 8h5l3 5v5h-3"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-                        <?php echo esc_html($badge_3); ?>
-                    </span>
-                    <?php endif; ?>
-                </div>
-                <?php endif; ?>
+                // Location from category
+                $terms = get_the_terms($product_id, 'product_cat');
+                $location = '';
+                if ($terms && !is_wp_error($terms)) {
+                    foreach ($terms as $term) {
+                        if ($term->parent > 0) {
+                            $location = $term->name;
+                            break;
+                        }
+                    }
+                    if (empty($location) && !empty($terms[0])) {
+                        $location = $terms[0]->name;
+                    }
+                }
+                
+                $rating = $product->get_average_rating() ?: 5;
+                $review_count = $product->get_review_count() ?: 0;
+                $price = $product->get_price_html();
+                
+                // Badges
+                $badge_1 = $product->get_attribute($settings['badge_attr_1'] ?? 'pa_tour-type');
+                $badge_2 = $product->get_attribute($settings['badge_attr_2'] ?? 'pa_duration');
+                $badge_3 = $product->get_attribute($settings['badge_attr_3'] ?? 'pa_transport');
+                
+                // === GUIDE FROM MST_LK ===
+                $guide_photo_url = '';
+                $guide_name = '';
+                $guide_rating_val = '';
+                $guide_reviews = '';
+                $guide_profile_url = '#';
 
-                <?php if ($show_wishlist): 
-                    $wishlist_bg = $settings['wishlist_bg_color'] ?? 'rgba(255,255,255,0.15)';
-                    $wishlist_icon = $settings['wishlist_icon_color'] ?? '#ffffff';
+                if ($show_guide) {
+                    // 1.Try guide_user_id from product meta
+                    $guide_user_id = get_post_meta($product_id, '_guide_user_id', true);
+                    if (!$guide_user_id) {
+                        $guide_user_id = get_post_meta($product_id, 'guide_id', true);
+                    }
+                    
+                    // 2.Fallback: check product author
+                    if (!$guide_user_id) {
+                        $post_author = get_post_field('post_author', $product_id);
+                        if ($post_author) {
+                            $author_data = get_userdata($post_author);
+                            if ($author_data) {
+                                $roles = (array) $author_data->roles;
+                                if (array_intersect($roles, ['guide', 'gid', 'administrator'])) {
+                                    $guide_user_id = $post_author;
+                                }
+                            }
+                        }
+                    }
+                    
+                    if ($guide_user_id) {
+                        // Photo from mst_lk
+                        $guide_photo_id = get_user_meta($guide_user_id, 'mst_guide_photo_id', true);
+                        if ($guide_photo_id) {
+                            $guide_photo_url = wp_get_attachment_url($guide_photo_id);
+                        }
+                        if (!$guide_photo_url) {
+                            $guide_photo_url = get_user_meta($guide_user_id, 'guide_photo', true);
+                        }
+                        if (! $guide_photo_url) {
+                            $guide_photo_url = get_user_meta($guide_user_id, 'profile_photo', true);
+                        }
+                        if (! $guide_photo_url) {
+                            $guide_photo_url = get_avatar_url($guide_user_id, ['size' => 128]);
+                        }
+                        
+                        // Guide data
+                        $user = get_userdata($guide_user_id);
+                        if ($user) {
+                            $guide_name = $user->display_name;
+                            $guide_profile_url = home_url('/guide/' . $guide_user_id . '/');
+                        }
+                        
+                        $guide_rating_val = get_user_meta($guide_user_id, 'mst_guide_rating', true);
+                        $guide_reviews = get_user_meta($guide_user_id, 'mst_guide_reviews_count', true);
+                    }
+                    
+                    // Fallback to widget default
+                    if (!$guide_photo_url && ! empty($settings['guide_photo']['url'])) {
+                        $guide_photo_url = $settings['guide_photo']['url'];
+                    }
+                    if ($guide_profile_url === '#' && !empty($settings['guide_link']['url'])) {
+                        $guide_profile_url = $settings['guide_link']['url'];
+                    }
+                }
+                
+                // Guide title
+                $guide_title = $guide_name ?: 'Гид';
+                if ($guide_rating_val) {
+                    $guide_title .= ' - ' . number_format((float)$guide_rating_val, 1) . ' ★';
+                    if ($guide_reviews) $guide_title .= ' (' . $guide_reviews . ')';
+                }
+                
+                $card_class = 'mst-shop-grid-card';
+                if ($liquid_glass) $card_class .= ' mst-liquid-glass';
+            ?>
+            <div class="<?php echo esc_attr($card_class); ?>" data-product-id="<?php echo esc_attr($product_id); ?>" style="background-color: <?php echo esc_attr($card_bg); ?>; border-radius: <?php echo $card_radius; ?>px; overflow: hidden; display: flex; flex-direction: column;">
+                
+                <!-- Image -->
+                <div class="mst-shop-grid-image" style="height: <?php echo $image_height; ?>px; position: relative; overflow: hidden;">
+                    <a href="<?php echo esc_url($product->get_permalink()); ?>">
+                        <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    
+                    <?php if ($show_badges): 
+                        $badge_bg = $settings['badge_bg_color'] ?? 'rgba(255,255,255,0.15)';
+                        $badge_text_color = $settings['badge_text_color'] ?? '#ffffff';
+                    ?>
+                    <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2;">
+                        <?php if (! empty($badge_1)): ?>
+                        <span class="mst-shop-grid-badge mst-follow-glow" style="background: <?php echo esc_attr($badge_bg); ?>; color: <?php echo esc_attr($badge_text_color); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <?php echo esc_html($badge_1); ?>
+                        </span>
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($badge_2)): ?>
+                        <span class="mst-shop-grid-badge mst-follow-glow" style="background: <?php echo esc_attr($badge_bg); ?>; color: <?php echo esc_attr($badge_text_color); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <?php echo esc_html($badge_2); ?>
+                        </span>
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($badge_3)): ?>
+                        <span class="mst-shop-grid-badge mst-follow-glow" style="background: <?php echo esc_attr($badge_bg); ?>; color: <?php echo esc_attr($badge_text_color); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"/><path d="M16 8h5l3 5v5h-3"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                            <?php echo esc_html($badge_3); ?>
+                        </span>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if ($show_wishlist): 
+                    $wishlist_bg = $settings['wishlist_bg_color'] ?? 'rgba(255, 255, 255, 1)';
+                    $wishlist_icon = $settings['wishlist_icon_color'] ?? 'rgba(255, 255, 255, 1)';
                     $wishlist_stroke = $settings['wishlist_icon_stroke'] ?? 'hsl(0, 80%, 60%)';
-                    $wishlist_hover_bg = $settings['wishlist_hover_bg'] ?? 'rgba(255,255,255,0.25)';
+                    $wishlist_hover_bg = $settings['wishlist_hover_bg'] ?? 'rgba(255, 255, 255, 1)';
                     $wishlist_active_bg = $settings['wishlist_active_bg'] ?? 'rgba(255,255,255,0.95)';
                     $wishlist_active_fill = $settings['wishlist_active_fill'] ?? 'hsl(0, 80%, 60%)';
                     $wishlist_active_stroke = $settings['wishlist_active_stroke'] ?? 'hsl(0, 80%, 50%)';
@@ -838,70 +935,117 @@ protected function render() {
                     if ($wishlist_liquid) {
                         $wishlist_style .= ' backdrop-filter: blur(' . $wishlist_blur . 'px); -webkit-backdrop-filter: blur(' . $wishlist_blur .  'px); box-shadow: 0 4px 12px rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.6);';
                     }
-                ?>
-                <button type="button"
-                class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow"
-                data-product-id="<?php echo esc_attr($product_id); ?>"
-                data-hover-bg="<?php echo esc_attr($wishlist_hover_bg); ?>"
-                data-active-bg="<?php echo esc_attr($wishlist_active_bg); ?>"
-                data-active-fill="<?php echo esc_attr($wishlist_active_fill); ?>"
-                data-active-stroke="<?php echo esc_attr($wishlist_active_stroke); ?>"
-                data-default-bg="<?php echo esc_attr($wishlist_bg); ?>"
-                data-default-fill="<?php echo esc_attr($wishlist_icon); ?>"
-                data-default-stroke="<?php echo esc_attr($wishlist_stroke); ?>"
-                style="<?php echo $wishlist_style; ?>"
-                aria-label="Add to wishlist">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="<?php echo esc_attr($wishlist_icon_size); ?>" height="<?php echo esc_attr($wishlist_icon_size); ?>" viewBox="0 0 24 24" fill="<?php echo esc_attr($wishlist_icon); ?>" stroke="<?php echo esc_attr($wishlist_stroke); ?>" stroke-width="2" class="mst-heart-icon"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-                </button>
-                <?php endif; ?>
-            </div>
-            
-            <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 6px;">
-                    <h3 style="color: #1a1a1a; margin: 0; font-size: 16px; font-weight: 600; line-height: 1.3; flex: 1;">
-                        <a href="<?php echo esc_url($product->get_permalink()); ?>" style="color: inherit; text-decoration: none;"><?php echo esc_html($product->get_name()); ?></a>
-                    </h3>
-                    <div style="color: #1a1a1a; font-weight: 700; font-size: 15px; white-space: nowrap;"><?php echo $price; ?></div>
-                </div>
-                
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <?php if (! empty($location)): ?>
-                    <div style="display: flex; align-items: center; gap: 4px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
-                        <span style="color: #666; font-size: 13px;"><?php echo esc_html($location); ?></span>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <div style="display: flex; align-items: center; gap: 4px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                        <span style="font-weight: 600;"><?php echo esc_html($rating); ?></span>
-                        <span style="color: #999; font-size: 12px;">(<?php echo esc_html($review_count); ?>)</span>
-                    </div>
-                </div>
-                
-                <div style="flex: 1;"></div>
-                
-                <div style="position: relative; margin: 0 -16px -16px -16px;">
-                    <a href="<?php echo esc_url($product->get_permalink()); ?>" class="mst-shop-grid-button mst-follow-glow" style="display: flex; align-items: center; justify-content: center; width: 100%; background: hsl(270, 70%, 60%); color: #fff; padding: 14px 20px; border-radius: 0 0 <?php echo $card_radius; ?>px <?php echo $card_radius; ?>px; text-decoration: none; font-weight: 600; font-size: 14px;">
-                        <?php echo esc_html($settings['button_text']); ?>
-                    </a>
-                    
-                    <?php if ($show_guide && ! empty($guide_photo_url)): 
-                        $guide_link = isset($settings['guide_link']['url']) ? $settings['guide_link']['url'] : '#';
                     ?>
-                    <div style="position: absolute; right: <?php echo 16 + $guide_right; ?>px; top: 50%; transform: translateY(calc(-50% + <?php echo $guide_bottom; ?>px)); width: <?php echo $guide_size; ?>px; height: <?php echo $guide_size; ?>px; border-radius: 50%; overflow: hidden; border: <?php echo $guide_border; ?>px solid hsl(45, 98%, 50%); box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 5;">
-                        <a href="<?php echo esc_url($guide_link); ?>">
-                            <img src="<?php echo esc_url($guide_photo_url); ?>" alt="Guide" style="width: 100%; height: 100%; object-fit: cover;">
-                        </a>
-                    </div>
+                    <button type="button"
+                    class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow"
+                    data-product-id="<?php echo esc_attr($product_id); ?>"
+                    data-hover-bg="<?php echo esc_attr($wishlist_hover_bg); ?>"
+                    data-active-bg="<?php echo esc_attr($wishlist_active_bg); ?>"
+                    data-active-fill="<?php echo esc_attr($wishlist_active_fill); ?>"
+                    data-active-stroke="<?php echo esc_attr($wishlist_active_stroke); ?>"
+                    data-default-bg="<?php echo esc_attr($wishlist_bg); ?>"
+                    data-default-fill="<?php echo esc_attr($wishlist_icon); ?>"
+                    data-default-stroke="<?php echo esc_attr($wishlist_stroke); ?>"
+                    style="<?php echo $wishlist_style; ?>"
+                    aria-label="Add to wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="<?php echo esc_attr($wishlist_icon_size); ?>" height="<?php echo esc_attr($wishlist_icon_size); ?>" viewBox="0 0 24 24" fill="<?php echo esc_attr($wishlist_icon); ?>" stroke="<?php echo esc_attr($wishlist_stroke); ?>" stroke-width="2" class="mst-heart-icon"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                    </button>
+                    <?php endif; ?>
+
+                    <?php
+                    // Inline JS для wishlist toggle (один раз)
+                    static $wishlist_js_added = false;
+                    if (!$wishlist_js_added && $show_wishlist):
+                        $wishlist_js_added = true;
+                    ?>
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        document.querySelectorAll('.mst-wishlist-btn').forEach(function(btn) {
+                            btn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                var isActive = this.classList.toggle('active');
+                                var svg = this.querySelector('svg');
+                                
+                                if (isActive) {
+                                    this.style.background = this.dataset.activeBg;
+                                    svg.setAttribute('fill', this.dataset.activeFill);
+                                    svg.setAttribute('stroke', this.dataset.activeStroke);
+                                } else {
+                                    this.style.background = this.dataset.defaultBg;
+                                    svg.setAttribute('fill', this.dataset.defaultFill);
+                                    svg.setAttribute('stroke', this.dataset.defaultStroke);
+                                }
+                            });
+                        });
+                    });
+                    </script>
                     <?php endif; ?>
                 </div>
+                
+                <!-- Content -->
+                <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                    <!-- Row 1: Title + Price -->
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 class="mst-shop-grid-title" style="color: <?php echo esc_attr($title_color); ?>; margin: 0; font-size: 16px; font-weight: 600; line-height: 1.3; flex: 1; min-width: 0;">
+                            <a href="<?php echo esc_url($product->get_permalink()); ?>" style="color: inherit; text-decoration: none;">
+                                <?php echo esc_html($product->get_name()); ?>
+                            </a>
+                        </h3>
+                        <div class="mst-shop-grid-price" style="color: <?php echo esc_attr($price_color); ?>; font-weight: 700; font-size: 15px; white-space: nowrap; flex-shrink: 0;">
+                            <?php echo $price; ?>
+                        </div>
+                    </div>
+                    
+                    <!-- Row 2: Location + Rating -->
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <?php if (!empty($location)): ?>
+                        <div class="mst-shop-grid-location" style="display: flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="<?php echo esc_attr($location_icon_color); ?>">
+                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                                <circle cx="12" cy="10" r="3" fill="#fff"></circle>
+                            </svg>
+                            <span style="color: <?php echo esc_attr($location_text_color); ?>; font-size: 13px;">
+                                <?php echo esc_html($location); ?>
+                            </span>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <div class="mst-shop-grid-rating" style="display: flex; align-items: center; gap: 4px; margin-left: auto;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="<?php echo esc_attr($star_color); ?>">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <span style="font-weight: 600;"><?php echo esc_html($rating); ?></span>
+                            <span style="color: #999; font-size: 12px;">
+                                (<?php echo esc_html($review_count); ?>)
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Spacer -->
+                    <div style="flex: 1;"></div>
+                    
+                    <!-- Button + Guide -->
+                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin: 0 -16px -16px -16px;">
+                        <a href="<?php echo esc_url($product->get_permalink()); ?>"
+                        class="mst-shop-grid-button mst-follow-glow"
+                        style="display: flex; align-items: center; justify-content: center; width: 100%; background: <?php echo esc_attr($button_bg); ?>; color: <?php echo esc_attr($button_text_color); ?>; padding: 14px 20px; border-radius: 0 0 <?php echo $card_radius; ?>px <?php echo $card_radius; ?>px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                            <?php echo esc_html($settings['button_text']); ?>
+                        </a>
+                        
+                        <?php if ($show_guide && !empty($guide_photo_url)): ?>
+                        <a href="<?php echo esc_url($guide_profile_url); ?>"
+                        class="mst-shop-grid-guide-inside"
+                        style="position: absolute; right: <?php echo 16 + intval($guide_right); ?>px; top: 50%; transform: translateY(-50%); width: <?php echo intval($guide_size); ?>px; height: <?php echo intval($guide_size); ?>px; border-radius: 50%; overflow: hidden; border: <?php echo intval($guide_border_width); ?>px solid <?php echo esc_attr($guide_border_color); ?>; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 5;">
+                            <img src="<?php echo esc_url($guide_photo_url); ?>" alt="<?php echo esc_attr($guide_name ?: 'Guide'); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                        </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
+            <?php endforeach; ?>
         </div>
-        <?php endforeach; ?>
-    </div>
-    <?php
-}
+        <?php
+    }
     
     private function get_products_list() {
         $products = [];

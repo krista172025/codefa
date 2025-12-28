@@ -2,7 +2,7 @@
 /**
  * Plugin Name: My Super Tour Elementor Widgets
  * Description: Custom Elementor widgets with liquid glass design, animations, and warm purple/yellow palette
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: My Super Tour
  * Text Domain: my-super-tour-elementor
  */
