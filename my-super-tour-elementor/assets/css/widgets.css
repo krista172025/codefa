@@ -5061,13 +5061,13 @@ body,
 /* Wishlist states - separate add and remove animations */
 .mst-shop-grid-wishlist.active .mst-heart-icon,
 .mst-shop-grid-wishlist.mst-wishlist-active .mst-heart-icon {
-  fill: #ef4444;
-  stroke: #ef4444;
+  fill: var(--wishlist-active-fill, #ef4444);
+  stroke: var(--wishlist-active-stroke, #ef4444);
 }
 
-.mst-shop-grid-wishlist:not(.active):not(.mst-wishlist-active) .mst-heart-icon {
-  fill: transparent;
-  stroke: currentColor;
+/* Default state - inherit from inline styles, don't override */
+.mst-shop-grid-wishlist: not(.active):not(.mst-wishlist-active) .mst-heart-icon {
+  /* Do not override inline fill/stroke - they come from Elementor settings */
 }
 
 /* Wishlist hover - use data-hover-bg from element, fallback subtle */
