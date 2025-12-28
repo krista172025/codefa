@@ -5066,8 +5066,9 @@ body,
 }
 
 /* Default state - inherit from inline styles, don't override */
-.mst-shop-grid-wishlist: not(.active):not(.mst-wishlist-active) .mst-heart-icon {
-  /* Do not override inline fill/stroke - they come from Elementor settings */
+.mst-shop-grid-wishlist:not(.active):not(.mst-wishlist-active) .mst-heart-icon {
+  fill: transparent;
+  stroke: #ffffff;  /* Белый stroke для неактивного состояния */
 }
 
 /* Wishlist hover - use data-hover-bg from element, fallback subtle */

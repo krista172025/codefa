@@ -658,6 +658,55 @@ class Shop_Grid extends Widget_Base {
         );
 
         $this->end_controls_section();
+
+        $this->start_controls_section(
+            'rating_section',
+            [
+                'label' => __('Rating Settings', 'my-super-tour-elementor'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $this->add_control(
+            'rating_source',
+            [
+                'label' => __('Rating Source', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'combined',
+                'options' => [
+                    'woocommerce' => __('WooCommerce Only', 'my-super-tour-elementor'),
+                    'manual' => __('Manual Only', 'my-super-tour-elementor'),
+                    'combined' => __('Combined (Manual + Real)', 'my-super-tour-elementor'),
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'manual_rating_boost',
+            [
+                'label' => __('Rating Boost (added to real)', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 0,
+                'min' => 0,
+                'max' => 5,
+                'step' => 0.1,
+                'condition' => ['rating_source' => ['manual', 'combined']],
+            ]
+        );
+
+        $this->add_control(
+            'manual_reviews_boost',
+            [
+                'label' => __('Reviews Count Boost', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 0,
+                'min' => 0,
+                'max' => 1000,
+                'condition' => ['rating_source' => ['manual', 'combined']],
+            ]
+        );
+
+        $this->end_controls_section();
     }
 
     private function get_current_category() {
@@ -784,21 +833,42 @@ class Shop_Grid extends Widget_Base {
                 $image_url = wp_get_attachment_url($product->get_image_id());
                 if (! $image_url) $image_url = wc_placeholder_img_src();
                 
-                // Location from category
-                $terms = get_the_terms($product_id, 'product_cat');
-                $location = '';
-                if ($terms && !is_wp_error($terms)) {
-                    foreach ($terms as $term) {
-                        if ($term->parent > 0) {
-                            $location = $term->name;
-                            break;
+                // Получаем город из атрибута pa_city
+                $location = $product->get_attribute('pa_city');
+
+                // Fallback на категорию если pa_city пустой
+                if (empty($location)) {
+                    $terms = get_the_terms($product_id, 'product_cat');
+                    if ($terms && ! is_wp_error($terms)) {
+                        foreach ($terms as $term) {
+                            if ($term->parent > 0) {
+                                $location = $term->name;
+                                break;
+                            }
                         }
-                    }
-                    if (empty($location) && !empty($terms[0])) {
-                        $location = $terms[0]->name;
                     }
                 }
                 
+                // Rating with boost
+                $rating_source = $settings['rating_source'] ?? 'combined';
+                $real_rating = floatval($product->get_average_rating()) ?: 0;
+                $real_count = intval($product->get_review_count()) ?: 0;
+                $manual_boost = floatval($settings['manual_rating_boost'] ?? 0);
+                $count_boost = intval($settings['manual_reviews_boost'] ??  0);
+
+                if ($rating_source === 'manual') {
+                    $rating = $manual_boost ?: 5;
+                    $review_count = $count_boost;
+                } elseif ($rating_source === 'combined') {
+                    $rating = $real_rating > 0 ? min(5, ($real_rating + $manual_boost) / 2) : ($manual_boost ?: 5);
+                    $review_count = $real_count + $count_boost;
+                } else {
+                    $rating = $real_rating ?: 5;
+                    $review_count = $real_count;
+                }
+
+                $rating = round($rating, 1);
+
                 $rating = $product->get_average_rating() ?: 5;
                 $review_count = $product->get_review_count() ?: 0;
                 $price = $product->get_price_html();
@@ -856,7 +926,7 @@ class Shop_Grid extends Widget_Base {
                         $user = get_userdata($guide_user_id);
                         if ($user) {
                             $guide_name = $user->display_name;
-                            $guide_profile_url = home_url('/guide/' . $guide_user_id . '/');
+                            $guide_profile_url = add_query_arg('guide_id', $guide_user_id, home_url('/guide/'));
                         }
                         
                         $guide_rating_val = get_user_meta($guide_user_id, 'mst_guide_rating', true);
