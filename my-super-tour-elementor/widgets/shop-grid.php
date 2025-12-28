@@ -211,6 +211,20 @@ class Shop_Grid extends Widget_Base {
                 'condition' => ['show_guide' => 'yes'],
             ]
         );
+        
+        $this->add_control(
+            'guide_source',
+            [
+                'label' => __('Guide Photo Source', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'product',
+                'options' => [
+                    'product' => __('From Product Meta (guide_photo)', 'my-super-tour-elementor'),
+                    'default' => __('Default Photo Only', 'my-super-tour-elementor'),
+                ],
+                'condition' => ['show_guide' => 'yes'],
+            ]
+        );
 
         $this->add_control(
             'guide_link',
@@ -614,14 +628,16 @@ protected function render() {
             
             $guide_photo_url = '';
             if ($show_guide) {
+                // Сначала пробуем из meta товара
                 $guide_id = get_post_meta($product_id, '_guide_photo_id', true);
                 if ($guide_id) {
                     $guide_photo_url = wp_get_attachment_url($guide_id);
                 }
-                if (!$guide_photo_url) {
+                if (! $guide_photo_url) {
                     $guide_photo_url = get_post_meta($product_id, 'guide_photo', true);
                 }
-                if (! $guide_photo_url && ! empty($settings['guide_photo']['url'])) {
+                // Если нет - берём дефолтное
+                if (!$guide_photo_url && ! empty($settings['guide_photo']['url'])) {
                     $guide_photo_url = $settings['guide_photo']['url'];
                 }
             }
@@ -635,34 +651,56 @@ protected function render() {
                     <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>" style="width: 100%; height: 100%; object-fit: cover;">
                 </a>
                 
-                <?php if ($show_badges): ?>
-                <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
-                    <?php if (! empty($badge_1)): ?>
-                    <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; font-size: 12px; background: rgba(255,255,255,0.15); color: #fff; border-radius: 20px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <?php if ($show_badges): 
+                    $badge_bg = isset($settings['badge_bg_color']) ? $settings['badge_bg_color'] : 'rgba(255,255,255,0.15)';
+                    $badge_text = isset($settings['badge_text_color']) ? $settings['badge_text_color'] : '#ffffff';
+                    $badge_size = isset($settings['badge_font_size']['size']) ? $settings['badge_font_size']['size'] : 12;
+                    $badge_icon_size = isset($settings['badge_icon_size']['size']) ? $settings['badge_icon_size']['size'] : 14;
+                    $badge_border_radius = isset($settings['badge_border_radius']['size']) ? $settings['badge_border_radius']['size'] : 20;
+                ?>
+                <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; --badge-size: <?php echo esc_attr($badge_size); ?>px; --badge-icon-size: <?php echo esc_attr($badge_icon_size); ?>px;">
+                    <?php if (!empty($badge_1)): ?>
+                    <span class="mst-shop-grid-badge mst-follow-glow" style="background: <?php echo esc_attr($badge_bg); ?>; color: <?php echo esc_attr($badge_text); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: <?php echo esc_attr($badge_border_radius); ?>px; border: 1px solid rgba(255,255,255,0.3);">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                         <?php echo esc_html($badge_1); ?>
                     </span>
                     <?php endif; ?>
                     
                     <?php if (!empty($badge_2)): ?>
-                    <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; font-size: 12px; background: rgba(255,255,255,0.15); color: #fff; border-radius: 20px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <span class="mst-shop-grid-badge mst-follow-glow" style="background: <?php echo esc_attr($badge_bg); ?>; color: <?php echo esc_attr($badge_text); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: <?php echo esc_attr($badge_border_radius); ?>px; border: 1px solid rgba(255,255,255,0.3);">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                         <?php echo esc_html($badge_2); ?>
                     </span>
                     <?php endif; ?>
                     
                     <?php if (!empty($badge_3)): ?>
-                    <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; font-size: 12px; background: rgba(255,255,255,0.15); color: #fff; border-radius: 20px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"></rect><path d="M16 8h5l3 5v5h-3"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    <span class="mst-shop-grid-badge mst-follow-glow" style="background: <?php echo esc_attr($badge_bg); ?>; color: <?php echo esc_attr($badge_text); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: <?php echo esc_attr($badge_border_radius); ?>px; border: 1px solid rgba(255,255,255,0.3);">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"/><path d="M16 8h5l3 5v5h-3"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
                         <?php echo esc_html($badge_3); ?>
                     </span>
                     <?php endif; ?>
                 </div>
                 <?php endif; ?>
+
                 
-                <?php if ($show_wishlist): ?>
-                <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow" data-product-id="<?php echo esc_attr($product_id); ?>" style="position: absolute; top: 12px; right: 12px; z-index: 2; width: 36px; height: 36px; background: rgba(255,255,255,0.15); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;<?php if ($wishlist_liquid): ?> backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.1);<?php endif; ?>" aria-label="Add to wishlist">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#fff" stroke="#fff" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                <?php if ($show_wishlist): 
+                    $wishlist_bg = isset($settings['wishlist_bg_color']) ? $settings['wishlist_bg_color'] : 'rgba(255,255,255,0.15)';
+                    $wishlist_icon = isset($settings['wishlist_icon_color']) ? $settings['wishlist_icon_color'] : '#ffffff';
+                    $wishlist_stroke = isset($settings['wishlist_icon_stroke']) ? $settings['wishlist_icon_stroke'] : 'hsl(0, 80%, 60%)';
+                    $wishlist_hover_bg = isset($settings['wishlist_hover_bg']) ? $settings['wishlist_hover_bg'] : 'rgba(255,255,255,0.25)';
+                    $wishlist_size = isset($settings['wishlist_size']['size']) ? $settings['wishlist_size']['size'] : 36;
+                    $wishlist_icon_size = isset($settings['wishlist_icon_size']['size']) ? $settings['wishlist_icon_size']['size'] : 18;
+                    $wishlist_blur = isset($settings['wishlist_blur']['size']) ? $settings['wishlist_blur']['size'] : 12;
+                    
+                    $wishlist_style = 'position: absolute; top: 12px; right: 12px; z-index: 2; width: ' . esc_attr($wishlist_size) . 'px; height: ' . esc_attr($wishlist_size) . 'px; background: ' . esc_attr($wishlist_bg) . '; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.4); cursor: pointer; transition: all 0.3s ease; padding: 0;';
+                    if ($wishlist_liquid) {
+                        $wishlist_style .= ' backdrop-filter: blur(' . esc_attr($wishlist_blur) . 'px); -webkit-backdrop-filter: blur(' . esc_attr($wishlist_blur) . 'px); box-shadow: 0 4px 12px rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.6);';
+                    }
+                ?>
+                <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow" data-product-id="<?php echo esc_attr($product_id); ?>" data-hover-bg="<?php echo esc_attr($wishlist_hover_bg); ?>" style="<?php echo $wishlist_style; ?>" aria-label="Add to wishlist">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="<?php echo esc_attr($wishlist_icon_size); ?>" height="<?php echo esc_attr($wishlist_icon_size); ?>" viewBox="0 0 24 24" fill="<?php echo esc_attr($wishlist_icon); ?>" stroke="<?php echo esc_attr($wishlist_stroke); ?>" stroke-width="2" class="mst-heart-icon">
+                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                    </svg>
                 </button>
                 <?php endif; ?>
             </div>
