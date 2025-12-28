@@ -965,6 +965,23 @@ class Woo_Tour_Carousel extends Widget_Base {
         $show_guide = $settings['show_guide'] === 'yes';
         $show_wishlist = $settings['show_wishlist'] === 'yes';
         $button_border_radius = isset($settings['button_border_radius']['size']) ? $settings['button_border_radius']['size'] : 25;
+                // Colors from settings
+        $title_color = isset($settings['title_color']) ? $settings['title_color'] : '#1a1a1a';
+        $price_color = isset($settings['price_color']) ? $settings['price_color'] : '#1a1a1a';
+        $location_icon_color = isset($settings['location_icon_color']) ? $settings['location_icon_color'] : 'hsl(45, 98%, 50%)';
+        $location_text_color = isset($settings['location_text_color']) ? $settings['location_text_color'] : '#666666';
+        $star_color = isset($settings['star_color']) ? $settings['star_color'] : 'hsl(45, 98%, 50%)';
+        $button_bg = isset($settings['button_bg_color']) ? $settings['button_bg_color'] : 'hsl(270, 70%, 60%)';
+        $button_text = isset($settings['button_text_color']) ? $settings['button_text_color'] : '#ffffff';
+        $card_radius = $border_radius; // уже объявлено выше
+        
+        // Guide settings
+        $guide_size = isset($settings['guide_photo_size']['size']) ? intval($settings['guide_photo_size']['size']) : 64;
+        $guide_border = isset($settings['guide_border_width']['size']) ? intval($settings['guide_border_width']['size']) : 3;
+        $guide_right = isset($settings['guide_offset_right']['size']) ? intval($settings['guide_offset_right']['size']) : 0;
+        $guide_bottom = isset($settings['guide_offset_bottom']['size']) ? intval($settings['guide_offset_bottom']['size']) : 0;
+        $guide_border_color = isset($settings['guide_border_color']) ? $settings['guide_border_color'] : 'hsl(45, 98%, 50%)';
+        $guide_hover_border = isset($settings['guide_hover_border_color']) ? $settings['guide_hover_border_color'] : 'hsl(270, 70%, 60%)';
         
         $container_class = 'mst-woo-carousel-container mst-carousel-universal';
         if (!$arrows_inside) $container_class .= ' mst-arrows-outside';
@@ -1042,6 +1059,60 @@ class Woo_Tour_Carousel extends Widget_Base {
                         
                         $rating = $rating ?: $default_rating;
                         $review_count = $review_count ?: 0;
+                                                // === GUIDE FROM MST_LK ===
+                        $guide_photo_url = '';
+                        $guide_profile_url = '#';
+
+                        if ($show_guide) {
+                            // 1. Try guide_user_id from product meta
+                            $guide_user_id = get_post_meta($product_id, '_guide_user_id', true);
+                            if (!$guide_user_id) {
+                                $guide_user_id = get_post_meta($product_id, 'guide_id', true);
+                            }
+                            
+                            // 2. Fallback: check product author
+                            if (! $guide_user_id) {
+                                $post_author = get_post_field('post_author', $product_id);
+                                if ($post_author) {
+                                    $author_data = get_userdata($post_author);
+                                    if ($author_data) {
+                                        $roles = (array) $author_data->roles;
+                                        if (array_intersect($roles, ['guide', 'gid', 'administrator'])) {
+                                            $guide_user_id = $post_author;
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            if ($guide_user_id) {
+                                // Photo from mst_lk
+                                $guide_photo_id = get_user_meta($guide_user_id, 'mst_guide_photo_id', true);
+                                if ($guide_photo_id) {
+                                    $guide_photo_url = wp_get_attachment_url($guide_photo_id);
+                                }
+                                if (!$guide_photo_url) {
+                                    $guide_photo_url = get_user_meta($guide_user_id, 'guide_photo', true);
+                                }
+                                if (! $guide_photo_url) {
+                                    $guide_photo_url = get_user_meta($guide_user_id, 'profile_photo', true);
+                                }
+                                if (!$guide_photo_url) {
+                                    $guide_photo_url = get_avatar_url($guide_user_id, ['size' => 128]);
+                                }
+                                
+                                // Guide profile URL
+                                $guide_profile_url = home_url('/guide/' . $guide_user_id . '/');
+                            }
+                            
+                            // Fallback to widget default photo
+                            if (empty($guide_photo_url) && ! empty($settings['guide_photo']['url'])) {
+                                $guide_photo_url = $settings['guide_photo']['url'];
+                            }
+                            // Fallback to widget default link
+                            if ($guide_profile_url === '#' && !empty($settings['guide_link']['url'])) {
+                                $guide_profile_url = $settings['guide_link']['url'];
+                            }
+                        }
                     ?>
                     <?php 
                         // Pre-calculate guide size for CSS variable
@@ -1098,7 +1169,7 @@ class Woo_Tour_Carousel extends Widget_Base {
                                 
                                 $wishlist_style = 'width: ' . esc_attr($wishlist_size) . 'px; height: ' . esc_attr($wishlist_size) . 'px; background: ' . esc_attr($wishlist_bg) . '; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.4); transition: all 0.3s ease; text-decoration: none; cursor: pointer; padding: 0;';
                                 if ($wishlist_liquid) {
-                                    $wishlist_style .= ' backdrop-filter: blur(' . esc_attr($wishlist_blur) . 'px); -webkit-backdrop-filter: blur(' . esc_attr($wishlist_blur) . 'px); box-shadow: 0 4px 12px rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.6);';
+                                    $wishlist_style .= ' backdrop-filter: blur(' . esc_attr($wishlist_blur) . 'px); -webkit-backdrop-filter: blur(' . esc_attr($wishlist_blur) . 'px); box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1), inset 0 1px 2px rgba(255,255,255,0.6);';
                                 }
                             ?>
                             <button type="button" 
@@ -1160,6 +1231,7 @@ class Woo_Tour_Carousel extends Widget_Base {
                                 <a href="<?php echo esc_url($product->get_permalink()); ?>" class="mst-woo-carousel-button mst-follow-glow" style="display: flex; align-items: center; justify-content: center; width: 100%; background: <?php echo esc_attr($button_bg); ?>; color: <?php echo esc_attr($button_text); ?>; padding: 14px 20px; border-radius: 0 0 <?php echo $card_radius; ?>px <?php echo $card_radius; ?>px; text-decoration: none; font-weight: 600; font-size: 14px;">
                                     <?php echo esc_html($settings['button_text']); ?>
                                 </a>
+                                
                                 
                                 <?php if ($show_guide && ! empty($guide_photo_url)): ?>
                                 <div style="position: absolute; right: <?php echo 16 + $guide_right; ?>px; top: 50%; transform: translateY(calc(-50% + <?php echo $guide_bottom; ?>px)); width: <?php echo $guide_size; ?>px; height: <?php echo $guide_size; ?>px; border-radius: 50%; overflow: hidden; border: <?php echo $guide_border; ?>px solid <?php echo esc_attr($guide_border_color); ?>; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 5;">
