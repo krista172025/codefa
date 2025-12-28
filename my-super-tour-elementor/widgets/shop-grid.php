@@ -149,7 +149,7 @@ class Shop_Grid extends Widget_Base {
             'show_badges',
             [
                 'label' => __('Show Badges', 'my-super-tour-elementor'),
-                'type' => Controls_Manager:: SWITCHER,
+                'type' => Controls_Manager::SWITCHER,
                 'default' => 'yes',
             ]
         );
@@ -178,7 +178,7 @@ class Shop_Grid extends Widget_Base {
             'badge_attr_3',
             [
                 'label' => __('Badge 3 Attribute', 'my-super-tour-elementor'),
-                'type' => Controls_Manager:: TEXT,
+                'type' => Controls_Manager::TEXT,
                 'default' => 'pa_transport',
                 'condition' => ['show_badges' => 'yes'],
             ]
@@ -207,7 +207,7 @@ class Shop_Grid extends Widget_Base {
             'guide_photo',
             [
                 'label' => __('Default Guide Photo', 'my-super-tour-elementor'),
-                'type' => Controls_Manager:: MEDIA,
+                'type' => Controls_Manager::MEDIA,
                 'condition' => ['show_guide' => 'yes'],
             ]
         );
@@ -241,7 +241,7 @@ class Shop_Grid extends Widget_Base {
             'wishlist_section',
             [
                 'label' => __('Wishlist', 'my-super-tour-elementor'),
-                'tab' => Controls_Manager:: TAB_CONTENT,
+                'tab' => Controls_Manager::TAB_CONTENT,
             ]
         );
 
@@ -251,6 +251,47 @@ class Shop_Grid extends Widget_Base {
                 'label' => __('Show Wishlist Button', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::SWITCHER,
                 'default' => 'yes',
+            ]
+        );
+        
+        // Wishlist Active State
+        $this->add_control(
+            'wishlist_active_heading',
+            [
+                'label' => __('Wishlist Active State', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+                'condition' => ['show_wishlist' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'wishlist_active_bg',
+            [
+                'label' => __('Active Background', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => 'rgba(255,255,255,0.95)',
+                'condition' => ['show_wishlist' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'wishlist_active_fill',
+            [
+                'label' => __('Active Heart Fill', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => 'hsl(0, 80%, 60%)',
+                'condition' => ['show_wishlist' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'wishlist_active_stroke',
+            [
+                'label' => __('Active Heart Stroke', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => 'hsl(0, 80%, 50%)',
+                'condition' => ['show_wishlist' => 'yes'],
             ]
         );
 
@@ -278,7 +319,7 @@ class Shop_Grid extends Widget_Base {
             'enable_liquid_glass',
             [
                 'label' => __('Enable Liquid Glass', 'my-super-tour-elementor'),
-                'type' => Controls_Manager:: SWITCHER,
+                'type' => Controls_Manager::SWITCHER,
                 'default' => 'yes',
             ]
         );
@@ -315,9 +356,74 @@ class Shop_Grid extends Widget_Base {
             'image_height',
             [
                 'label' => __('Image Height', 'my-super-tour-elementor'),
-                'type' => Controls_Manager:: SLIDER,
+                'type' => Controls_Manager::SLIDER,
                 'range' => ['px' => ['min' => 100, 'max' => 400]],
                 'default' => ['size' => 200, 'unit' => 'px'],
+            ]
+        );
+        
+        $this->add_responsive_control(
+            'title_margin_bottom',
+            [
+                'label' => __('Title Bottom Margin', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => 0, 'max' => 30]],
+                'default' => ['size' => 4, 'unit' => 'px'],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-title' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'location_margin_bottom',
+            [
+                'label' => __('Location Bottom Margin', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => 0, 'max' => 30]],
+                'default' => ['size' => 8, 'unit' => 'px'],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-location' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'meta_margin_bottom',
+            [
+                'label' => __('Rating/Price Bottom Margin', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => 0, 'max' => 30]],
+                'default' => ['size' => 12, 'unit' => 'px'],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-meta' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'content_padding',
+            [
+                'label' => __('Content Padding', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px'],
+                'default' => ['top' => 16, 'right' => 16, 'bottom' => 16, 'left' => 16, 'unit' => 'px'],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'card_min_height',
+            [
+                'label' => __('Card Min Height', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => 0, 'max' => 600]],
+                'default' => ['size' => 0, 'unit' => 'px'],
+                'selectors' => [
+                    '{{WRAPPER}} .mst-shop-grid-card' => 'min-height: {{SIZE}}{{UNIT}};',
+                ],
             ]
         );
 
@@ -325,7 +431,7 @@ class Shop_Grid extends Widget_Base {
             'image_border_radius',
             [
                 'label' => __('Image Border Radius', 'my-super-tour-elementor'),
-                'type' => Controls_Manager:: SLIDER,
+                'type' => Controls_Manager::SLIDER,
                 'range' => ['px' => ['min' => 0, 'max' => 40]],
                 'default' => ['size' => 20, 'unit' => 'px'],
             ]
@@ -345,7 +451,7 @@ class Shop_Grid extends Widget_Base {
             'guide_photo_size',
             [
                 'label' => __('Guide Photo Size', 'my-super-tour-elementor'),
-                'type' => Controls_Manager:: SLIDER,
+                'type' => Controls_Manager::SLIDER,
                 'range' => ['px' => ['min' => 40, 'max' => 100]],
                 'default' => ['size' => 64, 'unit' => 'px'],
             ]
@@ -387,7 +493,7 @@ class Shop_Grid extends Widget_Base {
             'style_colors',
             [
                 'label' => __('Colors', 'my-super-tour-elementor'),
-                'tab' => Controls_Manager:: TAB_STYLE,
+                'tab' => Controls_Manager::TAB_STYLE,
             ]
         );
 
@@ -495,7 +601,7 @@ class Shop_Grid extends Widget_Base {
             'button_border_radius',
             [
                 'label' => __('Button Border Radius', 'my-super-tour-elementor'),
-                'type' => Controls_Manager:: SLIDER,
+                'type' => Controls_Manager::SLIDER,
                 'range' => ['px' => ['min' => 0, 'max' => 50]],
                 'default' => ['size' => 25, 'unit' => 'px'],
             ]
@@ -626,19 +732,52 @@ protected function render() {
             $badge_2 = $product->get_attribute(isset($settings['badge_attr_2']) ? $settings['badge_attr_2'] : 'pa_duration');
             $badge_3 = $product->get_attribute(isset($settings['badge_attr_3']) ? $settings['badge_attr_3'] : 'pa_transport');
             
+            // Получаем гида товара из mst_lk
             $guide_photo_url = '';
+            $guide_name = '';
+            $guide_rating = '';
+            $guide_profile_url = '#';
+
             if ($show_guide) {
-                // Сначала пробуем из meta товара
-                $guide_id = get_post_meta($product_id, '_guide_photo_id', true);
-                if ($guide_id) {
-                    $guide_photo_url = wp_get_attachment_url($guide_id);
+                // 1. Пробуем получить guide_id из meta товара
+                $guide_user_id = get_post_meta($product_id, '_guide_user_id', true);
+                
+                if (! $guide_user_id) {
+                    // Альтернативные meta ключи
+                    $guide_user_id = get_post_meta($product_id, 'guide_id', true);
                 }
-                if (! $guide_photo_url) {
-                    $guide_photo_url = get_post_meta($product_id, 'guide_photo', true);
+                
+                if ($guide_user_id) {
+                    // Получаем данные гида из mst_lk
+                    $guide_photo_id = get_user_meta($guide_user_id, 'mst_guide_photo_id', true);
+                    if ($guide_photo_id) {
+                        $guide_photo_url = wp_get_attachment_url($guide_photo_id);
+                    }
+                    
+                    if (empty($guide_photo_url)) {
+                        // Fallback на аватар WordPress, если фото не найдено
+                        $guide_photo_url = get_avatar_url($guide_user_id, ['size' => 128]);
+                    }
+                    
+                    // Имя и рейтинг гида
+                    $user = get_userdata($guide_user_id);
+                    if ($user) {
+                        $guide_name = $user->display_name;
+                        $guide_profile_url = home_url('/guide/' . $guide_user_id);
+                    }
+                    
+                    // Получаем рейтинг гида
+                    $guide_rating = get_user_meta($guide_user_id, 'mst_guide_rating', true);
                 }
-                // Если нет - берём дефолтное
-                if (!$guide_photo_url && ! empty($settings['guide_photo']['url'])) {
+                
+                // Fallback на дефолтное фото из настроек виджета, если ничего не найдено
+                if (empty($guide_photo_url) && ! empty($settings['guide_photo']['url'])) {
                     $guide_photo_url = $settings['guide_photo']['url'];
+                }
+                
+                // Fallback на guide_link из настроек
+                if ($guide_profile_url === '#' && ! empty($settings['guide_link']['url'])) {
+                    $guide_profile_url = $settings['guide_link']['url'];
                 }
             }
             
@@ -682,25 +821,37 @@ protected function render() {
                 </div>
                 <?php endif; ?>
 
-                
                 <?php if ($show_wishlist): 
-                    $wishlist_bg = isset($settings['wishlist_bg_color']) ? $settings['wishlist_bg_color'] : 'rgba(255,255,255,0.15)';
-                    $wishlist_icon = isset($settings['wishlist_icon_color']) ? $settings['wishlist_icon_color'] : '#ffffff';
-                    $wishlist_stroke = isset($settings['wishlist_icon_stroke']) ? $settings['wishlist_icon_stroke'] : 'hsl(0, 80%, 60%)';
-                    $wishlist_hover_bg = isset($settings['wishlist_hover_bg']) ? $settings['wishlist_hover_bg'] : 'rgba(255,255,255,0.25)';
-                    $wishlist_size = isset($settings['wishlist_size']['size']) ? $settings['wishlist_size']['size'] : 36;
-                    $wishlist_icon_size = isset($settings['wishlist_icon_size']['size']) ? $settings['wishlist_icon_size']['size'] : 18;
-                    $wishlist_blur = isset($settings['wishlist_blur']['size']) ? $settings['wishlist_blur']['size'] : 12;
+                    $wishlist_bg = $settings['wishlist_bg_color'] ?? 'rgba(255,255,255,0.15)';
+                    $wishlist_icon = $settings['wishlist_icon_color'] ?? '#ffffff';
+                    $wishlist_stroke = $settings['wishlist_icon_stroke'] ?? 'hsl(0, 80%, 60%)';
+                    $wishlist_hover_bg = $settings['wishlist_hover_bg'] ?? 'rgba(255,255,255,0.25)';
+                    $wishlist_active_bg = $settings['wishlist_active_bg'] ?? 'rgba(255,255,255,0.95)';
+                    $wishlist_active_fill = $settings['wishlist_active_fill'] ?? 'hsl(0, 80%, 60%)';
+                    $wishlist_active_stroke = $settings['wishlist_active_stroke'] ?? 'hsl(0, 80%, 50%)';
+                    $wishlist_size = $settings['wishlist_size']['size'] ?? 36;
+                    $wishlist_icon_size = $settings['wishlist_icon_size']['size'] ?? 18;
+                    $wishlist_blur = $settings['wishlist_blur']['size'] ?? 12;
+                    $wishlist_liquid = ($settings['wishlist_liquid_glass'] ?? '') === 'yes';
                     
-                    $wishlist_style = 'position: absolute; top: 12px; right: 12px; z-index: 2; width: ' . esc_attr($wishlist_size) . 'px; height: ' . esc_attr($wishlist_size) . 'px; background: ' . esc_attr($wishlist_bg) . '; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.4); cursor: pointer; transition: all 0.3s ease; padding: 0;';
+                    $wishlist_style = 'position: absolute; top: 12px; right: 12px; z-index: 2; width: ' . $wishlist_size . 'px; height: ' .  $wishlist_size . 'px; background: ' . $wishlist_bg .  '; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.4); cursor: pointer; transition: all 0.3s ease; padding: 0;';
                     if ($wishlist_liquid) {
-                        $wishlist_style .= ' backdrop-filter: blur(' . esc_attr($wishlist_blur) . 'px); -webkit-backdrop-filter: blur(' . esc_attr($wishlist_blur) . 'px); box-shadow: 0 4px 12px rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.6);';
+                        $wishlist_style .= ' backdrop-filter: blur(' . $wishlist_blur . 'px); -webkit-backdrop-filter: blur(' . $wishlist_blur .  'px); box-shadow: 0 4px 12px rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.6);';
                     }
                 ?>
-                <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow" data-product-id="<?php echo esc_attr($product_id); ?>" data-hover-bg="<?php echo esc_attr($wishlist_hover_bg); ?>" style="<?php echo $wishlist_style; ?>" aria-label="Add to wishlist">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="<?php echo esc_attr($wishlist_icon_size); ?>" height="<?php echo esc_attr($wishlist_icon_size); ?>" viewBox="0 0 24 24" fill="<?php echo esc_attr($wishlist_icon); ?>" stroke="<?php echo esc_attr($wishlist_stroke); ?>" stroke-width="2" class="mst-heart-icon">
-                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-                    </svg>
+                <button type="button"
+                class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow"
+                data-product-id="<?php echo esc_attr($product_id); ?>"
+                data-hover-bg="<?php echo esc_attr($wishlist_hover_bg); ?>"
+                data-active-bg="<?php echo esc_attr($wishlist_active_bg); ?>"
+                data-active-fill="<?php echo esc_attr($wishlist_active_fill); ?>"
+                data-active-stroke="<?php echo esc_attr($wishlist_active_stroke); ?>"
+                data-default-bg="<?php echo esc_attr($wishlist_bg); ?>"
+                data-default-fill="<?php echo esc_attr($wishlist_icon); ?>"
+                data-default-stroke="<?php echo esc_attr($wishlist_stroke); ?>"
+                style="<?php echo $wishlist_style; ?>"
+                aria-label="Add to wishlist">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="<?php echo esc_attr($wishlist_icon_size); ?>" height="<?php echo esc_attr($wishlist_icon_size); ?>" viewBox="0 0 24 24" fill="<?php echo esc_attr($wishlist_icon); ?>" stroke="<?php echo esc_attr($wishlist_stroke); ?>" stroke-width="2" class="mst-heart-icon"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
                 </button>
                 <?php endif; ?>
             </div>
