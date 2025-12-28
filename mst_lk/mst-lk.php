@@ -441,86 +441,55 @@ class MST_LK {
     public function handle_guide_template() {
         // Check for new rewrite rule query vars first
         $guide_id = get_query_var('mst_guide_id');
-        if ($guide_id && get_query_var('mst_guide_page')) {
-            // Show the guide profile directly
-            $guide_id = intval($guide_id);
-            
-            // Validate guide exists
-            $guide = get_userdata($guide_id);
-            if (!$guide) {
-                // Guide not found - redirect to home
-                wp_redirect(home_url());
-                exit;
-            }
-            
-            // Try to find a page with the guide profile shortcode using meta_query or LIKE search
-            global $wpdb;
-            $pages = $wpdb->get_results($wpdb->prepare(
-                "SELECT ID FROM {$wpdb->posts} 
-                WHERE post_type = 'page' 
-                AND post_status = 'publish' 
-                AND post_content LIKE %s 
-                LIMIT 1",
-                '%[mst_guide_profile%'
-            ));
-            
-            if (!empty($pages)) {
-                // Redirect to the page with guide_id parameter
-                wp_safe_redirect(add_query_arg('guide_id', $guide_id, get_permalink($pages[0]->ID)));
-                exit;
-            } else {
-                // If no page found, display inline without redirect
-                $_GET['guide_id'] = $guide_id;
-                get_header();
-                echo '<div class="mst-guide-page-wrapper" style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">';
-                echo do_shortcode('[mst_guide_profile]');
-                echo '</div>';
-                get_footer();
-                exit;
-            }
+        
+        // Если нет mst_guide_id, пробуем guide_id
+        if (!$guide_id) {
+            $guide_id = get_query_var('guide_id');
         }
         
-        // Legacy support for old guide_id query var
-        $guide_id = get_query_var('guide_id');
+        // Если guide_id передан через GET параметр - НЕ делаем редирект (уже на нужной странице)
+        if (isset($_GET['guide_id'])) {
+            return; // Выходим, шорткод сам обработает
+        }
         
-        if ($guide_id) {
-            $guide_id = intval($guide_id);
-            
-            // Validate guide exists
-            $guide = get_userdata($guide_id);
-            if (!$guide) {
-                // Guide not found - redirect to home
-                wp_redirect(home_url());
-                exit;
-            }
-            
-            // Set up the guide_id in GET for compatibility with existing shortcode
+        // Если нет guide_id вообще - выходим
+        if (! $guide_id) {
+            return;
+        }
+        
+        $guide_id = intval($guide_id);
+        
+        // Validate guide exists
+        $guide = get_userdata($guide_id);
+        if (!$guide) {
+            wp_redirect(home_url());
+            exit;
+        }
+        
+        // Ищем страницу с шорткодом
+        global $wpdb;
+        $page = $wpdb->get_var($wpdb->prepare(
+            "SELECT ID FROM {$wpdb->posts} 
+            WHERE post_type = 'page' 
+            AND post_status = 'publish' 
+            AND post_content LIKE %s 
+            LIMIT 1",
+            '%[mst_guide_profile%'
+        ));
+        
+        if ($page) {
+            // Редирект на страницу с guide_id в GET
+            wp_safe_redirect(add_query_arg('guide_id', $guide_id, get_permalink($page)));
+            exit;
+        } else {
+            // Если страница не найдена - показываем inline
             $_GET['guide_id'] = $guide_id;
-            
-            // Try to find a page with the guide profile shortcode using LIKE search
-            global $wpdb;
-            $pages = $wpdb->get_results($wpdb->prepare(
-                "SELECT ID FROM {$wpdb->posts} 
-                WHERE post_type = 'page' 
-                AND post_status = 'publish' 
-                AND post_content LIKE %s 
-                LIMIT 1",
-                '%[mst_guide_profile%'
-            ));
-            
-            if (!empty($pages)) {
-                // Redirect to the page with guide_id parameter
-                wp_safe_redirect(add_query_arg('guide_id', $guide_id, get_permalink($pages[0]->ID)));
-                exit;
-            } else {
-                // If no page found, display inline without redirect
-                get_header();
-                echo '<div class="mst-guide-page-wrapper" style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">';
-                echo do_shortcode('[mst_guide_profile]');
-                echo '</div>';
-                get_footer();
-                exit;
-            }
+            get_header();
+            echo '<div class="mst-guide-page-wrapper" style="max-width:  1200px; margin: 40px auto; padding: 0 20px;">';
+            echo do_shortcode('[mst_guide_profile]');
+            echo '</div>';
+            get_footer();
+            exit;
         }
     }
     

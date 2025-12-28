@@ -1123,61 +1123,49 @@ class Woo_Tour_Carousel extends Widget_Base {
                             $info_gap = isset($settings['info_block_gap']['size']) ? intval($settings['info_block_gap']['size']) : 12;
                             $info_margin = isset($settings['info_block_margin_bottom']['size']) ? intval($settings['info_block_margin_bottom']['size']) : 12;
                         ?>
-                        <div class="mst-woo-carousel-content" style="padding: <?php echo esc_attr($content_padding_top); ?>px <?php echo esc_attr($content_padding_right); ?>px <?php echo esc_attr($content_padding_bottom); ?>px <?php echo esc_attr($content_padding_left); ?>px; display: flex; flex-direction: column; flex: 1;">
-                            <div class="mst-woo-carousel-main-row" style="display: flex; justify-content: space-between; align-items: flex-start; gap: <?php echo esc_attr($info_gap); ?>px; margin-bottom: <?php echo esc_attr($info_margin); ?>px;">
-                                <div class="mst-woo-carousel-info" style="flex: 1; min-width: 0;">
-                                    <h3 class="mst-woo-carousel-title" style="color: <?php echo esc_attr($settings['title_color']); ?>; font-size: 16px; font-weight: 600; margin: 0 0 <?php echo esc_attr($title_margin); ?>px 0; line-height: 1.3;"><?php echo esc_html($product->get_name()); ?></h3>
-                                    
-                                    <?php if (!empty($location)): ?>
-                                    <div class="mst-woo-carousel-location" style="display: flex; align-items: center; gap: 4px; margin-bottom: <?php echo esc_attr($location_margin); ?>px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="<?php echo esc_attr($settings['location_icon_color']); ?>"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>
-                                        <span style="color: <?php echo esc_attr($settings['location_text_color']); ?>; font-size: 13px;"><?php echo esc_html($location); ?></span>
-                                    </div>
-                                    <?php endif; ?>
-                                    
-                                    <div class="mst-woo-carousel-rating" style="display: flex; align-items: center; gap: 4px;">
-                                        <span class="mst-woo-star" style="color: <?php echo esc_attr($settings['star_color']); ?>;">★</span>
-                                        <span style="font-weight: 600;"><?php echo esc_html($rating ?: '5'); ?></span>
-                                        <span class="mst-woo-reviews" style="color: #999; font-size: 12px;">(<?php echo esc_html($review_count ?: '0'); ?>)</span>
-                                    </div>
-                                </div>
-                                <div class="mst-woo-carousel-price" style="color: <?php echo esc_attr($settings['price_color']); ?>; font-weight: 700; font-size: 16px; text-align: right; flex-shrink: 0;">
-                                    <?php echo $price ?: '&nbsp;'; ?>
+                        <div class="mst-woo-carousel-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                            <!-- Row 1: Title + Price -->
+                            <div class="mst-woo-carousel-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 6px;">
+                                <h3 class="mst-woo-carousel-title" style="color: <?php echo esc_attr($title_color); ?>; margin: 0; font-size: 16px; font-weight: 600; line-height: 1.3; flex: 1;">
+                                    <a href="<?php echo esc_url($product->get_permalink()); ?>" style="color: inherit; text-decoration: none;">
+                                        <?php echo esc_html($product->get_name()); ?>
+                                    </a>
+                                </h3>
+                                <div class="mst-woo-carousel-price" style="color: <?php echo esc_attr($price_color); ?>; font-weight: 700; font-size: 15px; white-space: nowrap;">
+                                    <?php echo $price; ?>
                                 </div>
                             </div>
                             
-                            <div class="mst-woo-carousel-footer" style="margin-top: auto; position: relative;">
-                                <?php 
-                                    // Get guide size values - desktop, tablet, mobile
-                                    $guide_size_desktop = isset($settings['guide_photo_size']['size']) ? intval($settings['guide_photo_size']['size']) : 64;
-                                    $guide_size_tablet = isset($settings['guide_photo_size_tablet']['size']) ? intval($settings['guide_photo_size_tablet']['size']) : round($guide_size_desktop * 0.85);
-                                    $guide_size_mobile = isset($settings['guide_photo_size_mobile']['size']) ? intval($settings['guide_photo_size_mobile']['size']) : round($guide_size_desktop * 0.7);
-                                    
-                                    // Get border width values
-                                    $guide_border_desktop = isset($settings['guide_border_width']['size']) ? intval($settings['guide_border_width']['size']) : 3;
-                                    $guide_border_tablet = isset($settings['guide_border_width_tablet']['size']) ? intval($settings['guide_border_width_tablet']['size']) : $guide_border_desktop;
-                                    $guide_border_mobile = isset($settings['guide_border_width_mobile']['size']) ? intval($settings['guide_border_width_mobile']['size']) : max(2, $guide_border_desktop - 1);
-                                    
-                                    // Get offset values - desktop, tablet, mobile
-                                    $guide_right_desktop = isset($settings['guide_offset_right']['size']) ? intval($settings['guide_offset_right']['size']) : 0;
-                                    $guide_right_tablet = isset($settings['guide_offset_right_tablet']['size']) ? intval($settings['guide_offset_right_tablet']['size']) : $guide_right_desktop;
-                                    $guide_right_mobile = isset($settings['guide_offset_right_mobile']['size']) ? intval($settings['guide_offset_right_mobile']['size']) : $guide_right_desktop;
-                                    
-                                    $guide_bottom_desktop = isset($settings['guide_offset_bottom']['size']) ? intval($settings['guide_offset_bottom']['size']) : 0;
-                                    $guide_bottom_tablet = isset($settings['guide_offset_bottom_tablet']['size']) ? intval($settings['guide_offset_bottom_tablet']['size']) : $guide_bottom_desktop;
-                                    $guide_bottom_mobile = isset($settings['guide_offset_bottom_mobile']['size']) ? intval($settings['guide_offset_bottom_mobile']['size']) : $guide_bottom_desktop;
-                                ?>
-                                <a href="<?php echo esc_url($product->get_permalink()); ?>" class="mst-woo-carousel-button mst-follow-glow" style="position: relative; display: flex; align-items: center; justify-content: center; width: 100%; background: <?php echo esc_attr($settings['button_bg_color']); ?>; color: <?php echo esc_attr($settings['button_text_color']); ?>; padding: 12px 20px; <?php echo $show_guide ? 'padding-right: calc(' . esc_attr($guide_size_desktop) . 'px / 2 + 20px);' : ''; ?> border-radius: <?php echo esc_attr($button_border_radius); ?>px; text-align: center; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease; --guide-size-desktop: <?php echo esc_attr($guide_size_desktop); ?>px; --guide-size-tablet: <?php echo esc_attr($guide_size_tablet); ?>px; --guide-size-mobile: <?php echo esc_attr($guide_size_mobile); ?>px;">
-                                    <span style="flex: 1; text-align: center;"><?php echo esc_html($settings['button_text']); ?></span>
+                            <!-- Row 2: Location + Rating -->
+                            <div class="mst-woo-carousel-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <?php if (!empty($location)): ?>
+                                <div class="mst-woo-carousel-location" style="display: flex; align-items: center; gap: 4px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="<?php echo esc_attr($location_icon_color); ?>"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
+                                    <span style="color: <?php echo esc_attr($location_text_color); ?>; font-size: 13px;"><?php echo esc_html($location); ?></span>
+                                </div>
+                                <?php endif; ?>
+                                
+                                <div class="mst-woo-carousel-rating" style="display: flex; align-items: center; gap: 4px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="<?php echo esc_attr($star_color); ?>"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                    <span style="font-weight: 600;"><?php echo esc_html($rating ?: '5'); ?></span>
+                                    <span style="color: #999; font-size: 12px;">(<?php echo esc_html($review_count ?: '0'); ?>)</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Spacer -->
+                            <div style="flex: 1;"></div>
+                            
+                            <!-- Button with Guide Photo -->
+                            <div class="mst-woo-carousel-button-wrapper" style="position: relative; margin: 0 -16px -16px -16px;">
+                                <a href="<?php echo esc_url($product->get_permalink()); ?>" class="mst-woo-carousel-button mst-follow-glow" style="display: flex; align-items: center; justify-content: center; width: 100%; background: <?php echo esc_attr($button_bg); ?>; color: <?php echo esc_attr($button_text); ?>; padding: 14px 20px; border-radius: 0 0 <?php echo $card_radius; ?>px <?php echo $card_radius; ?>px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                                    <?php echo esc_html($settings['button_text']); ?>
                                 </a>
-                                <?php if ($show_guide): 
-                                    // Dynamic guide photo will be injected here by JavaScript
-                                    // The guide-system.php script already handles this for Shop Grid, we'll reuse it
-                                ?>
-                                <div class="mst-woo-carousel-guide-placeholder" 
-                                     data-product-id="<?php echo esc_attr($product_id); ?>"
-                                     style="--guide-size-desktop: <?php echo esc_attr($guide_size_desktop); ?>px; --guide-size-tablet: <?php echo esc_attr($guide_size_tablet); ?>px; --guide-size-mobile: <?php echo esc_attr($guide_size_mobile); ?>px; --guide-border-desktop: <?php echo esc_attr($guide_border_desktop); ?>px; --guide-border-tablet: <?php echo esc_attr($guide_border_tablet); ?>px; --guide-border-mobile: <?php echo esc_attr($guide_border_mobile); ?>px; --guide-right-desktop: <?php echo esc_attr($guide_right_desktop); ?>px; --guide-right-tablet: <?php echo esc_attr($guide_right_tablet); ?>px; --guide-right-mobile: <?php echo esc_attr($guide_right_mobile); ?>px; --guide-bottom-desktop: <?php echo esc_attr($guide_bottom_desktop); ?>px; --guide-bottom-tablet: <?php echo esc_attr($guide_bottom_tablet); ?>px; --guide-bottom-mobile: <?php echo esc_attr($guide_bottom_mobile); ?>px; --guide-border-color: <?php echo esc_attr($settings['guide_border_color']); ?>; --guide-hover-border-color: <?php echo esc_attr($settings['guide_hover_border_color']); ?>;">
-                                    <!-- Guide will be dynamically inserted here -->
+                                
+                                <?php if ($show_guide && ! empty($guide_photo_url)): ?>
+                                <div style="position: absolute; right: <?php echo 16 + $guide_right; ?>px; top: 50%; transform: translateY(calc(-50% + <?php echo $guide_bottom; ?>px)); width: <?php echo $guide_size; ?>px; height: <?php echo $guide_size; ?>px; border-radius: 50%; overflow: hidden; border: <?php echo $guide_border; ?>px solid <?php echo esc_attr($guide_border_color); ?>; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 5;">
+                                    <a href="<?php echo esc_url($guide_profile_url); ?>">
+                                        <img src="<?php echo esc_url($guide_photo_url); ?>" alt="Guide" style="width: 100%; height: 100%; object-fit: cover;">
+                                    </a>
                                 </div>
                                 <?php endif; ?>
                             </div>
