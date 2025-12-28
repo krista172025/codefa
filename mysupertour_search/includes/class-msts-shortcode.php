@@ -13,7 +13,7 @@ class MSTS_Shortcode {
     private function __construct(){
         $this->s=MSTS_Settings::instance()->get();
         add_shortcode('mst_search',[$this,'render']);
-        add_shortcode('mst_search_header',[$this,'render_header']);
+        add_shortcode('mst_head',[$this,'render_head']);
     }
     
     public function render($atts){
@@ -44,290 +44,205 @@ class MSTS_Shortcode {
         <?php return ob_get_clean();
     }
     
-    public function render_header($atts){
-        $atts=shortcode_atts([],$atts,'mst_search_header');
-        $ph=esc_attr($this->s['placeholder']);
+    public function render_head($atts){
+        $ph = esc_attr($this->s['placeholder']);
+        $uid = 'mst-head-' .uniqid();
         ob_start(); ?>
         
-        <!-- ✅ HEADER SEARCH INPUT - LIQUID GLASS + ВИДИМЫЙ ТЕКСТ -->
-        <div class="msts-hdr-search-box" onclick="mstsOpenModal()">
-            <span class="msts-hdr-icon">🔍</span>
-            <input type="text" class="msts-hdr-input" placeholder="<?php echo $ph; ?>" readonly>
+        <div class="mst-head-trigger" id="<?php echo $uid; ?>-trigger" onclick="mstHeadOpen('<?php echo $uid; ?>')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span><?php echo $ph; ?></span>
+            <button type="button">НАЙТИ</button>
         </div>
         
-        <!-- MODAL -->
-        <div id="msts-modal-v3" class="msts-modal-v3">
-            <button class="msts-modal-v3-close" onclick="mstsCloseModal()">×</button>
-            <div class="msts-modal-v3-inner">
+        <div class="mst-head-overlay" id="<?php echo $uid; ?>-overlay">
+            <button type="button" class="mst-head-close" onclick="mstHeadClose('<?php echo $uid; ?>')" aria-label="Закрыть">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="mst-head-modal">
                 <?php echo do_shortcode('[mst_search noautofocus=true]'); ?>
             </div>
         </div>
         
         <style>
-        /* ✅ HEADER SEARCH BOX - LIQUID GLASS С ВИДИМЫМ ТЕКСТОМ */
-        .msts-hdr-search-box {
-            display: flex !important;
-            align-items: center !important;
-            gap: 10px !important;
-            padding: 8px 16px !important;
-            height: 38px !important;
-            max-width: 280px !important;
-            background: rgba(255,255,255,0.15) !important;
-            backdrop-filter: blur(40px) !important;
-            -webkit-backdrop-filter: blur(40px) !important;
-            border: 2px solid rgba(255,255,255,0.25) !important;
-            border-radius: 24px !important;
-            cursor: pointer !important;
-            transition: all 0.3s ease !important;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+        <?php echo $uid; ?>-trigger {
+            displayinline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 6px 6px 14px;
+            height: 40px;
+            min-width: 180px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        <?php echo $uid; ?>-trigger: hover {
+            border-color: #bbb;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        <?php echo $uid; ?>-trigger svg {
+            color: #666;
+            flex-shrink: 0;
+        }
+        <?php echo $uid; ?>-trigger span {
+            flex: 1;
+            font-size: 13px;
+            color: #888;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        <?php echo $uid; ?>-trigger button {
+            flex-shrink: 0;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #1a1a1a;
+            font-size: 11px;
+            font-weight: 700;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
         }
         
-        .msts-hdr-search-box:hover {
-            background: rgba(255,255,255,0.25) !important;
-            border-color: rgba(255,255,255,0.4) !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 28px rgba(0,0,0,0.15) !important;
-        }
-        
-        .msts-hdr-icon {
-            font-size: 16px !important;
-            line-height: 1 !important;
-            flex-shrink: 0 !important;
-            opacity: 0.8 !important;
-        }
-        
-        /* ✅ INPUT С ТЕМНЫМ ТЕКСТОМ (ВИДИМЫЙ!) */
-        .msts-hdr-input {
-            flex: 1 !important;
-            border: none !important;
-            outline: none !important;
-            background: transparent !important;
-            font-size: 13px !important;
-            font-weight: 500 !important;
-            color: #333 !important;
-            pointer-events: none !important;
-        }
-        
-        .msts-hdr-input::placeholder {
-            color: #666 !important;
-            opacity: 1 !important;
-        }
-        
-        /* ✅ MODAL OVERLAY */
-        .msts-modal-v3 {
+        <?php echo $uid; ?>-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            inset: 0;
             background: rgba(0,0,0,0);
-            backdrop-filter: blur(0px);
-            -webkit-backdrop-filter: blur(0px);
+            backdrop-filter: blur(0);
             z-index: 999999;
             opacity: 0;
             pointer-events: none;
-            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+            transition: all 0.3s ease;
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            padding: 80px 20px 20px;
+            padding: 100px 20px 40px;
             overflow-y: auto;
         }
-        
-        .msts-modal-v3.active {
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+        <?php echo $uid; ?>-overlay.mst-active {
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(10px);
             opacity: 1;
             pointer-events: all;
         }
         
-        /* ✅ MODAL INNER */
-        .msts-modal-v3-inner {
-            max-width: 900px;
+        <?php echo $uid; ?>-overlay .mst-head-modal {
+            max-width: 800px;
             width: 100%;
-            position: relative;
-            transform: scale(0.9) translateY(-20px);
-            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+            transform: scale(0.95) translateY(-20px);
+            transition: all 0.3s ease;
         }
-        
-        .msts-modal-v3.active .msts-modal-v3-inner {
+        <?php echo $uid; ?>-overlay.mst-active .mst-head-modal {
             transform: scale(1) translateY(0);
         }
         
-        /* ✅ КРЕСТИК ЗАКРЫТИЯ МОДАЛКИ */
-        .msts-modal-v3-close {
-            position: fixed !important;
-            top: 30px !important;
-            right: 30px !important;
-            width: 56px !important;
-            height: 56px !important;
-            background: rgba(255,255,255,0.25) !important;
-            backdrop-filter: blur(20px) !important;
-            -webkit-backdrop-filter: blur(20px) !important;
-            border: 2px solid rgba(255,255,255,0.35) !important;
-            border-radius: 50% !important;
-            color: #fff !important;
-            font-size: 32px !important;
-            line-height: 1 !important;
-            font-weight: 300 !important;
-            cursor: pointer !important;
-            transition: all 0.3s ease !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 0 !important;
-            z-index: 1000001 !important;
+        <?php echo $uid; ?>-overlay .mst-head-close {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 50%;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            z-index: 1000001;
+        }
+        <?php echo $uid; ?>-overlay .mst-head-close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg) scale(1.1);
         }
         
-        .msts-modal-v3-close:hover {
-            background: rgba(255,255,255,0.4) !important;
-            border-color: rgba(255,255,255,0.6) !important;
-            transform: rotate(90deg) scale(1.15) !important;
+        <?php echo $uid; ?>-overlay .msts-search-wrapper form {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 40px;
+            padding: 6px;
+        }
+        <?php echo $uid; ?>-overlay .msts-search-input-wrap {
+            border: none;
+            background: transparent;
+        }
+        <?php echo $uid; ?>-overlay .msts-search-input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+        }
+        <?php echo $uid; ?>-overlay .msts-search-input:: placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        <?php echo $uid; ?>-overlay .msts-search-btn {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border: none;
+            border-radius: 30px;
+            color: #1a1a1a;
+            font-weight: 700;
+            padding: 12px 24px;
+        }
+        <?php echo $uid; ?>-overlay .msts-clear-btn-fixed {
+            display: none;
+        }
+        <?php echo $uid; ?>-overlay .msts-suggestions {
+            position: static;
+            margin-top: 16px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            max-height: 450px;
+            overflow-y: auto;
         }
         
-        /* ✅ ФОРМА ВНУТРИ MODAL */
-        .msts-modal-v3 .msts-search-container {
-            margin: 0 !important;
-        }
-        
-        .msts-modal-v3 .msts-search-wrapper form {
-            background: rgba(255,255,255,0.15) !important;
-            backdrop-filter: blur(40px) !important;
-            -webkit-backdrop-filter: blur(40px) !important;
-            border: 2px solid rgba(255,255,255,0.25) !important;
-            border-radius: 50px !important;
-            padding: 8px !important;
-        }
-        
-        .msts-modal-v3 .msts-search-input-wrap {
-            border: 3px solid rgba(255,255,255,0.6) !important;
-        }
-        
-        .msts-modal-v3 .msts-search-input {
-            background: rgba(255,255,255,0.2) !important;
-            backdrop-filter: blur(20px) !important;
-            -webkit-backdrop-filter: blur(20px) !important;
-            color: #fff !important;
-        }
-        
-        .msts-modal-v3 .msts-search-input::placeholder {
-            color: rgba(255,255,255,0.7) !important;
-        }
-        
-        .msts-modal-v3 .msts-search-btn {
-            background: rgba(255,255,255,0.25) !important;
-            backdrop-filter: blur(20px) !important;
-            -webkit-backdrop-filter: blur(20px) !important;
-            border: 2px solid rgba(255,255,255,0.3) !important;
-            color: #fff !important;
-            font-weight: 700 !important;
-            min-width: 120px !important;
-        }
-        
-        /* ✅ КРЕСТИК ОЧИСТКИ */
-        .msts-modal-v3 .msts-clear-btn-fixed {
-            position: absolute !important;
-            right: 140px !important;
-            top: 50% !important;
-            transform: translateY(-50%) !important;
-            width: 32px !important;
-            height: 32px !important;
-            background: rgba(255,255,255,0.25) !important;
-            backdrop-filter: blur(20px) !important;
-            -webkit-backdrop-filter: blur(20px) !important;
-            border: 2px solid rgba(255,255,255,0.3) !important;
-            border-radius: 50% !important;
-            color: #fff !important;
-            font-size: 22px !important;
-            display: none !important;
-            z-index: 10 !important;
-        }
-        
-        .msts-modal-v3 .msts-clear-btn-fixed.msts-show {
-            display: flex !important;
-        }
-        
-        .msts-modal-v3 .msts-clear-btn-fixed:hover {
-            background: rgba(255,255,255,0.35) !important;
-            transform: translateY(-50%) rotate(90deg) scale(1.1) !important;
-        }
-        
-        .msts-modal-v3 .msts-suggestions {
-            position: static !important;
-            margin-top: 20px !important;
-            background: rgba(255,255,255,0.95) !important;
-            backdrop-filter: blur(40px) !important;
-            -webkit-backdrop-filter: blur(40px) !important;
-            max-height: 500px !important;
-            overflow-y: auto !important;
-            border-radius: 28px !important;
-        }
-        
-        /* ✅ АДАПТИВ */
         @media (max-width: 768px) {
-            .msts-hdr-search-box {
-                max-width: 240px !important;
-                padding: 6px 12px !important;
-                height: 34px !important;
-            }
-            .msts-hdr-icon {
-                font-size: 14px !important;
-            }
-            .msts-hdr-input {
-                font-size: 12px !important;
-            }
-            .msts-modal-v3-close {
-                width: 44px !important;
-                height: 44px !important;
-                top: 20px !important;
-                right: 20px !important;
-                font-size: 28px !important;
-            }
+            <?php echo $uid; ?>-trigger { min-width: 120px; height: 36px; }
+            <?php echo $uid; ?>-trigger span { display: none; }
+            <?php echo $uid; ?>-overlay { padding: 80px 12px 20px; }
+            <?php echo $uid; ?>-overlay .mst-head-close { width: 40px; height: 40px; top: 16px; right: 16px; }
         }
         </style>
         
         <script>
-        function mstsOpenModal() {
-            var modal = document.getElementById('msts-modal-v3');
-            if (!modal) return;
-            modal.classList.add('active');
+        function mstHeadOpen(id) {
+            var o = document.getElementById(id + '-overlay');
+            if (! o) return;
+            o.classList.add('mst-active');
             document.body.style.overflow = 'hidden';
-            setTimeout(function(){
-                var input = modal.querySelector('.msts-search-input');
-                if (input) input.focus();
-            }, 300);
+            setTimeout(function(){ var i = o.querySelector('.msts-search-input'); if(i) i.focus(); }, 200);
         }
-        
-        function mstsCloseModal() {
-            var modal = document.getElementById('msts-modal-v3');
-            if (!modal) return;
-            modal.classList.remove('active');
+        function mstHeadClose(id) {
+            var o = document.getElementById(id + '-overlay');
+            if (!o) return;
+            o.classList.remove('mst-active');
             document.body.style.overflow = '';
-            
-            var input = modal.querySelector('.msts-search-input');
-            if (input) {
-                input.value = '';
-                input.blur();
-            }
-            var suggestions = modal.querySelector('.msts-suggestions');
-            if (suggestions) {
-                suggestions.style.display = 'none';
-                suggestions.innerHTML = '';
-            }
-            var clearBtn = modal.querySelector('.msts-clear-btn-fixed');
-            if (clearBtn) clearBtn.classList.remove('msts-show');
+            var i = o.querySelector('.msts-search-input');
+            if (i) { i.value = ''; i.blur(); }
+            var s = o.querySelector('.msts-suggestions');
+            if (s) { s.style.display = 'none'; s.innerHTML = ''; }
         }
-        
-        document.addEventListener('keydown', function(e){
+        document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                mstsCloseModal();
+                document.querySelectorAll('.mst-head-overlay.mst-active').forEach(function(o) {
+                    var id = o.id.replace('-overlay', '');
+                    mstHeadClose(id);
+                });
             }
         });
-        
-        document.getElementById('msts-modal-v3')?.addEventListener('click', function(e){
-            if (e.target === this) {
-                mstsCloseModal();
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('mst-head-overlay') && e.target.classList.contains('mst-active')) {
+                var id = e.target.id.replace('-overlay', '');
+                mstHeadClose(id);
             }
         });
         </script>

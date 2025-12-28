@@ -138,79 +138,52 @@ class MSTS_Ajax {
         $limit = $this->s['products_limit'];
         if($limit < 1) return [];
         
-        $tax = $this->s['city_taxonomy'];
-        $found = [];
         global $wpdb;
+        $found = [];
+        
+        // Получаем ID товаров из категории latepoint для исключения
+        $latepoint_ids = get_posts([
+            'post_type' => 'product',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+            'tax_query' => [[
+                'taxonomy' => 'product_cat',
+                'field' => 'slug',
+                'terms' => ['latepoint'],
+            ]]
+        ]);
         
         foreach($expanded as $q){
             if($q === '' || $this->is_numeric_like($q)) continue;
+            if(mb_strlen($q) < 2) continue;
             
-            $args = [
-                'post_type' => 'product',
-                'post_status' => 'publish',
-                'posts_per_page' => $limit * 3, // берем больше, потом фильтруем
-                'fields' => 'ids',
-                'suppress_filters' => false,
-                'orderby' => 'title',
-                'order' => 'ASC',
-                'tax_query' => [
-                    'relation' => 'AND',
-                    [
-                        'taxonomy' => 'product_cat',
-                        'field' => 'slug',
-                        'terms' => ['latepoint'],
-                        'operator' => 'NOT IN'
-                    ]
-                ],
-                // Исключаем товары без цены
-                'meta_query' => [
-                    'relation' => 'AND',
-                    [
-                        'key' => '_price',
-                        'value' => '',
-                        'compare' => '!='
-                    ],
-                    [
-                        'key' => '_price',
-                        'value' => '0',
-                        'compare' => '!='
-                    ]
-                ]
-            ];
+            // Поиск по LIKE %слово% в заголовке
+            $like = '%' . $wpdb->esc_like($q) . '%';
             
-            if($citySlugs){
-                $args['tax_query'][] = [
-                    'taxonomy' => $tax,
-                    'field' => 'slug',
-                    'terms' => $citySlugs
-                ];
-            }
+            $sql = $wpdb->prepare(
+                "SELECT ID FROM {$wpdb->posts} 
+                WHERE post_type = 'product' 
+                AND post_status = 'publish' 
+                AND post_title LIKE %s
+                ORDER BY post_title ASC
+                LIMIT %d",
+                $like,
+                $limit * 2
+            );
             
-            $like_query = $wpdb->esc_like($q) . '%';
-            $filter_func = function($where) use ($wpdb, $like_query) {
-                $where .= $wpdb->prepare(" AND {$wpdb->posts}. post_title LIKE %s", $like_query);
-                return $where;
-            };
-            
-            add_filter('posts_where', $filter_func, 10, 1);
-            $ids = get_posts($args);
-            remove_filter('posts_where', $filter_func, 10);
-            
-            if(empty($ids)){
-                $like_anywhere = '%' . $wpdb->esc_like($q) . '%';
-                $filter_anywhere = function($where) use ($wpdb, $like_anywhere) {
-                    $where .= $wpdb->prepare(" AND {$wpdb->posts}.post_title LIKE %s", $like_anywhere);
-                    return $where;
-                };
-                
-                add_filter('posts_where', $filter_anywhere, 10, 1);
-                $ids = get_posts($args);
-                remove_filter('posts_where', $filter_anywhere, 10);
-            }
+            $ids = $wpdb->get_col($sql);
             
             foreach($ids as $id){
-                if(isset($found[$id])) continue;
-                $found[$id] = $id;
+                // Исключаем latepoint
+                if(in_array($id, $latepoint_ids)) continue;
+                // Исключаем товары без цены
+                $price = get_post_meta($id, '_price', true);
+                if($price === '' || $price === null) continue;
+                
+                if(! isset($found[$id])){
+                    $found[$id] = $id;
+                }
                 if(count($found) >= $limit) break 2;
             }
         }
@@ -220,44 +193,28 @@ class MSTS_Ajax {
             $p = get_post($id);
             if(! $p) continue;
             
-            // Двойная проверка: исключаем latepoint
-            $product_cats = wp_get_post_terms($id, 'product_cat', ['fields' => 'slugs']);
-            if(in_array('latepoint', $product_cats)) continue;
-            
-            // Проверяем видимость товара
-            $visibility = get_post_meta($id, '_visibility', true);
-            if($visibility === 'hidden') continue;
-            
-            // Проверяем статус каталога (WooCommerce)
-            $catalog_visibility = get_post_meta($id, '_catalog_visibility', true);
-            if($catalog_visibility === 'hidden') continue;
-            
+            // Формируем цену
             $price = '';
-            
-            // Проверяем вариации
             $children = get_children([
                 'post_parent' => $id,
-                'post_type' => 'product_variation',
+                'post_type' => 'product',
                 'post_status' => 'publish',
                 'fields' => 'ids'
             ]);
+            
             $vals = [];
             foreach($children as $cid){
                 $cp = get_post_meta($cid, '_price', true);
-                if($cp !== '' && floatval($cp) > 0) $vals[] = (float)$cp;
+                if($cp !== '' && $cp !== null) $vals[] = (float)$cp;
             }
+            
             if($vals){
                 $mn = min($vals);
                 $mx = max($vals);
                 $price = $mn == $mx ? msts_format_price($mn) : msts_format_price($mn) . ' – ' . msts_format_price($mx);
             } else {
                 $pr = get_post_meta($id, '_price', true);
-                if($pr !== '' && floatval($pr) > 0) {
-                    $price = msts_format_price($pr);
-                } else {
-                    // Нет цены - пропускаем товар
-                    continue;
-                }
+                if($pr !== '' && $pr !== null) $price = msts_format_price($pr);
             }
             
             $thumb = get_the_post_thumbnail_url($id, 'thumbnail');
@@ -269,8 +226,10 @@ class MSTS_Ajax {
                 'thumb' => $thumb ?: '',
                 'fallback_icon' => '😎'
             ];
+            
             if(count($out) >= $limit) break;
         }
+        
         return $out;
     }
 
