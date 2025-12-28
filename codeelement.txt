@@ -1,0 +1,714 @@
+<div class="elementor-element elementor-element-a3b79a7 elementor-widget elementor-widget-mst-shop-grid" data-id="a3b79a7" data-element_type="widget" data-widget_type="mst-shop-grid.default">
+				<div class="elementor-widget-container">
+					        <div class="mst-shop-grid mst-cursor-glow-enabled" data-settings="{&quot;cursor_glow&quot;:true,&quot;icon_glow_intensity&quot;:4,&quot;icon_glow_color&quot;:&quot;rgba(255, 255, 255, 0.3)&quot;,&quot;card_hover_glow_color&quot;:&quot;rgba(255, 255, 255, 0.15)&quot;,&quot;card_hover_glow_size&quot;:8,&quot;card_hover_border_color&quot;:&quot;rgba(255, 255, 255, 0.25)&quot;}">
+            <div class="mst-shop-grid-card mst-liquid-glass" data-product-id="4273" style="background-color: #FFFFFF; display: flex; flex-direction: column;">
+                <!-- Image with Badges -->
+                <div class="mst-shop-grid-image" style="position: relative; overflow: hidden; border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                    <a href="https://mysupertour.kinsta.cloud/shop/brussel/test/">
+                        <img src="https://mysupertour.kinsta.cloud/wp-content/uploads/2025/10/666-300x164.png" alt="Test" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    
+                                        <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
+                                                <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; background: #FFFFFF26; color: #FFFFFF; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            Групповая                        </span>
+                                                
+                                                <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; background: rgba(255, 255, 255, 0.15); color: rgb(255, 255, 255); backdrop-filter: blur(10px); box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px; --mx: 55.796875px; --my: 4.71875px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            2:00                        </span>
+                                                
+                                                <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; background: rgba(255, 255, 255, 0.15); color: rgb(255, 255, 255); backdrop-filter: blur(10px); box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px; --mx: 98.9375px; --my: 11.71875px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"></rect><path d="M16 8h5l3 5v5h-3"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                            Пешком                        </span>
+                                            </div>
+                                        
+                                        <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow" data-product-id="4273" data-hover-bg="#FFFFFF26" style="position: absolute; top: 12px; right: 12px; z-index: 2; background: rgba(255, 255, 255, 0.15); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; --mx: 3.75px; --my: 14.71875px;" aria-label="Add to wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF26" stroke="#FFFFFF" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+                                    </div>
+                
+                <!-- Content -->
+                <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 class="mst-shop-grid-title" style="color: #1a1a1a; margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/brussel/test/" style="color: inherit; text-decoration: none;">
+                            Test                        </a>
+                    </h3>
+                    
+                                        <div class="mst-shop-grid-location" style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
+                        <span style="color: #666666; font-size: 13px;">Брюссель</span>
+                    </div>
+                                        
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                <div class="mst-shop-grid-rating" style="display: flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span>5</span>
+                            <span class="mst-shop-grid-reviews" style="color: #999;">(0)</span>
+                        </div>
+                                                
+                        <div class="mst-shop-grid-price" style="color: #1a1a1a; font-weight: 600;">
+                            <del aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi>100,00&nbsp;<span class="woocommerce-Price-currencySymbol">€</span></bdi></span></del> <span class="screen-reader-text">Первоначальная цена составляла 100,00&nbsp;€.</span><ins aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi>30,00&nbsp;<span class="woocommerce-Price-currencySymbol">€</span></bdi></span></ins><span class="screen-reader-text">Текущая цена: 30,00&nbsp;€.</span>                        </div>
+                    </div>
+                    
+                    <!-- Spacer -->
+                    <div style="flex: 1;"></div>
+                    
+                    <!-- Footer: Button with Guide Photo (full width, at bottom) -->
+                                        
+                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin-top: auto;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/brussel/test/" class="mst-shop-grid-button mst-follow-glow" style="display: block; width: 100%; background: hsl(270, 70%, 60%); color: #ffffff; text-align: center; text-decoration: none; font-weight: 500; box-sizing: border-box;">
+                            Подробнее                        </a>
+                        
+                                                <a href="https://mysupertour.kinsta.cloud/guide/10" class="mst-shop-grid-guide-inside mst-follow-glow" style="position: absolute; right: -5px; top: 50%; transform: translateY(calc(-50% - 1px)); width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 3px solid rgb(0, 200, 150); transition: border-color 0.3s, transform 0.3s;" data-hover-border="hsl(45, 98%, 60%)" title="Kristina MySuperTour - 4.8 ★ (100)">
+                            <img src="https://secure.gravatar.com/avatar/aef415ea11b059a88d6f9f45da0b6e3aeb3b97509a6901c3ce8f9c4e2d750cfe?s=80&amp;d=mm&amp;r=g" alt="Гид" style="width: 100%; height: 100%; object-fit: cover;">
+                        </a>
+                                            </div>
+                </div>
+            </div>
+            &gt;
+            <div class="mst-shop-grid-card mst-liquid-glass" data-product-id="3220" style="background-color: #FFFFFF; display: flex; flex-direction: column;">
+                <!-- Image with Badges -->
+                <div class="mst-shop-grid-image" style="position: relative; overflow: hidden; border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                    <a href="https://mysupertour.kinsta.cloud/shop/brussel/%d1%82%d1%80%d0%b0%d0%bd%d1%81%d1%84%d0%b5%d1%80-%d0%bf%d0%b0%d1%80%d0%b8%d0%b6/">
+                        <img src="https://mysupertour.kinsta.cloud/wp-content/uploads/2025/11/6565-300x164.png" alt="🟢Париж - Версаль (трансфер)" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    
+                                        <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
+                                                
+                                                
+                                            </div>
+                                        
+                                        <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow" data-product-id="3220" data-hover-bg="#FFFFFF26" style="position: absolute; top: 12px; right: 12px; z-index: 2; background: #FFFFFF26; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.1);" aria-label="Add to wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF26" stroke="#FFFFFF" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+                                    </div>
+                
+                <!-- Content -->
+                <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 class="mst-shop-grid-title" style="color: #1a1a1a; margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/brussel/%d1%82%d1%80%d0%b0%d0%bd%d1%81%d1%84%d0%b5%d1%80-%d0%bf%d0%b0%d1%80%d0%b8%d0%b6/" style="color: inherit; text-decoration: none;">
+                            <img draggable="false" role="img" class="emoji" alt="🟢" src="https://s.w.org/images/core/emoji/17.0.2/svg/1f7e2.svg">Париж - Версаль (трансфер)                        </a>
+                    </h3>
+                    
+                                        <div class="mst-shop-grid-location" style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
+                        <span style="color: #666666; font-size: 13px;">Брюссель</span>
+                    </div>
+                                        
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                <div class="mst-shop-grid-rating" style="display: flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span>5</span>
+                            <span class="mst-shop-grid-reviews" style="color: #999;">(2)</span>
+                        </div>
+                                                
+                        <div class="mst-shop-grid-price" style="color: #1a1a1a; font-weight: 600;">
+                            <span class="woocommerce-Price-amount amount" aria-hidden="true"><bdi>1,00&nbsp;<span class="woocommerce-Price-currencySymbol">€</span></bdi></span> <span aria-hidden="true">–</span> <span class="woocommerce-Price-amount amount" aria-hidden="true"><bdi>167,00&nbsp;<span class="woocommerce-Price-currencySymbol">€</span></bdi></span><span class="screen-reader-text">Диапазон цен: 1,00&nbsp;€ – 167,00&nbsp;€</span>                        </div>
+                    </div>
+                    
+                    <!-- Spacer -->
+                    <div style="flex: 1;"></div>
+                    
+                    <!-- Footer: Button with Guide Photo (full width, at bottom) -->
+                                        
+                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin-top: auto;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/brussel/%d1%82%d1%80%d0%b0%d0%bd%d1%81%d1%84%d0%b5%d1%80-%d0%bf%d0%b0%d1%80%d0%b8%d0%b6/" class="mst-shop-grid-button mst-follow-glow" style="display: block; width: 100%; background: hsl(270, 70%, 60%); color: #ffffff; text-align: center; text-decoration: none; font-weight: 500; box-sizing: border-box;">
+                            Подробнее                        </a>
+                        
+                                                <a href="#" class="mst-shop-grid-guide-inside mst-follow-glow" style="position: absolute; right: -5px; top: 50%; transform: translateY(calc(-50% + -1px)); width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 3px solid #9952E0; transition: border-color 0.3s ease, transform 0.3s ease;" data-hover-border="hsl(45, 98%, 60%)" title="Гид">
+                            <img src="https://mysupertour.kinsta.cloud/wp-content/uploads/2025/11/IMG_8513.jpg" alt="Гид" style="width: 100%; height: 100%; object-fit: cover;">
+                        </a>
+                                            </div>
+                </div>
+            </div>
+            &gt;
+            <div class="mst-shop-grid-card mst-liquid-glass" data-product-id="2771" style="background-color: #FFFFFF; display: flex; flex-direction: column;">
+                <!-- Image with Badges -->
+                <div class="mst-shop-grid-image" style="position: relative; overflow: hidden; border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                    <a href="https://mysupertour.kinsta.cloud/shop/paris/razmeschenie/kvartira-v-centre/%d0%ba%d0%b2%d0%b0%d1%80%d1%82%d0%b8%d1%80%d0%b0-%d1%82%d0%b5%d1%81%d1%82/">
+                        <img src="https://mysupertour.kinsta.cloud/wp-content/uploads/2025/10/666-300x164.png" alt="квартира тест" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    
+                                        <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
+                                                <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; background: #FFFFFF26; color: #FFFFFF; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            Групповая                        </span>
+                                                
+                                                <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; background: #FFFFFF26; color: #FFFFFF; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            2:00                        </span>
+                                                
+                                                <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; background: #FFFFFF26; color: #FFFFFF; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"></rect><path d="M16 8h5l3 5v5h-3"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                            Авто                        </span>
+                                            </div>
+                                        
+                                        <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow mst-wishlist-active" data-product-id="2771" data-hover-bg="#FFFFFF26" style="position: absolute; top: 12px; right: 12px; z-index: 2; background: #FFFFFF26; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.1);" aria-label="Add to wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF26" stroke="#FFFFFF" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+                                    </div>
+                
+                <!-- Content -->
+                <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 class="mst-shop-grid-title" style="color: #1a1a1a; margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/razmeschenie/kvartira-v-centre/%d0%ba%d0%b2%d0%b0%d1%80%d1%82%d0%b8%d1%80%d0%b0-%d1%82%d0%b5%d1%81%d1%82/" style="color: inherit; text-decoration: none;">
+                            квартира тест                        </a>
+                    </h3>
+                    
+                                        <div class="mst-shop-grid-location" style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
+                        <span style="color: #666666; font-size: 13px;">paris-versal</span>
+                    </div>
+                                        
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                <div class="mst-shop-grid-rating" style="display: flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span>5</span>
+                            <span class="mst-shop-grid-reviews" style="color: #999;">(0)</span>
+                        </div>
+                                                
+                        <div class="mst-shop-grid-price" style="color: #1a1a1a; font-weight: 600;">
+                            <del aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi>111,00&nbsp;<span class="woocommerce-Price-currencySymbol">€</span></bdi></span></del> <span class="screen-reader-text">Первоначальная цена составляла 111,00&nbsp;€.</span><ins aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi>11,00&nbsp;<span class="woocommerce-Price-currencySymbol">€</span></bdi></span></ins><span class="screen-reader-text">Текущая цена: 11,00&nbsp;€.</span>                        </div>
+                    </div>
+                    
+                    <!-- Spacer -->
+                    <div style="flex: 1;"></div>
+                    
+                    <!-- Footer: Button with Guide Photo (full width, at bottom) -->
+                                        
+                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin-top: auto;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/razmeschenie/kvartira-v-centre/%d0%ba%d0%b2%d0%b0%d1%80%d1%82%d0%b8%d1%80%d0%b0-%d1%82%d0%b5%d1%81%d1%82/" class="mst-shop-grid-button mst-follow-glow" style="display: block; width: 100%; background: hsl(270, 70%, 60%); color: #ffffff; text-align: center; text-decoration: none; font-weight: 500; box-sizing: border-box;">
+                            Подробнее                        </a>
+                        
+                                                <a href="https://mysupertour.kinsta.cloud/guide/10" class="mst-shop-grid-guide-inside mst-follow-glow" style="position: absolute; right: -5px; top: 50%; transform: translateY(calc(-50% - 1px)); width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 3px solid rgb(0, 200, 150); transition: border-color 0.3s, transform 0.3s;" data-hover-border="hsl(45, 98%, 60%)" title="Kristina MySuperTour - 4.8 ★ (100)">
+                            <img src="https://secure.gravatar.com/avatar/aef415ea11b059a88d6f9f45da0b6e3aeb3b97509a6901c3ce8f9c4e2d750cfe?s=80&amp;d=mm&amp;r=g" alt="Гид" style="width: 100%; height: 100%; object-fit: cover;">
+                        </a>
+                                            </div>
+                </div>
+            </div>
+            &gt;
+            <div class="mst-shop-grid-card mst-liquid-glass" data-product-id="1305" style="background-color: #FFFFFF; display: flex; flex-direction: column;">
+                <!-- Image with Badges -->
+                <div class="mst-shop-grid-image" style="position: relative; overflow: hidden; border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                    <a href="https://mysupertour.kinsta.cloud/shop/paris/transfers/paris-versal/%d0%b5%d1%88%d1%8c-%d0%bc%d0%be%d0%bb%d0%b8%d1%81%d1%8c-%d0%bb%d1%8e%d0%b1%d0%b8-%d0%b1%d1%80%d1%8e%d1%81%d1%81%d0%b5%d0%bb%d1%8c/">
+                        <img src="https://mysupertour.kinsta.cloud/wp-content/uploads/2025/11/b4bb1a55640fa0862819b0574e0d1624-300x200.jpg" alt="ЕШЬ, МОЛИСЬ, ЛЮБИ БРЮССЕЛЬ!" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    
+                                        <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
+                                                <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; background: rgba(255, 255, 255, 0.15); color: rgb(255, 255, 255); backdrop-filter: blur(10px); box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px; --mx: 10px; --my: 19.71875px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            Индивидуальная                        </span>
+                                                
+                                                <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; background: rgba(255, 255, 255, 0.15); color: rgb(255, 255, 255); backdrop-filter: blur(10px); box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px; --mx: 4.3125px; --my: 5.71875px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            2:00                        </span>
+                                                
+                                                <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; background: rgba(255, 255, 255, 0.15); color: rgb(255, 255, 255); backdrop-filter: blur(10px); box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px; --mx: 1.453125px; --my: 11.71875px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"></rect><path d="M16 8h5l3 5v5h-3"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                            Пешком                        </span>
+                                            </div>
+                                        
+                                        <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow" data-product-id="1305" data-hover-bg="#FFFFFF26" style="position: absolute; top: 12px; right: 12px; z-index: 2; background: #FFFFFF26; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.1);" aria-label="Add to wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF26" stroke="#FFFFFF" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+                                    </div>
+                
+                <!-- Content -->
+                <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 class="mst-shop-grid-title" style="color: #1a1a1a; margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/transfers/paris-versal/%d0%b5%d1%88%d1%8c-%d0%bc%d0%be%d0%bb%d0%b8%d1%81%d1%8c-%d0%bb%d1%8e%d0%b1%d0%b8-%d0%b1%d1%80%d1%8e%d1%81%d1%81%d0%b5%d0%bb%d1%8c/" style="color: inherit; text-decoration: none;">
+                            ЕШЬ, МОЛИСЬ, ЛЮБИ БРЮССЕЛЬ!                        </a>
+                    </h3>
+                    
+                                        <div class="mst-shop-grid-location" style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
+                        <span style="color: #666666; font-size: 13px;">paris-versal</span>
+                    </div>
+                                        
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                <div class="mst-shop-grid-rating" style="display: flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span>5</span>
+                            <span class="mst-shop-grid-reviews" style="color: #999;">(0)</span>
+                        </div>
+                                                
+                        <div class="mst-shop-grid-price" style="color: #1a1a1a; font-weight: 600;">
+                            <span class="woocommerce-Price-amount amount"><bdi>90,00&nbsp;<span class="woocommerce-Price-currencySymbol">€</span></bdi></span>                        </div>
+                    </div>
+                    
+                    <!-- Spacer -->
+                    <div style="flex: 1;"></div>
+                    
+                    <!-- Footer: Button with Guide Photo (full width, at bottom) -->
+                                        
+                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin-top: auto;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/transfers/paris-versal/%d0%b5%d1%88%d1%8c-%d0%bc%d0%be%d0%bb%d0%b8%d1%81%d1%8c-%d0%bb%d1%8e%d0%b1%d0%b8-%d0%b1%d1%80%d1%8e%d1%81%d1%81%d0%b5%d0%bb%d1%8c/" class="mst-shop-grid-button mst-follow-glow" style="display: block; width: 100%; background: rgb(153, 82, 224); color: rgb(255, 255, 255); text-align: center; text-decoration: none; font-weight: 500; box-sizing: border-box; --mx: 13px; --my: 31.71875px;">
+                            Подробнее                        </a>
+                        
+                                                <a href="https://mysupertour.kinsta.cloud/guide/10" class="mst-shop-grid-guide-inside mst-follow-glow" style="position: absolute; right: -5px; top: 50%; transform: translateY(calc(-50% - 1px)); width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 3px solid rgb(0, 200, 150); transition: border-color 0.3s, transform 0.3s;" data-hover-border="hsl(45, 98%, 60%)" title="Kristina MySuperTour - 4.8 ★ (100)">
+                            <img src="https://secure.gravatar.com/avatar/aef415ea11b059a88d6f9f45da0b6e3aeb3b97509a6901c3ce8f9c4e2d750cfe?s=80&amp;d=mm&amp;r=g" alt="Гид" style="width: 100%; height: 100%; object-fit: cover;">
+                        </a>
+                                            </div>
+                </div>
+            </div>
+            &gt;
+            <div class="mst-shop-grid-card mst-liquid-glass" data-product-id="1302" style="background-color: #FFFFFF; display: flex; flex-direction: column;">
+                <!-- Image with Badges -->
+                <div class="mst-shop-grid-image" style="position: relative; overflow: hidden; border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                    <a href="https://mysupertour.kinsta.cloud/shop/paris/razmeschenie/kvartira-v-centre/%d0%be%d0%b1%d0%b7%d0%be%d1%80%d0%bd%d0%b0%d1%8f-%d0%be%d1%82-%d0%b5%d0%bb%d0%b8%d1%81%d0%b5%d0%b9%d1%81%d0%ba%d0%b8%d1%85-%d0%bf%d0%be%d0%bb%d0%b5%d0%b9-%d0%b2-%d0%bb%d0%b0%d1%82%d0%b8%d0%bd%d1%81/">
+                        <img src="https://mysupertour.kinsta.cloud/wp-content/uploads/2025/11/4b43f1b28ecfd3a356f715546f99bc0a-300x168.jpg" alt="ОБЗОРНАЯ ОТ ЕЛИСЕЙСКИХ ПОЛЕЙ В ЛАТИНСКИЙ КВАРТАЛ" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    
+                                        <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
+                                                <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; background: rgba(255, 255, 255, 0.15); color: rgb(255, 255, 255); backdrop-filter: blur(10px); box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px; --mx: 157.5px; --my: 14.71875px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            Индивидуальная                        </span>
+                                                
+                                                <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; background: rgba(255, 255, 255, 0.15); color: rgb(255, 255, 255); backdrop-filter: blur(10px); box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px; --mx: 64.8125px; --my: 18.71875px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            1:15                        </span>
+                                                
+                                                <span class="mst-shop-grid-badge mst-follow-glow" style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; background: rgba(255, 255, 255, 0.15); color: rgb(255, 255, 255); backdrop-filter: blur(10px); box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px; --mx: 79.953125px; --my: 19.71875px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"></rect><path d="M16 8h5l3 5v5h-3"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                            Комбо                        </span>
+                                            </div>
+                                        
+                                        <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow mst-wishlist-active" data-product-id="1302" data-hover-bg="#FFFFFF26" style="position: absolute; top: 12px; right: 12px; z-index: 2; background: rgba(255, 255, 255, 0.15); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; --mx: 26.75px; --my: 22.71875px;" aria-label="Add to wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF26" stroke="#FFFFFF" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+                                    </div>
+                
+                <!-- Content -->
+                <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 class="mst-shop-grid-title" style="color: #1a1a1a; margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/razmeschenie/kvartira-v-centre/%d0%be%d0%b1%d0%b7%d0%be%d1%80%d0%bd%d0%b0%d1%8f-%d0%be%d1%82-%d0%b5%d0%bb%d0%b8%d1%81%d0%b5%d0%b9%d1%81%d0%ba%d0%b8%d1%85-%d0%bf%d0%be%d0%bb%d0%b5%d0%b9-%d0%b2-%d0%bb%d0%b0%d1%82%d0%b8%d0%bd%d1%81/" style="color: inherit; text-decoration: none;">
+                            ОБЗОРНАЯ ОТ ЕЛИСЕЙСКИХ ПОЛЕЙ В ЛАТИНСКИЙ КВАРТАЛ                        </a>
+                    </h3>
+                    
+                                        <div class="mst-shop-grid-location" style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
+                        <span style="color: #666666; font-size: 13px;">билеты</span>
+                    </div>
+                                        
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                <div class="mst-shop-grid-rating" style="display: flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span>5</span>
+                            <span class="mst-shop-grid-reviews" style="color: #999;">(0)</span>
+                        </div>
+                                                
+                        <div class="mst-shop-grid-price" style="color: #1a1a1a; font-weight: 600;">
+                            <span class="woocommerce-Price-amount amount"><bdi>250,00&nbsp;<span class="woocommerce-Price-currencySymbol">€</span></bdi></span>                        </div>
+                    </div>
+                    
+                    <!-- Spacer -->
+                    <div style="flex: 1;"></div>
+                    
+                    <!-- Footer: Button with Guide Photo (full width, at bottom) -->
+                                        
+                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin-top: auto;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/razmeschenie/kvartira-v-centre/%d0%be%d0%b1%d0%b7%d0%be%d1%80%d0%bd%d0%b0%d1%8f-%d0%be%d1%82-%d0%b5%d0%bb%d0%b8%d1%81%d0%b5%d0%b9%d1%81%d0%ba%d0%b8%d1%85-%d0%bf%d0%be%d0%bb%d0%b5%d0%b9-%d0%b2-%d0%bb%d0%b0%d1%82%d0%b8%d0%bd%d1%81/" class="mst-shop-grid-button mst-follow-glow" style="display: block; width: 100%; background: hsl(270, 70%, 60%); color: #ffffff; text-align: center; text-decoration: none; font-weight: 500; box-sizing: border-box;">
+                            Подробнее                        </a>
+                        
+                                                <a href="https://mysupertour.kinsta.cloud/guide/10" class="mst-shop-grid-guide-inside mst-follow-glow" style="position: absolute; right: -5px; top: 50%; transform: translateY(calc(-50% - 1px)); width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 3px solid rgb(0, 200, 150); transition: border-color 0.3s, transform 0.3s;" data-hover-border="hsl(45, 98%, 60%)" title="Kristina MySuperTour - 4.8 ★ (100)">
+                            <img src="https://secure.gravatar.com/avatar/aef415ea11b059a88d6f9f45da0b6e3aeb3b97509a6901c3ce8f9c4e2d750cfe?s=80&amp;d=mm&amp;r=g" alt="Гид" style="width: 100%; height: 100%; object-fit: cover;">
+                        </a>
+                                            </div>
+                </div>
+            </div>
+            &gt;
+            <div class="mst-shop-grid-card mst-liquid-glass" data-product-id="1300" style="background-color: #FFFFFF; display: flex; flex-direction: column;">
+                <!-- Image with Badges -->
+                <div class="mst-shop-grid-image" style="position: relative; overflow: hidden; border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                    <a href="https://mysupertour.kinsta.cloud/shop/paris/%d0%b5%d1%88%d1%8c-%d0%bc%d0%be%d0%bb%d0%b8%d1%81%d1%8c-%d0%bb%d1%8e%d0%b1%d0%b8-%d0%bf%d0%b0%d1%80%d0%b8%d0%b6/">
+                        <img src="https://mysupertour.kinsta.cloud/wp-content/uploads/2025/11/IMG_8518-225x300.jpg" alt="ЕШЬ, МОЛИСЬ, ЛЮБИ ПАРИЖ!" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    
+                                        <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
+                                                
+                                                
+                                            </div>
+                                        
+                                        <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow" data-product-id="1300" data-hover-bg="#FFFFFF26" style="position: absolute; top: 12px; right: 12px; z-index: 2; background: #FFFFFF26; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.1);" aria-label="Add to wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF26" stroke="#FFFFFF" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+                                    </div>
+                
+                <!-- Content -->
+                <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 class="mst-shop-grid-title" style="color: #1a1a1a; margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/%d0%b5%d1%88%d1%8c-%d0%bc%d0%be%d0%bb%d0%b8%d1%81%d1%8c-%d0%bb%d1%8e%d0%b1%d0%b8-%d0%bf%d0%b0%d1%80%d0%b8%d0%b6/" style="color: inherit; text-decoration: none;">
+                            ЕШЬ, МОЛИСЬ, ЛЮБИ ПАРИЖ!                        </a>
+                    </h3>
+                    
+                                        <div class="mst-shop-grid-location" style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
+                        <span style="color: #666666; font-size: 13px;">Париж</span>
+                    </div>
+                                        
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                <div class="mst-shop-grid-rating" style="display: flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span>5</span>
+                            <span class="mst-shop-grid-reviews" style="color: #999;">(0)</span>
+                        </div>
+                                                
+                        <div class="mst-shop-grid-price" style="color: #1a1a1a; font-weight: 600;">
+                            <span class="woocommerce-Price-amount amount"><bdi>70,00&nbsp;<span class="woocommerce-Price-currencySymbol">€</span></bdi></span>                        </div>
+                    </div>
+                    
+                    <!-- Spacer -->
+                    <div style="flex: 1;"></div>
+                    
+                    <!-- Footer: Button with Guide Photo (full width, at bottom) -->
+                                        
+                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin-top: auto;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/%d0%b5%d1%88%d1%8c-%d0%bc%d0%be%d0%bb%d0%b8%d1%81%d1%8c-%d0%bb%d1%8e%d0%b1%d0%b8-%d0%bf%d0%b0%d1%80%d0%b8%d0%b6/" class="mst-shop-grid-button mst-follow-glow" style="display: block; width: 100%; background: hsl(270, 70%, 60%); color: #ffffff; text-align: center; text-decoration: none; font-weight: 500; box-sizing: border-box;">
+                            Подробнее                        </a>
+                        
+                                                <a href="https://mysupertour.kinsta.cloud/guide/10" class="mst-shop-grid-guide-inside mst-follow-glow" style="position: absolute; right: -5px; top: 50%; transform: translateY(calc(-50% - 1px)); width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 3px solid rgb(0, 200, 150); transition: border-color 0.3s, transform 0.3s;" data-hover-border="hsl(45, 98%, 60%)" title="Kristina MySuperTour - 4.8 ★ (100)">
+                            <img src="https://secure.gravatar.com/avatar/aef415ea11b059a88d6f9f45da0b6e3aeb3b97509a6901c3ce8f9c4e2d750cfe?s=80&amp;d=mm&amp;r=g" alt="Гид" style="width: 100%; height: 100%; object-fit: cover;">
+                        </a>
+                                            </div>
+                </div>
+            </div>
+            &gt;
+            <div class="mst-shop-grid-card mst-liquid-glass" data-product-id="1298" style="background-color: #FFFFFF; display: flex; flex-direction: column;">
+                <!-- Image with Badges -->
+                <div class="mst-shop-grid-image" style="position: relative; overflow: hidden; border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                    <a href="https://mysupertour.kinsta.cloud/shop/paris/%d0%bf%d1%80%d0%be%d0%b3%d1%83%d0%bb%d0%ba%d0%b0-%d0%bd%d0%b0-%d0%ba%d0%be%d1%80%d0%b0%d0%b1%d0%bb%d0%b8%d0%ba%d0%b5/">
+                        <img src="https://mysupertour.kinsta.cloud/wp-content/uploads/2025/11/IMG_8516-200x300.jpg" alt="ПРОГУЛКА НА КОРАБЛИКЕ" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    
+                                        <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
+                                                
+                                                
+                                            </div>
+                                        
+                                        <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow" data-product-id="1298" data-hover-bg="#FFFFFF26" style="position: absolute; top: 12px; right: 12px; z-index: 2; background: #FFFFFF26; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.1);" aria-label="Add to wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF26" stroke="#FFFFFF" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+                                    </div>
+                
+                <!-- Content -->
+                <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 class="mst-shop-grid-title" style="color: #1a1a1a; margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/%d0%bf%d1%80%d0%be%d0%b3%d1%83%d0%bb%d0%ba%d0%b0-%d0%bd%d0%b0-%d0%ba%d0%be%d1%80%d0%b0%d0%b1%d0%bb%d0%b8%d0%ba%d0%b5/" style="color: inherit; text-decoration: none;">
+                            ПРОГУЛКА НА КОРАБЛИКЕ                        </a>
+                    </h3>
+                    
+                                        <div class="mst-shop-grid-location" style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
+                        <span style="color: #666666; font-size: 13px;">Париж</span>
+                    </div>
+                                        
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                <div class="mst-shop-grid-rating" style="display: flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span>5</span>
+                            <span class="mst-shop-grid-reviews" style="color: #999;">(0)</span>
+                        </div>
+                                                
+                        <div class="mst-shop-grid-price" style="color: #1a1a1a; font-weight: 600;">
+                                                    </div>
+                    </div>
+                    
+                    <!-- Spacer -->
+                    <div style="flex: 1;"></div>
+                    
+                    <!-- Footer: Button with Guide Photo (full width, at bottom) -->
+                                        
+                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin-top: auto;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/%d0%bf%d1%80%d0%be%d0%b3%d1%83%d0%bb%d0%ba%d0%b0-%d0%bd%d0%b0-%d0%ba%d0%be%d1%80%d0%b0%d0%b1%d0%bb%d0%b8%d0%ba%d0%b5/" class="mst-shop-grid-button mst-follow-glow" style="display: block; width: 100%; background: hsl(270, 70%, 60%); color: #ffffff; text-align: center; text-decoration: none; font-weight: 500; box-sizing: border-box;">
+                            Подробнее                        </a>
+                        
+                                                <a href="https://mysupertour.kinsta.cloud/guide/10" class="mst-shop-grid-guide-inside mst-follow-glow" style="position: absolute; right: -5px; top: 50%; transform: translateY(calc(-50% - 1px)); width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 3px solid rgb(0, 200, 150); transition: border-color 0.3s, transform 0.3s;" data-hover-border="hsl(45, 98%, 60%)" title="Kristina MySuperTour - 4.8 ★ (100)">
+                            <img src="https://secure.gravatar.com/avatar/aef415ea11b059a88d6f9f45da0b6e3aeb3b97509a6901c3ce8f9c4e2d750cfe?s=80&amp;d=mm&amp;r=g" alt="Гид" style="width: 100%; height: 100%; object-fit: cover;">
+                        </a>
+                                            </div>
+                </div>
+            </div>
+            &gt;
+            <div class="mst-shop-grid-card mst-liquid-glass" data-product-id="1296" style="background-color: #FFFFFF; display: flex; flex-direction: column;">
+                <!-- Image with Badges -->
+                <div class="mst-shop-grid-image" style="position: relative; overflow: hidden; border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                    <a href="https://mysupertour.kinsta.cloud/shop/paris/%d0%bc%d0%b0%d1%80%d0%b5-%d0%ba%d0%b2%d0%b0%d1%80%d1%82%d0%b0%d0%bb-%d0%ba%d0%be%d1%80%d0%be%d0%bb%d0%b5%d0%b2%d1%81%d0%ba%d0%b8%d1%85-%d0%bf%d1%80%d0%b8%d0%b4%d0%b2%d0%be%d1%80%d0%bd%d1%8b%d1%85/">
+                        <img src="https://mysupertour.kinsta.cloud/wp-content/uploads/2025/11/IMG_8513-193x300.jpg" alt="МАРЕ - КВАРТАЛ КОРОЛЕВСКИХ ПРИДВОРНЫХ" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    
+                                        <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
+                                                
+                                                
+                                            </div>
+                                        
+                                        <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow" data-product-id="1296" data-hover-bg="#FFFFFF26" style="position: absolute; top: 12px; right: 12px; z-index: 2; background: #FFFFFF26; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.1);" aria-label="Add to wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF26" stroke="#FFFFFF" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+                                    </div>
+                
+                <!-- Content -->
+                <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 class="mst-shop-grid-title" style="color: #1a1a1a; margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/%d0%bc%d0%b0%d1%80%d0%b5-%d0%ba%d0%b2%d0%b0%d1%80%d1%82%d0%b0%d0%bb-%d0%ba%d0%be%d1%80%d0%be%d0%bb%d0%b5%d0%b2%d1%81%d0%ba%d0%b8%d1%85-%d0%bf%d1%80%d0%b8%d0%b4%d0%b2%d0%be%d1%80%d0%bd%d1%8b%d1%85/" style="color: inherit; text-decoration: none;">
+                            МАРЕ - КВАРТАЛ КОРОЛЕВСКИХ ПРИДВОРНЫХ                        </a>
+                    </h3>
+                    
+                                        <div class="mst-shop-grid-location" style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
+                        <span style="color: #666666; font-size: 13px;">Париж</span>
+                    </div>
+                                        
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                <div class="mst-shop-grid-rating" style="display: flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span>5</span>
+                            <span class="mst-shop-grid-reviews" style="color: #999;">(0)</span>
+                        </div>
+                                                
+                        <div class="mst-shop-grid-price" style="color: #1a1a1a; font-weight: 600;">
+                                                    </div>
+                    </div>
+                    
+                    <!-- Spacer -->
+                    <div style="flex: 1;"></div>
+                    
+                    <!-- Footer: Button with Guide Photo (full width, at bottom) -->
+                                        
+                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin-top: auto;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/%d0%bc%d0%b0%d1%80%d0%b5-%d0%ba%d0%b2%d0%b0%d1%80%d1%82%d0%b0%d0%bb-%d0%ba%d0%be%d1%80%d0%be%d0%bb%d0%b5%d0%b2%d1%81%d0%ba%d0%b8%d1%85-%d0%bf%d1%80%d0%b8%d0%b4%d0%b2%d0%be%d1%80%d0%bd%d1%8b%d1%85/" class="mst-shop-grid-button mst-follow-glow" style="display: block; width: 100%; background: hsl(270, 70%, 60%); color: #ffffff; text-align: center; text-decoration: none; font-weight: 500; box-sizing: border-box;">
+                            Подробнее                        </a>
+                        
+                                                <a href="https://mysupertour.kinsta.cloud/guide/10" class="mst-shop-grid-guide-inside mst-follow-glow" style="position: absolute; right: -5px; top: 50%; transform: translateY(calc(-50% - 1px)); width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 3px solid rgb(0, 200, 150); transition: border-color 0.3s, transform 0.3s;" data-hover-border="hsl(45, 98%, 60%)" title="Kristina MySuperTour - 4.8 ★ (100)">
+                            <img src="https://secure.gravatar.com/avatar/aef415ea11b059a88d6f9f45da0b6e3aeb3b97509a6901c3ce8f9c4e2d750cfe?s=80&amp;d=mm&amp;r=g" alt="Гид" style="width: 100%; height: 100%; object-fit: cover;">
+                        </a>
+                                            </div>
+                </div>
+            </div>
+            &gt;
+            <div class="mst-shop-grid-card mst-liquid-glass" data-product-id="1294" style="background-color: #FFFFFF; display: flex; flex-direction: column;">
+                <!-- Image with Badges -->
+                <div class="mst-shop-grid-image" style="position: relative; overflow: hidden; border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                    <a href="https://mysupertour.kinsta.cloud/shop/paris/%d1%81%d0%be%d0%ba%d1%80%d0%be%d0%b2%d0%b8%d1%89%d0%b0-%d0%bf%d0%be%d0%bc%d0%bf%d0%b8%d0%b4%d1%83-%d0%b7%d0%b0-2-%d1%87%d0%b0%d1%81%d0%b0/">
+                        <img src="https://mysupertour.kinsta.cloud/wp-content/uploads/2025/11/IMG_8510-225x300.jpg" alt="СОКРОВИЩА ПОМПИДУ ЗА 2 ЧАСА" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    
+                                        <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
+                                                
+                                                
+                                            </div>
+                                        
+                                        <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow" data-product-id="1294" data-hover-bg="#FFFFFF26" style="position: absolute; top: 12px; right: 12px; z-index: 2; background: #FFFFFF26; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.1);" aria-label="Add to wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF26" stroke="#FFFFFF" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+                                    </div>
+                
+                <!-- Content -->
+                <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 class="mst-shop-grid-title" style="color: #1a1a1a; margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/%d1%81%d0%be%d0%ba%d1%80%d0%be%d0%b2%d0%b8%d1%89%d0%b0-%d0%bf%d0%be%d0%bc%d0%bf%d0%b8%d0%b4%d1%83-%d0%b7%d0%b0-2-%d1%87%d0%b0%d1%81%d0%b0/" style="color: inherit; text-decoration: none;">
+                            СОКРОВИЩА ПОМПИДУ ЗА 2 ЧАСА                        </a>
+                    </h3>
+                    
+                                        <div class="mst-shop-grid-location" style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
+                        <span style="color: #666666; font-size: 13px;">Париж</span>
+                    </div>
+                                        
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                <div class="mst-shop-grid-rating" style="display: flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span>5</span>
+                            <span class="mst-shop-grid-reviews" style="color: #999;">(0)</span>
+                        </div>
+                                                
+                        <div class="mst-shop-grid-price" style="color: #1a1a1a; font-weight: 600;">
+                                                    </div>
+                    </div>
+                    
+                    <!-- Spacer -->
+                    <div style="flex: 1;"></div>
+                    
+                    <!-- Footer: Button with Guide Photo (full width, at bottom) -->
+                                        
+                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin-top: auto;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/%d1%81%d0%be%d0%ba%d1%80%d0%be%d0%b2%d0%b8%d1%89%d0%b0-%d0%bf%d0%be%d0%bc%d0%bf%d0%b8%d0%b4%d1%83-%d0%b7%d0%b0-2-%d1%87%d0%b0%d1%81%d0%b0/" class="mst-shop-grid-button mst-follow-glow" style="display: block; width: 100%; background: hsl(270, 70%, 60%); color: #ffffff; text-align: center; text-decoration: none; font-weight: 500; box-sizing: border-box;">
+                            Подробнее                        </a>
+                        
+                                                <a href="https://mysupertour.kinsta.cloud/guide/10" class="mst-shop-grid-guide-inside mst-follow-glow" style="position: absolute; right: -5px; top: 50%; transform: translateY(calc(-50% - 1px)); width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 3px solid rgb(0, 200, 150); transition: border-color 0.3s, transform 0.3s;" data-hover-border="hsl(45, 98%, 60%)" title="Kristina MySuperTour - 4.8 ★ (100)">
+                            <img src="https://secure.gravatar.com/avatar/aef415ea11b059a88d6f9f45da0b6e3aeb3b97509a6901c3ce8f9c4e2d750cfe?s=80&amp;d=mm&amp;r=g" alt="Гид" style="width: 100%; height: 100%; object-fit: cover;">
+                        </a>
+                                            </div>
+                </div>
+            </div>
+            &gt;
+            <div class="mst-shop-grid-card mst-liquid-glass" data-product-id="1292" style="background-color: #FFFFFF; display: flex; flex-direction: column;">
+                <!-- Image with Badges -->
+                <div class="mst-shop-grid-image" style="position: relative; overflow: hidden; border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                    <a href="https://mysupertour.kinsta.cloud/shop/paris/%d0%ba%d0%bb%d0%b0%d0%b4%d0%b1%d0%b8%d1%89%d0%b5-%d0%bf%d0%b5%d1%80-%d0%bb%d0%b0%d1%88%d0%b5%d0%b7-%d0%bf%d0%b0%d0%bd%d1%82%d0%b5%d0%be%d0%bd-%d0%b4%d1%83%d1%88/">
+                        <img src="https://mysupertour.kinsta.cloud/wp-content/uploads/revslider/Bento-Grid-Travel-Slider/japan2-300x200.jpg" alt="КЛАДБИЩЕ ПЕР-ЛАШЕЗ. ПАНТЕОН ДУШ" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    
+                                        <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
+                                                
+                                                
+                                            </div>
+                                        
+                                        <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow" data-product-id="1292" data-hover-bg="#FFFFFF26" style="position: absolute; top: 12px; right: 12px; z-index: 2; background: #FFFFFF26; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.1);" aria-label="Add to wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF26" stroke="#FFFFFF" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+                                    </div>
+                
+                <!-- Content -->
+                <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 class="mst-shop-grid-title" style="color: #1a1a1a; margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/%d0%ba%d0%bb%d0%b0%d0%b4%d0%b1%d0%b8%d1%89%d0%b5-%d0%bf%d0%b5%d1%80-%d0%bb%d0%b0%d1%88%d0%b5%d0%b7-%d0%bf%d0%b0%d0%bd%d1%82%d0%b5%d0%be%d0%bd-%d0%b4%d1%83%d1%88/" style="color: inherit; text-decoration: none;">
+                            КЛАДБИЩЕ ПЕР-ЛАШЕЗ. ПАНТЕОН ДУШ                        </a>
+                    </h3>
+                    
+                                        <div class="mst-shop-grid-location" style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
+                        <span style="color: #666666; font-size: 13px;">Париж</span>
+                    </div>
+                                        
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                <div class="mst-shop-grid-rating" style="display: flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span>5</span>
+                            <span class="mst-shop-grid-reviews" style="color: #999;">(0)</span>
+                        </div>
+                                                
+                        <div class="mst-shop-grid-price" style="color: #1a1a1a; font-weight: 600;">
+                            <span class="woocommerce-Price-amount amount"><bdi>100,00&nbsp;<span class="woocommerce-Price-currencySymbol">€</span></bdi></span>                        </div>
+                    </div>
+                    
+                    <!-- Spacer -->
+                    <div style="flex: 1;"></div>
+                    
+                    <!-- Footer: Button with Guide Photo (full width, at bottom) -->
+                                        
+                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin-top: auto;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/%d0%ba%d0%bb%d0%b0%d0%b4%d0%b1%d0%b8%d1%89%d0%b5-%d0%bf%d0%b5%d1%80-%d0%bb%d0%b0%d1%88%d0%b5%d0%b7-%d0%bf%d0%b0%d0%bd%d1%82%d0%b5%d0%be%d0%bd-%d0%b4%d1%83%d1%88/" class="mst-shop-grid-button mst-follow-glow" style="display: block; width: 100%; background: hsl(270, 70%, 60%); color: #ffffff; text-align: center; text-decoration: none; font-weight: 500; box-sizing: border-box;">
+                            Подробнее                        </a>
+                        
+                                                <a href="https://mysupertour.kinsta.cloud/guide/10" class="mst-shop-grid-guide-inside mst-follow-glow" style="position: absolute; right: -5px; top: 50%; transform: translateY(calc(-50% - 1px)); width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 3px solid rgb(0, 200, 150); transition: border-color 0.3s, transform 0.3s;" data-hover-border="hsl(45, 98%, 60%)" title="Kristina MySuperTour - 4.8 ★ (100)">
+                            <img src="https://secure.gravatar.com/avatar/aef415ea11b059a88d6f9f45da0b6e3aeb3b97509a6901c3ce8f9c4e2d750cfe?s=80&amp;d=mm&amp;r=g" alt="Гид" style="width: 100%; height: 100%; object-fit: cover;">
+                        </a>
+                                            </div>
+                </div>
+            </div>
+            &gt;
+            <div class="mst-shop-grid-card mst-liquid-glass" data-product-id="1290" style="background-color: #FFFFFF; display: flex; flex-direction: column;">
+                <!-- Image with Badges -->
+                <div class="mst-shop-grid-image" style="position: relative; overflow: hidden; border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                    <a href="https://mysupertour.kinsta.cloud/shop/paris/%d1%81%d0%b5%d0%ba%d1%80%d0%b5%d1%82%d1%8b-%d1%81%d0%be%d0%b1%d0%be%d1%80%d0%b0-%d0%b8%d0%bd%d0%b2%d0%b0%d0%bb%d0%b8%d0%b4%d0%be%d0%b2-%d0%b3%d1%80%d0%be%d0%b1%d0%bd%d0%b8%d1%86%d0%b0-%d0%bd%d0%b0/">
+                        <img src="https://mysupertour.kinsta.cloud/wp-content/uploads/2025/11/IMG_8511-240x300.jpg" alt="СЕКРЕТЫ СОБОРА ИНВАЛИДОВ/ГРОБНИЦА НАПОЛЕОНА" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    
+                                        <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
+                                                
+                                                
+                                            </div>
+                                        
+                                        <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow" data-product-id="1290" data-hover-bg="#FFFFFF26" style="position: absolute; top: 12px; right: 12px; z-index: 2; background: #FFFFFF26; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.1);" aria-label="Add to wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF26" stroke="#FFFFFF" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+                                    </div>
+                
+                <!-- Content -->
+                <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 class="mst-shop-grid-title" style="color: #1a1a1a; margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/%d1%81%d0%b5%d0%ba%d1%80%d0%b5%d1%82%d1%8b-%d1%81%d0%be%d0%b1%d0%be%d1%80%d0%b0-%d0%b8%d0%bd%d0%b2%d0%b0%d0%bb%d0%b8%d0%b4%d0%be%d0%b2-%d0%b3%d1%80%d0%be%d0%b1%d0%bd%d0%b8%d1%86%d0%b0-%d0%bd%d0%b0/" style="color: inherit; text-decoration: none;">
+                            СЕКРЕТЫ СОБОРА ИНВАЛИДОВ/ГРОБНИЦА НАПОЛЕОНА                        </a>
+                    </h3>
+                    
+                                        <div class="mst-shop-grid-location" style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
+                        <span style="color: #666666; font-size: 13px;">Париж</span>
+                    </div>
+                                        
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                <div class="mst-shop-grid-rating" style="display: flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span>5</span>
+                            <span class="mst-shop-grid-reviews" style="color: #999;">(0)</span>
+                        </div>
+                                                
+                        <div class="mst-shop-grid-price" style="color: #1a1a1a; font-weight: 600;">
+                                                    </div>
+                    </div>
+                    
+                    <!-- Spacer -->
+                    <div style="flex: 1;"></div>
+                    
+                    <!-- Footer: Button with Guide Photo (full width, at bottom) -->
+                                        
+                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin-top: auto;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/%d1%81%d0%b5%d0%ba%d1%80%d0%b5%d1%82%d1%8b-%d1%81%d0%be%d0%b1%d0%be%d1%80%d0%b0-%d0%b8%d0%bd%d0%b2%d0%b0%d0%bb%d0%b8%d0%b4%d0%be%d0%b2-%d0%b3%d1%80%d0%be%d0%b1%d0%bd%d0%b8%d1%86%d0%b0-%d0%bd%d0%b0/" class="mst-shop-grid-button mst-follow-glow" style="display: block; width: 100%; background: hsl(270, 70%, 60%); color: #ffffff; text-align: center; text-decoration: none; font-weight: 500; box-sizing: border-box;">
+                            Подробнее                        </a>
+                        
+                                                <a href="https://mysupertour.kinsta.cloud/guide/10" class="mst-shop-grid-guide-inside mst-follow-glow" style="position: absolute; right: -5px; top: 50%; transform: translateY(calc(-50% - 1px)); width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 3px solid rgb(0, 200, 150); transition: border-color 0.3s, transform 0.3s;" data-hover-border="hsl(45, 98%, 60%)" title="Kristina MySuperTour - 4.8 ★ (100)">
+                            <img src="https://secure.gravatar.com/avatar/aef415ea11b059a88d6f9f45da0b6e3aeb3b97509a6901c3ce8f9c4e2d750cfe?s=80&amp;d=mm&amp;r=g" alt="Гид" style="width: 100%; height: 100%; object-fit: cover;">
+                        </a>
+                                            </div>
+                </div>
+            </div>
+            &gt;
+            <div class="mst-shop-grid-card mst-liquid-glass" data-product-id="1288" style="background-color: #FFFFFF; display: flex; flex-direction: column;">
+                <!-- Image with Badges -->
+                <div class="mst-shop-grid-image" style="position: relative; overflow: hidden; border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                    <a href="https://mysupertour.kinsta.cloud/shop/paris/%d1%88%d0%b0%d1%80%d0%bc-%d0%b8-%d1%81%d0%b5%d0%ba%d1%80%d0%b5%d1%82%d1%8b-%d0%bb%d0%b0%d1%82%d0%b8%d0%bd%d1%81%d0%ba%d0%be%d0%b3%d0%be-%d0%ba%d0%b2%d0%b0%d1%80%d1%82%d0%b0%d0%bb%d0%b0/">
+                        <img src="https://mysupertour.kinsta.cloud/wp-content/uploads/2025/11/IMG_8512-200x300.jpg" alt="ШАРМ И СЕКРЕТЫ ЛАТИНСКОГО КВАРТАЛА" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    
+                                        <div class="mst-shop-grid-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
+                                                
+                                                
+                                            </div>
+                                        
+                                        <button type="button" class="mst-shop-grid-wishlist mst-wishlist-btn mst-follow-glow" data-product-id="1288" data-hover-bg="#FFFFFF26" style="position: absolute; top: 12px; right: 12px; z-index: 2; background: #FFFFFF26; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.1);" aria-label="Add to wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF26" stroke="#FFFFFF" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+                                    </div>
+                
+                <!-- Content -->
+                <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 class="mst-shop-grid-title" style="color: #1a1a1a; margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/%d1%88%d0%b0%d1%80%d0%bc-%d0%b8-%d1%81%d0%b5%d0%ba%d1%80%d0%b5%d1%82%d1%8b-%d0%bb%d0%b0%d1%82%d0%b8%d0%bd%d1%81%d0%ba%d0%be%d0%b3%d0%be-%d0%ba%d0%b2%d0%b0%d1%80%d1%82%d0%b0%d0%bb%d0%b0/" style="color: inherit; text-decoration: none;">
+                            ШАРМ И СЕКРЕТЫ ЛАТИНСКОГО КВАРТАЛА                        </a>
+                    </h3>
+                    
+                                        <div class="mst-shop-grid-location" style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
+                        <span style="color: #666666; font-size: 13px;">Париж</span>
+                    </div>
+                                        
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                <div class="mst-shop-grid-rating" style="display: flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span>5</span>
+                            <span class="mst-shop-grid-reviews" style="color: #999;">(0)</span>
+                        </div>
+                                                
+                        <div class="mst-shop-grid-price" style="color: #1a1a1a; font-weight: 600;">
+                                                    </div>
+                    </div>
+                    
+                    <!-- Spacer -->
+                    <div style="flex: 1;"></div>
+                    
+                    <!-- Footer: Button with Guide Photo (full width, at bottom) -->
+                                        
+                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin-top: auto;">
+                        <a href="https://mysupertour.kinsta.cloud/shop/paris/%d1%88%d0%b0%d1%80%d0%bc-%d0%b8-%d1%81%d0%b5%d0%ba%d1%80%d0%b5%d1%82%d1%8b-%d0%bb%d0%b0%d1%82%d0%b8%d0%bd%d1%81%d0%ba%d0%be%d0%b3%d0%be-%d0%ba%d0%b2%d0%b0%d1%80%d1%82%d0%b0%d0%bb%d0%b0/" class="mst-shop-grid-button mst-follow-glow" style="display: block; width: 100%; background: hsl(270, 70%, 60%); color: #ffffff; text-align: center; text-decoration: none; font-weight: 500; box-sizing: border-box;">
+                            Подробнее                        </a>
+                        
+                                                <a href="https://mysupertour.kinsta.cloud/guide/10" class="mst-shop-grid-guide-inside mst-follow-glow" style="position: absolute; right: -5px; top: 50%; transform: translateY(calc(-50% - 1px)); width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 3px solid rgb(0, 200, 150); transition: border-color 0.3s, transform 0.3s;" data-hover-border="hsl(45, 98%, 60%)" title="Kristina MySuperTour - 4.8 ★ (100)">
+                            <img src="https://secure.gravatar.com/avatar/aef415ea11b059a88d6f9f45da0b6e3aeb3b97509a6901c3ce8f9c4e2d750cfe?s=80&amp;d=mm&amp;r=g" alt="Гид" style="width: 100%; height: 100%; object-fit: cover;">
+                        </a>
+                                            </div>
+                </div>
+            </div>
+                    </div>
+        
+                				</div>
+				</div>
