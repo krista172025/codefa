@@ -148,7 +148,7 @@ class MSTS_Ajax {
             $args = [
                 'post_type' => 'product',
                 'post_status' => 'publish',
-                'posts_per_page' => $limit,
+                'posts_per_page' => $limit * 3, // берем больше, потом фильтруем
                 'fields' => 'ids',
                 'suppress_filters' => false,
                 'orderby' => 'title',
@@ -160,6 +160,20 @@ class MSTS_Ajax {
                         'field' => 'slug',
                         'terms' => ['latepoint'],
                         'operator' => 'NOT IN'
+                    ]
+                ],
+                // Исключаем товары без цены
+                'meta_query' => [
+                    'relation' => 'AND',
+                    [
+                        'key' => '_price',
+                        'value' => '',
+                        'compare' => '!='
+                    ],
+                    [
+                        'key' => '_price',
+                        'value' => '0',
+                        'compare' => '!='
                     ]
                 ]
             ];
@@ -174,7 +188,7 @@ class MSTS_Ajax {
             
             $like_query = $wpdb->esc_like($q) . '%';
             $filter_func = function($where) use ($wpdb, $like_query) {
-                $where = $wpdb->prepare(" AND {$wpdb->posts}.post_title LIKE %s", $like_query);
+                $where .= $wpdb->prepare(" AND {$wpdb->posts}. post_title LIKE %s", $like_query);
                 return $where;
             };
             
@@ -204,21 +218,33 @@ class MSTS_Ajax {
         $out = [];
         foreach($found as $id){
             $p = get_post($id);
-            if(!$p) continue;
-			$product_cats = wp_get_post_terms($id, 'product_cat', ['fields' => 'slugs']);
-			if(in_array('latepoint', $product_cats)) continue;
+            if(! $p) continue;
+            
+            // Двойная проверка: исключаем latepoint
+            $product_cats = wp_get_post_terms($id, 'product_cat', ['fields' => 'slugs']);
+            if(in_array('latepoint', $product_cats)) continue;
+            
+            // Проверяем видимость товара
+            $visibility = get_post_meta($id, '_visibility', true);
+            if($visibility === 'hidden') continue;
+            
+            // Проверяем статус каталога (WooCommerce)
+            $catalog_visibility = get_post_meta($id, '_catalog_visibility', true);
+            if($catalog_visibility === 'hidden') continue;
+            
             $price = '';
             
+            // Проверяем вариации
             $children = get_children([
                 'post_parent' => $id,
-                'post_type' => 'product',
+                'post_type' => 'product_variation',
                 'post_status' => 'publish',
                 'fields' => 'ids'
             ]);
             $vals = [];
             foreach($children as $cid){
                 $cp = get_post_meta($cid, '_price', true);
-                if($cp !== '') $vals[] = (float)$cp;
+                if($cp !== '' && floatval($cp) > 0) $vals[] = (float)$cp;
             }
             if($vals){
                 $mn = min($vals);
@@ -226,7 +252,12 @@ class MSTS_Ajax {
                 $price = $mn == $mx ? msts_format_price($mn) : msts_format_price($mn) . ' – ' . msts_format_price($mx);
             } else {
                 $pr = get_post_meta($id, '_price', true);
-                if($pr !== '') $price = msts_format_price($pr);
+                if($pr !== '' && floatval($pr) > 0) {
+                    $price = msts_format_price($pr);
+                } else {
+                    // Нет цены - пропускаем товар
+                    continue;
+                }
             }
             
             $thumb = get_the_post_thumbnail_url($id, 'thumbnail');
@@ -235,7 +266,7 @@ class MSTS_Ajax {
                 'title' => mb_strimwidth(get_the_title($id), 0, 90, '…'),
                 'url' => get_permalink($id),
                 'price' => $price,
-                'thumb' => $thumb ?:  '',
+                'thumb' => $thumb ?: '',
                 'fallback_icon' => '😎'
             ];
             if(count($out) >= $limit) break;

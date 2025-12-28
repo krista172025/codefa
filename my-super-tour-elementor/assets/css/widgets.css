@@ -1582,54 +1582,6 @@ body,
   gap: 8px;
 }
 
-/* Shortcode container - minimal wrapper, inherits all styles from inside */
-.mst-header-shortcode {
-  display: flex;
-  align-items: center;
-}
-
-/* Search inside header shortcode - compact style without heavy styling */
-.mst-header-shortcode .mst-search-header-wrapper {
-  width: auto;
-}
-
-.mst-header-shortcode .mst-search-header {
-  width: auto;
-  min-width: 180px;
-  max-width: 280px;
-  padding: 6px 8px 6px 12px;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: none;
-  border-radius: 40px;
-}
-
-.mst-header-shortcode .mst-search-header:focus-within {
-  background: rgba(255, 255, 255, 0.9);
-  border-color: rgba(0, 0, 0, 0.12);
-}
-
-.mst-header-shortcode .mst-search-icon svg {
-  width: 16px;
-  height: 16px;
-}
-
-.mst-header-shortcode .mst-search-input {
-  font-size: 13px;
-}
-
-.mst-header-shortcode .mst-search-button {
-  padding: 8px 14px;
-  font-size: 12px;
-}
-
-@media (max-width: 768px) {
-  .mst-header-shortcode {
-    display: none;
-  }
-}
-
 .mst-header-icon-btn {
   width: 44px;
   height: 44px;
@@ -1754,26 +1706,6 @@ body,
               inset 0 1px 2px 0 rgba(255, 255, 255, 0.3);
   width: 500px;
   max-width: 100%;
-}
-
-/* Liquid Glass Search Style */
-.mst-search-header.mst-search-liquid-glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.08),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.02);
-}
-
-.mst-search-header.mst-search-liquid-glass:focus-within {
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8),
-    0 0 0 2px rgba(147, 51, 234, 0.2);
 }
 
 .mst-search-icon {
@@ -7906,46 +7838,6 @@ body,
   }
 }
 
-/* Search Header Responsive */
-@media (max-width: 768px) {
-  .mst-search-header {
-    width: 100%;
-    padding: 6px 6px 6px 16px;
-    border-radius: 40px;
-  }
-  
-  .mst-search-input {
-    font-size: 14px;
-  }
-  
-  .mst-search-button {
-    padding: 10px 18px;
-    font-size: 13px;
-  }
-}
-
-@media (max-width: 480px) {
-  .mst-search-header {
-    padding: 4px 4px 4px 12px;
-    border-radius: 30px;
-    gap: 8px;
-  }
-  
-  .mst-search-icon svg {
-    width: 18px;
-    height: 18px;
-  }
-  
-  .mst-search-input {
-    font-size: 13px;
-  }
-  
-  .mst-search-button {
-    padding: 8px 14px;
-    font-size: 12px;
-  }
-}
-
 /* Contact Instagram Responsive - Already handled but ensuring consistency */
 @media (max-width: 480px) {
   .mst-instagram-image-container {
@@ -8465,20 +8357,6 @@ body,
   font-size: 14px;
 }
 
-/* Search header liquid glass */
-.mst-search-header.mst-search-liquid-glass {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08),
-              inset 0 1px 2px rgba(255, 255, 255, 0.8);
-}
-
-.mst-search-header.msts-search-wrapper {
-  position: relative;
-}
-
 /* Mobile suggestions adjustments */
 @media (max-width: 767px) {
   .msts-suggestions {
@@ -8694,5 +8572,21 @@ body,
     right: var(--guide-right-mobile, 0px);
     bottom: var(--guide-bottom-mobile, 0px);
   }
+}
+
+/* ========================================
+   FIX:  Защита поиска в хедере от перезаписи
+   ======================================== */
+.msts-hdr-search-box {
+    display:  flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+.msts-hdr-search-box .msts-hdr-icon,
+.msts-hdr-search-box .msts-hdr-input {
+    display:  block !important;
+    visibility: visible !important;
 }
 
