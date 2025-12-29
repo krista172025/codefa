@@ -14,12 +14,12 @@ $user_status_label = get_user_meta($user->ID, 'mst_user_status_label', true) ?: 
 
 $tabs = $settings['tabs'] ?? [];
 
-// Цвета рамок для статусов (ДОБАВЛЕН ЗЕЛЕНЫЙ ДЛЯ ГИДА)
+// Цвета рамок для статусов (ДОБАВЛЕН ФИОЛ ДЛЯ ГИДА)
 $status_colors = [
     'bronze' => '#CD7F32',
     'silver' => '#C0C0C0', 
     'gold' => '#FFD700',
-    'guide' => '#00c896' // ЗЕЛЕНАЯ РАМКА ДЛЯ ГИДА
+    'guide' => '#9952E0' // ФИОЛЕТОВАЯ РАМКА ДЛЯ ГИДА
 ];
 $border_color = $status_colors[$user_status] ?? '#CD7F32';
 ?>

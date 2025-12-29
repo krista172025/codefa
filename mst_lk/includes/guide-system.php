@@ -59,9 +59,9 @@ class MST_Guide_System {
                 'bronze' => '#CD7F32',
                 'silver' => '#C0C0C0', 
                 'gold' => '#FFD700',
-                'guide' => '#00c896'
+                'guide' => '#9952E0'
             ];
-            $border_color = $status_colors[$user_status] ?? '#00c896';
+            $border_color = $status_colors[$user_status] ?? '#9952E0';
             
             // Use new /guide/{id} URL format
             $guide_url = home_url('/guide/' . $guide_id);
@@ -97,7 +97,7 @@ class MST_Guide_System {
         }
         
         .mst-guide-loop-card:hover {
-            border-color: #00c896 !important;
+            border-color: #9952E0 !important;
             box-shadow: 0 4px 15px rgba(0, 200, 150, 0.15) !important;
             text-decoration: none !important;
             transform: translateY(-2px) !important;
@@ -121,7 +121,7 @@ class MST_Guide_System {
             height: 44px !important;
             border-radius: 50% !important;
             padding: 2px !important;
-            background: linear-gradient(135deg, var(--guide-border-color, #00c896) 0%, var(--guide-border-color, #00c896) 100%) !important;
+            background: linear-gradient(135deg, var(--guide-border-color, #9952E0) 0%, var(--guide-border-color, #9952E0) 100%) !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
@@ -158,7 +158,7 @@ class MST_Guide_System {
         }
         
         .mst-guide-loop-card:hover .mst-guide-loop-name {
-            color: #00c896 !important;
+            color: #9952E0 !important;
         }
         
         .mst-guide-loop-rating {
@@ -350,7 +350,7 @@ class MST_Guide_System {
         echo '</select><p style="margin-top: 10px; font-size: 12px; color: #666;">Выберите гида для этой экскурсии</p>';
         if ($guide_id) {
             $guide = get_userdata($guide_id);
-            if ($guide) echo '<p style="margin-top: 8px; color: #00c896; font-weight: 600;">✓ Гид: ' . esc_html($guide->display_name) . '</p>';
+            if ($guide) echo '<p style="margin-top: 8px; color: #9952E0; font-weight: 600;">✓ Гид: ' . esc_html($guide->display_name) . '</p>';
         }
     }
     
@@ -892,9 +892,9 @@ class MST_Guide_System {
             'bronze' => '#CD7F32',
             'silver' => '#C0C0C0', 
             'gold' => '#FFD700',
-            'guide' => '#00c896'
+            'guide' => '#9952E0'
         ];
-        $border_color = $status_colors[$user_status] ?? '#00c896';
+        $border_color = $status_colors[$user_status] ?? '#9952E0';
         
         $tours_args = [
             'post_type' => 'product',
@@ -998,7 +998,7 @@ class MST_Guide_System {
                                     <?php endif; ?>
                                     <div style="padding:20px;">
                                         <h4 style="font-size:16px;font-weight:600;margin:0 0 15px;color:#333;"><?php the_title(); ?></h4>
-                                        <div style="color:#00c896;font-weight:700;font-size:18px;"><?php echo $product->get_price_html(); ?></div>
+                                        <div style="color:#9952E0;font-weight:700;font-size:18px;"><?php echo $product->get_price_html(); ?></div>
                                     </div>
                                 </a>
                             </div>

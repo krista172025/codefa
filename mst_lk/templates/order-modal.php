@@ -96,7 +96,7 @@
 .mst-summary-item { text-align: center; }
 .mst-summary-label { display: block; font-size: 11px; color: #999; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
 .mst-summary-value { display: block; font-size: 18px; font-weight: 700; color: #333; }
-.mst-summary-value.mst-price { color: #00c896; font-size: 22px; }
+.mst-summary-value.mst-price { color: #9952E0; font-size: 22px; }
 
 .mst-section-heading { font-size: 18px; font-weight: 700; color: #1d1d1f; margin: 0 0 20px; }
 
@@ -107,7 +107,7 @@
 .mst-item-details { flex: 1; }
 .mst-item-details h4 { margin: 0 0 6px; font-size: 16px; font-weight: 600; color: #333; }
 .mst-item-meta { margin: 0; font-size: 14px; color: #666; }
-.mst-item-total { font-size: 18px; font-weight: 700; color: #00c896; }
+.mst-item-total { font-size: 18px; font-weight: 700; color: #9952E0; }
 
 .mst-customer-info { background: #f9fafb; border-radius: 12px; padding: 20px; }
 .mst-info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
@@ -116,7 +116,7 @@
 .mst-info-row span { color: #333; }
 
 .mst-loading { text-align: center; padding: 80px 20px; }
-.spinner { border: 4px solid #f3f3f3; border-top: 4px solid #00c896; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+.spinner { border: 4px solid #f3f3f3; border-top: 4px solid #9952E0; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 .mst-loading p { color: #666; font-size: 16px; margin: 0; }
 .mst-error { text-align: center; padding: 80px 20px; color: #ef4444; font-size: 18px; }

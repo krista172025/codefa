@@ -74,7 +74,6 @@ class MST_LK {
             'tabs' => [
                 'orders' => ['icon' => '📦', 'label' => 'Мои заказы', 'enabled' => true],
                 'bookings' => ['icon' => '📅', 'label' => 'Бронирования', 'enabled' => true],
-                'messages' => ['icon' => '💬', 'label' => 'Сообщения', 'enabled' => true],
                 'affiliate' => ['icon' => '💰', 'label' => 'Реферальная программа', 'enabled' => true],
                 'wishlist' => ['icon' => '❤️', 'label' => 'Избранное', 'enabled' => true]
             ]
@@ -410,7 +409,7 @@ class MST_LK {
                         <option value="bronze" <?php selected($current_status, 'bronze'); ?>>Бронзовый (#CD7F32)</option>
                         <option value="silver" <?php selected($current_status, 'silver'); ?>>Серебряный (#C0C0C0)</option>
                         <option value="gold" <?php selected($current_status, 'gold'); ?>>Золотой (#FFD700)</option>
-                        <option value="guide" <?php selected($current_status, 'guide'); ?>>🟢 Гид (Зеленая рамка #00c896)</option>
+                        <option value="guide" <?php selected($current_status, 'guide'); ?>>🟣 Гид (Фиолетовый #9952E0)</option>
                     </select>
                     <p class="description">Цвет рамки вокруг аватара пользователя</p>
                 </td>
@@ -498,7 +497,7 @@ class MST_LK {
         
         if (isset($_POST['mst_lk_save_settings']) && check_admin_referer('mst_lk_settings', 'mst_lk_nonce')) {
             $tabs = [];
-            foreach (['orders', 'bookings', 'messages', 'affiliate', 'wishlist'] as $tab) {
+            foreach (['orders', 'bookings', 'affiliate', 'wishlist'] as $tab) {
                 $tabs[$tab] = [
                     'icon' => sanitize_text_field($_POST['tab_icon_' . $tab] ?? '📦'),
                     'label' => sanitize_text_field($_POST['tab_label_' . $tab] ?? ''),
@@ -547,7 +546,6 @@ class MST_LK {
             $settings['tabs'] = [
                 'orders' => ['icon' => '📦', 'label' => 'Мои заказы', 'enabled' => true],
                 'bookings' => ['icon' => '📅', 'label' => 'Бронирования', 'enabled' => true],
-                'messages' => ['icon' => '💬', 'label' => 'Сообщения', 'enabled' => true],
                 'affiliate' => ['icon' => '💰', 'label' => 'Реферальная программа', 'enabled' => true],
                 'wishlist' => ['icon' => '❤️', 'label' => 'Избранное', 'enabled' => true]
             ];
