@@ -364,6 +364,71 @@
                     alert('❌ Ошибка сохранения. Попробуйте еще раз');
                     submitBtn.prop('disabled', false).text('💾 Сохранить изменения');
                 }
+            // Отправка отзыва
+            $(document).on('submit', '.mst-review-form', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var btn = form.find('button[type="submit"]');
+                
+                btn.prop('disabled', true).text('Отправка...');
+                
+                $.ajax({
+                    url: mstLK.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'mst_lk_submit_review',
+                        nonce: mstLK.nonce,
+                        product_id: form.find('[name="product_id"]').val(),
+                        rating: form.find('[name="rating"]:checked').val(),
+                        comment: form.find('[name="comment"]').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('✅ ' + response.data.message);
+                            form[0].reset();
+                            $('.mst-lk-modal').removeClass('active');
+                        } else {
+                            alert('❌ ' + response.data);
+                        }
+                        btn.prop('disabled', false).text('Отправить отзыв');
+                    },
+                    error: function() {
+                        alert('❌ Ошибка отправки');
+                        btn.prop('disabled', false).text('Отправить отзыв');
+                    }
+                });
+            });
+
+            // Скачать подарок
+            $(document).on('click', '.mst-download-gift', function(e) {
+                e.preventDefault();
+                var btn = $(this);
+                var orderId = btn.data('order-id');
+                
+                btn.prop('disabled', true).text('Загрузка...');
+                
+                $.ajax({
+                    url: mstLK.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'mst_lk_download_gift',
+                        nonce: mstLK.nonce,
+                        order_id: orderId
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            window.open(response.data.download_url, '_blank');
+                        } else {
+                            alert('❌ ' + response.data);
+                        }
+                        btn.prop('disabled', false).text('💝 Скачать подарок');
+                    },
+                    error: function() {
+                        alert('❌ Ошибка скачивания');
+                        btn.prop('disabled', false).text('💝 Скачать подарок');
+                    }
+                });
+            });                
             });
         });
     });

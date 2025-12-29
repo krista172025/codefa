@@ -99,7 +99,7 @@ $tabs = $settings['tabs'] ?? $default_tabs;
                         <?php if (!$afwc_active): ?>
                         <div style="font-size:12px;color:#c00;">Не установлен</div>
                         <?php else: ?>
-                        <div style="font-size:12px;color:#00c896;">Активен - использует [afwc_dashboard]</div>
+                        <div style="font-size:12px;color:#9952E0;">Активен - использует [afwc_dashboard]</div>
                         <?php endif; ?>
                     </div>
                 </li>
@@ -131,10 +131,10 @@ $tabs = $settings['tabs'] ?? $default_tabs;
 .mst-hub-wrap{background:linear-gradient(135deg,#f5f7fa,#e8ebef);padding:30px;min-height:100vh;margin:-10px -20px -20px}
 .mst-hub-header{margin-bottom:30px}
 .mst-hub-title{font-size:36px;font-weight:800;color:#1d1d1f;margin:0;display:flex;align-items:center;gap:12px}
-.mst-version-badge{font-size:14px;background:linear-gradient(135deg,#00c896,#00a87a);color:#fff;padding:4px 12px;border-radius:20px;font-weight:600}
+.mst-version-badge{font-size:14px;background:linear-gradient(135deg,#9952E0,#00a87a);color:#fff;padding:4px 12px;border-radius:20px;font-weight:600}
 .mst-admin-layout{display:grid;grid-template-columns:1fr 1fr;gap:30px}
 .mst-panel{background:#fff;border-radius:20px;padding:30px;box-shadow:0 4px 24px rgba(0,0,0,.08)}
-.mst-panel h2{margin-top:0;color:#1d1d1f;font-size:22px;border-bottom:3px solid #00c896;padding-bottom:12px;display:flex;align-items:center;gap:10px}
+.mst-panel h2{margin-top:0;color:#1d1d1f;font-size:22px;border-bottom:3px solid #9952E0;padding-bottom:12px;display:flex;align-items:center;gap:10px}
 .mst-section-icon{font-size:24px}
 .mst-tab-editor{background:#f9f9f9;border-radius:12px;padding:16px;margin-bottom:16px}
 .mst-tab-header{margin-bottom:12px}
@@ -145,10 +145,10 @@ $tabs = $settings['tabs'] ?? $default_tabs;
 .mst-form-group{display:flex;flex-direction:column}
 .mst-form-label{font-size:13px;font-weight:600;color:#666;margin-bottom:4px}
 .mst-form-control{padding:10px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px}
-.mst-form-control:focus{border-color:#00c896;outline:none}
+.mst-form-control:focus{border-color:#9952E0;outline:none}
 .mst-btn{padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;border:none;cursor:pointer}
-.mst-btn-primary{background:linear-gradient(135deg,#00c896,#00a87a);color:#fff}
+.mst-btn-primary{background:linear-gradient(135deg,#9952E0,#00a87a);color:#fff}
 .mst-btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,200,150,.3)}
-.mst-save-notice{background:linear-gradient(135deg,#00c896,#00a87a);color:#fff;padding:16px 24px;border-radius:12px;margin-bottom:24px;font-weight:600}
+.mst-save-notice{background:linear-gradient(135deg,#9952E0,#00a87a);color:#fff;padding:16px 24px;border-radius:12px;margin-bottom:24px;font-weight:600}
 @media (max-width:1400px){.mst-admin-layout{grid-template-columns:1fr}}
 </style>

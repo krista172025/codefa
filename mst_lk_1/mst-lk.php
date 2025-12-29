@@ -18,7 +18,7 @@ class MST_LK {
     private static $instance = null;
     
     public static function instance() {
-        if (is_null(self::$instance)) {
+        if (is_null(self:: $instance)) {
             self::$instance = new self();
         }
         return self::$instance;
@@ -39,6 +39,8 @@ class MST_LK {
         add_action('wp_ajax_mst_lk_update_profile', [$this, 'ajax_update_profile']);
         add_action('wp_ajax_mst_lk_get_latepoint_booking', [$this, 'ajax_get_latepoint_booking']);
         add_action('wp_ajax_mst_lk_remove_from_wishlist', [$this, 'ajax_remove_from_wishlist']);
+        add_action('wp_ajax_mst_lk_submit_review', [$this, 'ajax_submit_review']);
+        add_action('wp_ajax_mst_lk_download_gift', [$this, 'ajax_download_gift']);
         
         // Admin actions
         add_action('show_user_profile', [$this, 'add_user_meta_fields']);
@@ -47,7 +49,7 @@ class MST_LK {
         add_action('edit_user_profile_update', [$this, 'save_user_meta_fields']);
         
         // Подключаем систему гидов
-        require_once MST_LK_PLUGIN_DIR . 'includes/guide-system.php';
+        require_once MST_LK_PLUGIN_DIR .  'includes/guide-system.php';
         
         register_activation_hook(__FILE__, [$this, 'activate']);
     }
@@ -57,7 +59,6 @@ class MST_LK {
             'tabs' => [
                 'orders' => ['icon' => '📦', 'label' => 'Мои заказы', 'enabled' => true],
                 'bookings' => ['icon' => '📅', 'label' => 'Бронирования', 'enabled' => true],
-                'messages' => ['icon' => '💬', 'label' => 'Сообщения', 'enabled' => true],
                 'affiliate' => ['icon' => '💰', 'label' => 'Реферальная программа', 'enabled' => true],
                 'wishlist' => ['icon' => '❤️', 'label' => 'Избранное', 'enabled' => true]
             ]
@@ -90,12 +91,10 @@ class MST_LK {
         if (is_account_page() || is_page() || has_shortcode(get_post_field('post_content', get_the_ID()), 'mst_lk')) {
             wp_enqueue_style('mst-lk-style', MST_LK_PLUGIN_URL . 'assets/css/style.css', [], MST_LK_VERSION);
             wp_enqueue_script('mst-lk-script', MST_LK_PLUGIN_URL . 'assets/js/script.js', ['jquery'], MST_LK_VERSION, true);
-            
-            // Подключаем IMask для форматирования телефона
             wp_enqueue_script('imask', 'https://cdn.jsdelivr.net/npm/imask@7.1.3/dist/imask.min.js', [], '7.1.3', true);
             
             wp_localize_script('mst-lk-script', 'mstLK', [
-                'ajax_url' => admin_url('admin-ajax.php'),
+                'ajax_url' => admin_url('admin-ajax. php'),
                 'nonce' => wp_create_nonce('mst_lk_nonce'),
                 'shop_url' => home_url('/shop')
             ]);
@@ -104,148 +103,150 @@ class MST_LK {
     
     public function ajax_get_order_details() {
         check_ajax_referer('mst_lk_nonce', 'nonce');
-        
         $order_id = intval($_POST['order_id']);
         $order = wc_get_order($order_id);
-        
-        if (!$order || $order->get_customer_id() !== get_current_user_id()) {
+        if (! $order || $order->get_customer_id() !== get_current_user_id()) {
             wp_send_json_error('Заказ не найден');
         }
-        
         ob_start();
         include MST_LK_PLUGIN_DIR . 'templates/order-modal.php';
-        $html = ob_get_clean();
-        
-        wp_send_json_success(['html' => $html]);
+        wp_send_json_success(['html' => ob_get_clean()]);
     }
     
     public function ajax_get_ticket() {
         check_ajax_referer('mst_lk_nonce', 'nonce');
-        
         $order_id = intval($_POST['order_id']);
         $order = wc_get_order($order_id);
-        
         if (!$order || $order->get_customer_id() !== get_current_user_id()) {
             wp_send_json_error('Заказ не найден');
         }
-        
         ob_start();
-        include MST_LK_PLUGIN_DIR . 'templates/order-ticket-modal.php';
-        $html = ob_get_clean();
-        
-        wp_send_json_success(['html' => $html]);
+        include MST_LK_PLUGIN_DIR .  'templates/order-ticket-modal.php';
+        wp_send_json_success(['html' => ob_get_clean()]);
     }
     
     public function ajax_update_avatar() {
         check_ajax_referer('mst_lk_nonce', 'nonce');
-        
-        if (!isset($_FILES['avatar'])) {
+        if (! isset($_FILES['avatar'])) {
             wp_send_json_error('Файл не загружен');
         }
-        
         require_once(ABSPATH . 'wp-admin/includes/image.php');
         require_once(ABSPATH . 'wp-admin/includes/file.php');
         require_once(ABSPATH . 'wp-admin/includes/media.php');
-        
         $attachment_id = media_handle_upload('avatar', 0);
-        
         if (is_wp_error($attachment_id)) {
             wp_send_json_error($attachment_id->get_error_message());
         }
-        
         update_user_meta(get_current_user_id(), 'mst_lk_avatar', $attachment_id);
-        
-        $avatar_url = wp_get_attachment_url($attachment_id);
-        wp_send_json_success(['url' => $avatar_url]);
+        wp_send_json_success(['url' => wp_get_attachment_url($attachment_id)]);
     }
     
     public function ajax_update_profile() {
         check_ajax_referer('mst_lk_nonce', 'nonce');
-        
         $user_id = get_current_user_id();
-        
-        // Сохраняем имя и фамилию отдельно
         update_user_meta($user_id, 'first_name', sanitize_text_field($_POST['first_name']));
         update_user_meta($user_id, 'last_name', sanitize_text_field($_POST['last_name']));
-        
-        // Сохраняем телефон (ИСПРАВЛЕНО)
         update_user_meta($user_id, 'billing_phone', sanitize_text_field($_POST['billing_phone']));
-        
         $data = [
             'ID' => $user_id,
             'display_name' => sanitize_text_field($_POST['display_name']),
             'user_email' => sanitize_email($_POST['user_email'])
         ];
-        
-        if (!empty($_POST['new_password'])) {
+        if (! empty($_POST['new_password'])) {
             $data['user_pass'] = $_POST['new_password'];
         }
-        
         $result = wp_update_user($data);
-        
         if (is_wp_error($result)) {
             wp_send_json_error($result->get_error_message());
         }
-        
         wp_send_json_success('Профиль обновлен');
     }
     
     public function ajax_get_latepoint_booking() {
         check_ajax_referer('mst_lk_nonce', 'nonce');
-        
         if (!class_exists('OsBookingModel')) {
             wp_send_json_error('LatePoint не установлен');
         }
-        
         $booking_id = intval($_POST['booking_id']);
         $booking = new OsBookingModel($booking_id);
-        
         if (!$booking->id) {
             wp_send_json_error('Бронирование не найдено');
         }
-        
         ob_start();
-        include MST_LK_PLUGIN_DIR . 'templates/latepoint-modal.php';
-        $html = ob_get_clean();
-        
-        wp_send_json_success(['html' => $html]);
+        include MST_LK_PLUGIN_DIR .  'templates/latepoint-modal. php';
+        wp_send_json_success(['html' => ob_get_clean()]);
     }
     
     public function ajax_remove_from_wishlist() {
         check_ajax_referer('mst_lk_nonce', 'nonce');
-        
         $product_id = intval($_POST['product_id']);
         $user_id = get_current_user_id();
-        
         if (!$user_id) {
             wp_send_json_error('Необходима авторизация');
         }
-        
         $wishlist_data = get_user_meta($user_id, 'xstore_wishlist_ids_0', true);
-        
         if (!$wishlist_data) {
             wp_send_json_error('Wishlist пуст');
         }
-        
         $items = explode('|', $wishlist_data);
         $new_items = [];
-        
         foreach ($items as $item) {
             $decoded = json_decode($item, true);
             if ($decoded && isset($decoded['id']) && $decoded['id'] != $product_id) {
                 $new_items[] = $item;
             }
         }
-        
         if (empty($new_items)) {
             delete_user_meta($user_id, 'xstore_wishlist_ids_0');
             delete_user_meta($user_id, 'xstore_wishlist_u');
         } else {
-            $new_wishlist_data = implode('|', $new_items);
-            update_user_meta($user_id, 'xstore_wishlist_ids_0', $new_wishlist_data);
+            update_user_meta($user_id, 'xstore_wishlist_ids_0', implode('|', $new_items));
         }
-        
         wp_send_json_success(['message' => 'Товар удален из избранного']);
+    }
+    
+    public function ajax_submit_review() {
+        check_ajax_referer('mst_lk_nonce', 'nonce');
+        if (!is_user_logged_in()) {
+            wp_send_json_error('Необходимо авторизоваться');
+        }
+        $product_id = intval($_POST['product_id']);
+        $rating = intval($_POST['rating']);
+        $comment = sanitize_textarea_field($_POST['comment']);
+        $user = wp_get_current_user();
+        if ($rating < 1 || $rating > 5) {
+            wp_send_json_error('Некорректный рейтинг');
+        }
+        $comment_id = wp_insert_comment([
+            'comment_post_ID' => $product_id,
+            'comment_author' => $user->display_name,
+            'comment_author_email' => $user->user_email,
+            'comment_content' => $comment,
+            'comment_type' => 'review',
+            'comment_approved' => 1,
+            'user_id' => $user->ID,
+        ]);
+        if ($comment_id) {
+            update_comment_meta($comment_id, 'rating', $rating);
+            wp_send_json_success(['message' => 'Отзыв добавлен! ', 'review_id' => $comment_id]);
+        }
+        wp_send_json_error('Ошибка при добавлении отзыва');
+    }
+    
+    public function ajax_download_gift() {
+        check_ajax_referer('mst_lk_nonce', 'nonce');
+        $order_id = intval($_POST['order_id']);
+        $order = wc_get_order($order_id);
+        if (!$order || $order->get_customer_id() !== get_current_user_id()) {
+            wp_send_json_error('Заказ не найден');
+        }
+        foreach ($order->get_items() as $item) {
+            $gift_file = get_post_meta($item->get_product_id(), '_mst_gift_file', true);
+            if ($gift_file) {
+                wp_send_json_success(['download_url' => $gift_file, 'message' => 'Подарок готов! ']);
+            }
+        }
+        wp_send_json_error('Подарок не найден');
     }
     
     public function add_user_meta_fields($user) {
@@ -256,31 +257,24 @@ class MST_LK {
             <tr>
                 <th><label for="mst_user_bonuses">Бонусы</label></th>
                 <td>
-                    <input type="number" name="mst_user_bonuses" id="mst_user_bonuses" 
-                           value="<?php echo esc_attr(get_user_meta($user->ID, 'mst_user_bonuses', true) ?: 0); ?>" 
-                           class="regular-text" min="0">
-                    <p class="description">Количество бонусов пользователя</p>
+                    <input type="number" name="mst_user_bonuses" id="mst_user_bonuses" value="<?php echo esc_attr(get_user_meta($user->ID, 'mst_user_bonuses', true) ?: 0); ?>" class="regular-text" min="0">
                 </td>
             </tr>
             <tr>
-                <th><label for="mst_user_status">Статус (рамка аватара)</label></th>
+                <th><label for="mst_user_status">Статус</label></th>
                 <td>
                     <select name="mst_user_status" id="mst_user_status" class="regular-text">
-                        <option value="bronze" <?php selected($current_status, 'bronze'); ?>>Бронзовый (#CD7F32)</option>
-                        <option value="silver" <?php selected($current_status, 'silver'); ?>>Серебряный (#C0C0C0)</option>
-                        <option value="gold" <?php selected($current_status, 'gold'); ?>>Золотой (#FFD700)</option>
-                        <option value="guide" <?php selected($current_status, 'guide'); ?>>🟢 Гид (Зеленая рамка #00c896)</option>
+                        <option value="bronze" <?php selected($current_status, 'bronze'); ?>>Бронзовый</option>
+                        <option value="silver" <?php selected($current_status, 'silver'); ?>>Серебряный</option>
+                        <option value="gold" <?php selected($current_status, 'gold'); ?>>Золотой</option>
+                        <option value="guide" <?php selected($current_status, 'guide'); ?>>Гид</option>
                     </select>
-                    <p class="description">Цвет рамки вокруг аватара пользователя</p>
                 </td>
             </tr>
             <tr>
                 <th><label for="mst_user_status_label">Название статуса</label></th>
                 <td>
-                    <input type="text" name="mst_user_status_label" id="mst_user_status_label" 
-                           value="<?php echo esc_attr(get_user_meta($user->ID, 'mst_user_status_label', true) ?: 'Бронзовый статус'); ?>" 
-                           class="regular-text">
-                    <p class="description">Текст статуса (например: Гид, VIP, Проверенный)</p>
+                    <input type="text" name="mst_user_status_label" id="mst_user_status_label" value="<?php echo esc_attr(get_user_meta($user->ID, 'mst_user_status_label', true) ?: 'Бронзовый статус'); ?>" class="regular-text">
                 </td>
             </tr>
         </table>
@@ -288,10 +282,7 @@ class MST_LK {
     }
     
     public function save_user_meta_fields($user_id) {
-        if (!current_user_can('edit_user', $user_id)) {
-            return false;
-        }
-        
+        if (! current_user_can('edit_user', $user_id)) return false;
         update_user_meta($user_id, 'mst_user_bonuses', intval($_POST['mst_user_bonuses']));
         update_user_meta($user_id, 'mst_user_status', sanitize_text_field($_POST['mst_user_status']));
         update_user_meta($user_id, 'mst_user_status_label', sanitize_text_field($_POST['mst_user_status_label']));
@@ -299,22 +290,19 @@ class MST_LK {
     
     public function render_admin_page() {
         $settings = get_option('mst_lk_settings', []);
-        
         if (isset($_POST['mst_lk_save_settings']) && check_admin_referer('mst_lk_settings', 'mst_lk_nonce')) {
             $tabs = [];
-            foreach (['orders', 'bookings', 'messages', 'affiliate', 'wishlist'] as $tab) {
+            foreach (['orders', 'bookings', 'affiliate', 'wishlist'] as $tab) {
                 $tabs[$tab] = [
-                    'icon' => sanitize_text_field($_POST['tab_icon_' . $tab] ?? '📦'),
+                    'icon' => sanitize_text_field($_POST['tab_icon_' .  $tab] ?? '📦'),
                     'label' => sanitize_text_field($_POST['tab_label_' . $tab] ?? ''),
                     'enabled' => isset($_POST['tab_enabled_' . $tab])
                 ];
             }
-            
             $settings['tabs'] = $tabs;
             update_option('mst_lk_settings', $settings);
-            echo '<div class="mst-save-notice">✅ Настройки сохранены!</div>';
+            echo '<div class="mst-save-notice">✅ Настройки сохранены! </div>';
         }
-        
         include MST_LK_PLUGIN_DIR . 'templates/admin-page.php';
     }
     
@@ -335,9 +323,8 @@ class MST_LK {
     
     public function render_profile_shortcode($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="woocommerce-info">' . __('Пожалуйста, войдите в систему.', 'mst-lk') . '</p>';
+            return '<p class="woocommerce-info">' . __('Пожалуйста, войдите в систему. ', 'mst-lk') . '</p>';
         }
-        
         ob_start();
         $this->render_profile();
         return ob_get_clean();
@@ -346,21 +333,18 @@ class MST_LK {
     private function render_profile() {
         $user = wp_get_current_user();
         $settings = get_option('mst_lk_settings', []);
-        
         if (empty($settings['tabs'])) {
             $settings['tabs'] = [
                 'orders' => ['icon' => '📦', 'label' => 'Мои заказы', 'enabled' => true],
                 'bookings' => ['icon' => '📅', 'label' => 'Бронирования', 'enabled' => true],
-                'messages' => ['icon' => '💬', 'label' => 'Сообщения', 'enabled' => true],
                 'affiliate' => ['icon' => '💰', 'label' => 'Реферальная программа', 'enabled' => true],
                 'wishlist' => ['icon' => '❤️', 'label' => 'Избранное', 'enabled' => true]
             ];
         }
-        
         include MST_LK_PLUGIN_DIR . 'templates/profile.php';
     }
 }
 
 add_action('plugins_loaded', function() {
-    MST_LK::instance();
+    MST_LK:: instance();
 }, 10);

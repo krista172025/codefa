@@ -7,14 +7,14 @@ if (!defined('ABSPATH')) exit;
 ?>
 
 <div class="mst-modal-inner">
-    <div class="mst-modal-header" style="padding: 30px; border-bottom: 1px solid #e5e7eb; background: linear-gradient(135deg, #00c896 0%, #00a87a 100%);">
+    <div class="mst-modal-header" style="padding: 30px; border-bottom: 1px solid #e5e7eb; background: linear-gradient(135deg, #9952E0 0%, #9952E0 100%);">
         <h2 style="margin: 0; color: #fff;">🎫 Билет #<?php echo $order->get_order_number(); ?></h2>
     </div>
     
     <div class="mst-modal-body" style="padding: 40px; max-height: 70vh; overflow-y: auto;">
         <div class="mst-ticket-view" style="text-align: center;">
             <!-- QR КОД -->
-            <div class="mst-ticket-qr" style="width: 220px; height: 220px; margin: 0 auto 30px; background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; border: 3px solid #00c896; box-shadow: 0 8px 24px rgba(0, 200, 150, 0.2);">
+            <div class="mst-ticket-qr" style="width: 220px; height: 220px; margin: 0 auto 30px; background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; border: 3px solid #9952E0; box-shadow: 0 8px 24px rgba(0, 200, 150, 0.2);">
                 <?php
                 // Генерация QR кода
                 $qr_data = 'ORDER-' . $order->get_order_number() . '-' . $order->get_customer_id();
@@ -51,7 +51,7 @@ if (!defined('ABSPATH')) exit;
                     
                     <p style="font-size: 16px; color: #333; margin: 12px 0; display: flex; align-items: center; gap: 10px;">
                         <strong style="min-width: 140px;">💰 Сумма:</strong> 
-                        <span style="color: #00c896; font-weight: 700; font-size: 18px;"><?php echo $order->get_formatted_order_total(); ?></span>
+                        <span style="color: #9952E0; font-weight: 700; font-size: 18px;"><?php echo $order->get_formatted_order_total(); ?></span>
                     </p>
                 </div>
             </div>
@@ -66,7 +66,7 @@ if (!defined('ABSPATH')) exit;
     </div>
     
     <div class="mst-modal-footer" style="padding: 20px 30px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; gap: 12px;">
-        <button type="button" class="mst-lk-btn mst-lk-btn-primary" onclick="window.print();" style="background: linear-gradient(135deg, #00c896 0%, #00a87a 100%);">
+        <button type="button" class="mst-lk-btn mst-lk-btn-primary" onclick="window.print();" style="background: linear-gradient(135deg, #9952E0 0%, #9952E0 100%);">
             🖨️ Распечатать
         </button>
         <button type="button" class="mst-lk-btn mst-lk-btn-outline mst-lk-modal-close">
