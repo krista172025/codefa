@@ -2,7 +2,7 @@
 /**
  * Plugin Name: MySuperTour - Личный Кабинет
  * Description: Единый личный кабинет для пользователей с заказами, бронированиями и реферальной программой
- * Version: 3.4.0
+ * Version: 3.5.0
  * Author: Telegram @l1ghtsun
  * Author URI: https://t.me/l1ghtsun
  * Text Domain: mst-lk

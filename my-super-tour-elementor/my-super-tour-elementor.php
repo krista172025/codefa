@@ -97,6 +97,8 @@ function mst_elementor_register_widgets($widgets_manager) {
     require_once MST_ELEMENTOR_PATH . 'widgets/reviews-section.php';
     require_once MST_ELEMENTOR_PATH . 'widgets/logo-explainer.php';
     require_once MST_ELEMENTOR_PATH . 'widgets/search-header.php';
+    require_once __DIR__ . '/widgets/auth-form-widget.php';
+    require_once __DIR__ . '/includes/auth-ajax-handlers.php';
 
     // Register widgets
     $widgets_manager->register(new \MST_Elementor\Widgets\Liquid_Glass_Card());
@@ -133,6 +135,7 @@ function mst_elementor_register_widgets($widgets_manager) {
     $widgets_manager->register(new \MySuperTourElementor\Widgets\Reviews_Section());
     $widgets_manager->register(new \MST_Elementor\Widgets\Logo_Explainer());
     $widgets_manager->register(new \MST_Elementor\Widgets\Search_Header());
+    $widgets_manager->register(new \MST_Auth_Form_Widget());
 }
 
 // Enqueue frontend styles and scripts
