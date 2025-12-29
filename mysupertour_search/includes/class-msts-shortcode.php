@@ -57,7 +57,7 @@ class MSTS_Shortcode {
         
         <!-- FULLSCREEN MODAL -->
         <div class="mst-hmodal" id="<?php echo $uid; ?>-modal">
-            <div class="mst-hmodal-bg" onclick="mstHclose('<?php echo $uid; ?>')"></div>
+            <div class="mst-hmodal-bg"></div>
             <div class="mst-hmodal-content">
                 <button type="button" class="mst-hmodal-close" onclick="mstHclose('<?php echo $uid; ?>')">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -67,7 +67,7 @@ class MSTS_Shortcode {
                 </div>
             </div>
         </div>
-        
+                
         <style>
         /* === FULLSCREEN MODAL === */
         .mst-hmodal {
@@ -276,8 +276,14 @@ class MSTS_Shortcode {
                 border-radius: 50px !important;
             }
             
-            . mst-hmodal .msts-search-wrapper form {
+            .mst-hmodal .msts-search-wrapper form {
                 padding: 4px !important;
+            }
+        }
+        /* Скрыть крестик на мобилке */
+        @media (max-width: 768px) {
+            .mst-hmodal-close {
+                display: none ! important;
             }
         }
         </style>
@@ -285,7 +291,7 @@ class MSTS_Shortcode {
         <script>
         function mstHopen(id) {
             var m = document.getElementById(id + '-modal');
-            if (!m) return;
+            if (! m) return;
             m.classList.add('mst-open');
             document.body.style.overflow = 'hidden';
             setTimeout(function(){
@@ -293,6 +299,7 @@ class MSTS_Shortcode {
                 if (inp) inp.focus();
             }, 300);
         }
+
         function mstHclose(id) {
             var m = document.getElementById(id + '-modal');
             if (!m) return;
@@ -303,11 +310,29 @@ class MSTS_Shortcode {
             var sug = m.querySelector('.msts-suggestions');
             if (sug) { sug.style.display = 'none'; sug.innerHTML = ''; }
         }
+
+        // Закрытие по Escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 document.querySelectorAll('.mst-hmodal.mst-open').forEach(function(m) {
                     mstHclose(m.id.replace('-modal', ''));
                 });
+            }
+        });
+
+        // Закрытие по клику на свободное место
+        document.addEventListener('click', function(e) {
+            var modal = e.target.closest('.mst-hmodal.mst-open');
+            if (! modal) return;
+            
+            // Проверяем что клик НЕ по форме и НЕ по результатам
+            var isForm = e.target.closest('.msts-search-wrapper');
+            var isSuggestions = e.target.closest('.msts-suggestions');
+            var isClose = e.target.closest('.mst-hmodal-close');
+            
+            if (! isForm && !isSuggestions && !isClose) {
+                var id = modal.id.replace('-modal', '');
+                mstHclose(id);
             }
         });
         </script>

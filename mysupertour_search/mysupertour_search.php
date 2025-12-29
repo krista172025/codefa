@@ -2,7 +2,7 @@
 /**
  * Plugin Name: MySuperTour Search
  * Description: Расширенный поиск по городам, рубрикам и продуктам WooCommerce
- * Version: 2.6.8
+ * Version: 2.6.9
  * Author: Telegram @l1ghtsun
  * Author URI: https://t.me/l1ghtsun
  * Text Domain: mysupertour-search
