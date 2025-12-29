@@ -69,41 +69,6 @@ class MSTS_Shortcode {
         </div>
         
         <style>
-        /* === HEADER SEARCH TRIGGER === */
-        .mst-hsearch {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 20px;
-            min-width: 200px;
-            height: 44px;
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.4);
-            border-radius: 24px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-        .mst-hsearch:hover {
-            background: rgba(255,255,255,0.95);
-            box-shadow: 0 6px 28px rgba(0,0,0,0.12);
-            transform: translateY(-1px);
-        }
-        .mst-hsearch-icon {
-            flex-shrink: 0;
-            color: #666;
-        }
-        .mst-hsearch-text {
-            flex: 1;
-            font-size: 14px;
-            color: #888;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
         /* === FULLSCREEN MODAL === */
         .mst-hmodal {
             position: fixed;
@@ -120,7 +85,7 @@ class MSTS_Shortcode {
             opacity: 1;
             visibility: visible;
         }
-        
+
         /* BACKGROUND OVERLAY */
         .mst-hmodal-bg {
             position: absolute;
@@ -132,8 +97,8 @@ class MSTS_Shortcode {
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
         }
-        
-        /* CONTENT */
+
+        /* CONTENT - ПОДНЯТО К КРЕСТИКУ */
         .mst-hmodal-content {
             position: relative;
             z-index: 2;
@@ -141,7 +106,7 @@ class MSTS_Shortcode {
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            padding: 100px 24px 40px;
+            padding: 24px 24px 40px;
             width: 100%;
             height: 100%;
             overflow-y: auto;
@@ -151,10 +116,10 @@ class MSTS_Shortcode {
         .mst-hmodal.mst-open .mst-hmodal-content {
             transform: translateY(0);
         }
-        
+
         /* CLOSE BUTTON */
         .mst-hmodal-close {
-            position: fixed;
+            position: absolute;
             top: 24px;
             right: 24px;
             width: 48px;
@@ -177,101 +142,127 @@ class MSTS_Shortcode {
             background: rgba(255,255,255,0.3);
             transform: rotate(90deg) scale(1.1);
         }
-        
-        /* FORM CONTAINER */
+
+        /* FORM CONTAINER - В ОДНУ ЛИНИЮ С КРЕСТИКОМ */
         .mst-hmodal-form {
             max-width: 720px;
             width: 100%;
+            margin-top: 0;
+            padding-right: 70px;
         }
-        
-        /* === FORM STYLES INSIDE MODAL === */
+
+        /* === СТИЛИ КАК У ОСНОВНОГО ПОИСКА === */
+        .mst-hmodal .msts-search-wrapper {
+            background: transparent ! important;
+            backdrop-filter: none ! important;
+            -webkit-backdrop-filter: none !important;
+            border: none !important;
+            padding: 0 ! important;
+        }
+
         .mst-hmodal .msts-search-wrapper form {
-            background: rgba(255,255,255,0.12);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255,255,255,0.25);
-            border-radius: 40px;
-            padding: 6px;
+            background: rgba(255,255,255,0.15) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255,255,255,0.2) !important;
+            border-radius: 60px !important;
+            padding: 8px ! important;
         }
+
         .mst-hmodal .msts-search-input-wrap {
-            border: none;
-            background: transparent;
+            border: none !important;
+            background: transparent !important;
         }
+
         .mst-hmodal .msts-search-input {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 17px;
-            padding: 14px 24px;
+            background: #ffffff !important;
+            border: none !important;
+            border-radius: 50px !important;
+            height: 56px !important;
+            box-shadow: none !important;
+            outline: none !important;
+            color: #333 ! important;
+            font-size: 16px !important;
+            padding: 0 24px !important;
         }
+
         .mst-hmodal .msts-search-input:: placeholder {
-            color: rgba(255,255,255,0.6);
+            color: #888 !important;
         }
+
         .mst-hmodal .msts-search-btn {
-            background: linear-gradient(135deg, #a855f7, #7c3aed);
-            border: none;
-            border-radius: 30px;
-            color: #fff;
-            font-weight: 600;
-            padding: 14px 32px;
-            font-size: 15px;
-            cursor: pointer;
-            display: flex;
+            background: linear-gradient(135deg, #a855f7, #7c3aed) !important;
+            border: none !important;
+            border-radius: 50px !important;
+            color: #fff !important;
+            font-weight: 600 !important;
+            padding: 16px 32px ! important;
+            font-size: 15px !important;
+            height: 56px ! important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px ! important;
+            transition: all 0.2s ease !important;
+        }
+
+        .mst-hmodal .msts-search-btn:hover {
+            transform: scale(1.02) !important;
+            box-shadow: 0 4px 20px rgba(168,85,247,0.4) !important;
+        }
+
+        .mst-hmodal .msts-clear-btn-fixed {
+            display: none !important;
+        }
+
+        .mst-hmodal .msts-suggestions {
+            position  static !important;
+            margin-top: 20px !important;
+            background: rgba(255,255,255,0.95) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border-radius: 24px !important;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.2) !important;
+            max-height: 60vh ! important;
+            overflow-y: auto ! important;
+        }
+
+        /* === HEADER SEARCH TRIGGER - БЕЗ РАМКИ === */
+        .mst-hsearch {
+            display: inline-flex;
             align-items: center;
             gap: 8px;
+            padding: 8px 12px;
+            background: transparent;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            cursor: pointer;
             transition: all 0.2s ease;
         }
-        .mst-hmodal .msts-search-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 20px rgba(168,85,247,0.4);
+        .mst-hsearch:hover {
+            border-color: rgba(153, 82, 224, 1);
+            background: rgba(0,0,0,0.02);
         }
-        .mst-hmodal .msts-clear-btn-fixed {
-            display: none ! important;
+        .mst-hsearch-icon {
+            flex-shrink: 0;
+            color: #000000ff;
+            width: 16px;
+            height: 16px;
         }
-        .mst-hmodal .msts-suggestions {
-            position: static;
-            margin-top: 20px;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 24px;
-            box-shadow: 0 12px 48px rgba(0,0,0,0.2);
-            max-height: 400px;
-            overflow-y: auto;
+        .mst-hsearch-text {
+            font-size: 14px;
+            color: #000000ff;
+            white-space: nowrap;
         }
-        
+
         /* === MOBILE === */
         @media (max-width: 768px) {
             .mst-hsearch {
-                min-width: auto;
-                width: 44px;
-                height: 44px;
-                padding: 0;
-                justify-content: center;
-                border-radius: 50%;
+                padding: 8px;
+                border: none;
             }
             .mst-hsearch-text {
                 display: none;
-            }
-            .mst-hsearch-icon {
-                margin: 0;
-            }
-            .mst-hmodal-content {
-                padding: 80px 16px 24px;
-            }
-            .mst-hmodal-close {
-                width: 40px;
-                height: 40px;
-                top: 16px;
-                right: 16px;
-            }
-            .mst-hmodal .msts-search-input {
-                font-size: 15px;
-                padding: 12px 16px;
-            }
-            .mst-hmodal .msts-search-btn {
-                padding: 12px 20px;
-                font-size: 14px;
             }
         }
         </style>
