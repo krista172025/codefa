@@ -55,12 +55,12 @@ class MSTS_Shortcode {
         </div>
         
         <div class="mst-head-overlay" id="<?php echo $uid; ?>-overlay">
-            <div class="mst-head-modal">
-                <?php echo do_shortcode('[mst_search noautofocus=true]'); ?>
-            </div>
             <button type="button" class="mst-head-close" onclick="mstHeadClose('<?php echo $uid; ?>')">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
+            <div class="mst-head-modal">
+                <?php echo do_shortcode('[mst_search noautofocus=true]'); ?>
+            </div>
         </div>
         
         <style>
@@ -101,34 +101,42 @@ class MSTS_Shortcode {
             color: #999;
         }
         
+        /* OVERLAY - FULLSCREEN */
         .mst-head-overlay {
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0,0,0,0);
             backdrop-filter: blur(0);
             -webkit-backdrop-filter: blur(0);
             z-index: 999999;
             opacity: 0;
-            pointer-events: none;
+            visibility: hidden;
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 100px 20px 40px;
+            justify-content: flex-start;
+            padding: 80px 20px 40px;
             overflow-y: auto;
+            overflow-x: hidden;
         }
         .mst-head-overlay.mst-open {
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.75);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             opacity: 1;
-            pointer-events: all;
+            visibility: visible;
         }
         
         .mst-head-modal {
             max-width: 750px;
             width: 100%;
-            transform: scale(0.95) translateY(-30px);
+            transform: scale(0.95) translateY(-20px);
             transition: all 0.3s ease;
         }
         .mst-head-overlay.mst-open .mst-head-modal {
@@ -137,8 +145,8 @@ class MSTS_Shortcode {
         
         .mst-head-close {
             position: fixed;
-            top: 28px;
-            right: 28px;
+            top: 24px;
+            right: 24px;
             width: 44px;
             height: 44px;
             background: rgba(255,255,255,0.15);
@@ -160,6 +168,7 @@ class MSTS_Shortcode {
             transform: rotate(90deg) scale(1.1);
         }
         
+        /* FORM STYLES */
         .mst-head-overlay .msts-search-wrapper form {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(20px);
@@ -198,6 +207,8 @@ class MSTS_Shortcode {
         .mst-head-overlay .msts-clear-btn-fixed {
             display: none ! important;
         }
+        
+        /* SUGGESTIONS - FIX SCROLLBAR */
         .mst-head-overlay .msts-suggestions {
             position: static;
             margin-top: 16px;
@@ -206,6 +217,23 @@ class MSTS_Shortcode {
             box-shadow: 0 8px 40px rgba(0,0,0,0.2);
             max-height: 420px;
             overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: #ccc transparent;
+        }
+        .mst-head-overlay .msts-suggestions::-webkit-scrollbar {
+            width: 6px;
+        }
+        .mst-head-overlay .msts-suggestions: :-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 3px;
+        }
+        .mst-head-overlay .msts-suggestions: :-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+        .mst-head-overlay .msts-suggestions::-webkit-scrollbar-thumb:hover {
+            background: #aaa;
         }
         
         @media (max-width: 768px) {
@@ -216,7 +244,7 @@ class MSTS_Shortcode {
                 padding: 8px 14px;
             }
             .mst-head-input { font-size: 13px; }
-            .mst-head-overlay { padding: 80px 12px 20px; }
+            .mst-head-overlay { padding: 70px 12px 20px; }
             .mst-head-close { width: 38px; height: 38px; top: 16px; right: 16px; }
         }
         </style>
