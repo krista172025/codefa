@@ -46,170 +46,178 @@ class MSTS_Shortcode {
     
     public function render_head($atts){
         $ph = esc_attr($this->s['placeholder']);
-        $uid = 'mst-head-' .uniqid();
+        $uid = 'msth-' .uniqid();
         ob_start(); ?>
         
-        <div class="mst-head-trigger" id="<?php echo $uid; ?>-trigger" onclick="mstHeadOpen('<?php echo $uid; ?>')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <span><?php echo $ph; ?></span>
-            <button type="button">НАЙТИ</button>
+        <div class="mst-head-box" id="<?php echo $uid; ?>-box" onclick="mstHeadOpen('<?php echo $uid; ?>')">
+            <svg class="mst-head-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" class="mst-head-input" placeholder="<?php echo $ph; ?>" readonly>
         </div>
         
         <div class="mst-head-overlay" id="<?php echo $uid; ?>-overlay">
-            <button type="button" class="mst-head-close" onclick="mstHeadClose('<?php echo $uid; ?>')" aria-label="Закрыть">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
             <div class="mst-head-modal">
                 <?php echo do_shortcode('[mst_search noautofocus=true]'); ?>
             </div>
+            <button type="button" class="mst-head-close" onclick="mstHeadClose('<?php echo $uid; ?>')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
         </div>
         
         <style>
-        <?php echo $uid; ?>-trigger {
-            displayinline-flex;
+        .mst-head-box {
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 6px 6px 14px;
-            height: 40px;
-            min-width: 180px;
+            gap: 10px;
+            padding: 10px 18px;
+            min-width: 200px;
+            max-width: 280px;
+            height: 44px;
             background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 25px;
+            border: 1px solid #e5e5e5;
+            border-radius: 28px;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
-        <?php echo $uid; ?>-trigger: hover {
-            border-color: #bbb;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        .mst-head-box:hover {
+            border-color: #ccc;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
         }
-        <?php echo $uid; ?>-trigger svg {
-            color: #666;
+        .mst-head-icon {
             flex-shrink: 0;
+            color: #999;
         }
-        <?php echo $uid; ?>-trigger span {
+        .mst-head-input {
             flex: 1;
-            font-size: 13px;
-            color: #888;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        <?php echo $uid; ?>-trigger button {
-            flex-shrink: 0;
-            padding: 6px 14px;
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            color: #1a1a1a;
-            font-size: 11px;
-            font-weight: 700;
             border: none;
-            border-radius: 20px;
+            outline: none;
+            background: transparent;
+            font-size: 14px;
+            color: #333;
             cursor: pointer;
-            letter-spacing: 0.5px;
+            pointer-events: none;
+        }
+        .mst-head-input:: placeholder {
+            color: #999;
         }
         
-        <?php echo $uid; ?>-overlay {
+        .mst-head-overlay {
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0);
             backdrop-filter: blur(0);
+            -webkit-backdrop-filter: blur(0);
             z-index: 999999;
             opacity: 0;
             pointer-events: none;
             transition: all 0.3s ease;
             display: flex;
-            align-items: flex-start;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
             padding: 100px 20px 40px;
             overflow-y: auto;
         }
-        <?php echo $uid; ?>-overlay.mst-active {
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(10px);
+        .mst-head-overlay.mst-open {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             opacity: 1;
             pointer-events: all;
         }
         
-        <?php echo $uid; ?>-overlay .mst-head-modal {
-            max-width: 800px;
+        .mst-head-modal {
+            max-width: 750px;
             width: 100%;
-            transform: scale(0.95) translateY(-20px);
+            transform: scale(0.95) translateY(-30px);
             transition: all 0.3s ease;
         }
-        <?php echo $uid; ?>-overlay.mst-active .mst-head-modal {
+        .mst-head-overlay.mst-open .mst-head-modal {
             transform: scale(1) translateY(0);
         }
         
-        <?php echo $uid; ?>-overlay .mst-head-close {
+        .mst-head-close {
             position: fixed;
-            top: 24px;
-            right: 24px;
-            width: 48px;
-            height: 48px;
+            top: 28px;
+            right: 28px;
+            width: 44px;
+            height: 44px;
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.25);
             border-radius: 50%;
             color: #fff;
             cursor: pointer;
-            transition: all 0.25s;
+            transition: all 0.25s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 0;
             z-index: 1000001;
         }
-        <?php echo $uid; ?>-overlay .mst-head-close:hover {
+        .mst-head-close:hover {
             background: rgba(255,255,255,0.3);
             transform: rotate(90deg) scale(1.1);
         }
         
-        <?php echo $uid; ?>-overlay .msts-search-wrapper form {
-            background: rgba(255,255,255,0.12);
+        .mst-head-overlay .msts-search-wrapper form {
+            background: rgba(255,255,255,0.1);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 40px;
+            border-radius: 36px;
             padding: 6px;
         }
-        <?php echo $uid; ?>-overlay .msts-search-input-wrap {
+        .mst-head-overlay .msts-search-input-wrap {
             border: none;
             background: transparent;
         }
-        <?php echo $uid; ?>-overlay .msts-search-input {
+        .mst-head-overlay .msts-search-input {
             background: transparent;
             border: none;
             color: #fff;
             font-size: 16px;
+            padding: 14px 20px;
         }
-        <?php echo $uid; ?>-overlay .msts-search-input:: placeholder {
+        .mst-head-overlay .msts-search-input::placeholder {
             color: rgba(255,255,255,0.6);
         }
-        <?php echo $uid; ?>-overlay .msts-search-btn {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
+        .mst-head-overlay .msts-search-btn {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
             border: none;
-            border-radius: 30px;
-            color: #1a1a1a;
-            font-weight: 700;
-            padding: 12px 24px;
+            border-radius: 28px;
+            color: #fff;
+            font-weight: 600;
+            padding: 14px 28px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        <?php echo $uid; ?>-overlay .msts-clear-btn-fixed {
-            display: none;
+        .mst-head-overlay .msts-clear-btn-fixed {
+            display: none ! important;
         }
-        <?php echo $uid; ?>-overlay .msts-suggestions {
+        .mst-head-overlay .msts-suggestions {
             position: static;
             margin-top: 16px;
             background: #fff;
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-            max-height: 450px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+            max-height: 420px;
             overflow-y: auto;
         }
         
         @media (max-width: 768px) {
-            <?php echo $uid; ?>-trigger { min-width: 120px; height: 36px; }
-            <?php echo $uid; ?>-trigger span { display: none; }
-            <?php echo $uid; ?>-overlay { padding: 80px 12px 20px; }
-            <?php echo $uid; ?>-overlay .mst-head-close { width: 40px; height: 40px; top: 16px; right: 16px; }
+            .mst-head-box {
+                min-width: 160px;
+                max-width: 220px;
+                height: 40px;
+                padding: 8px 14px;
+            }
+            .mst-head-input { font-size: 13px; }
+            .mst-head-overlay { padding: 80px 12px 20px; }
+            .mst-head-close { width: 38px; height: 38px; top: 16px; right: 16px; }
         }
         </style>
         
@@ -217,32 +225,34 @@ class MSTS_Shortcode {
         function mstHeadOpen(id) {
             var o = document.getElementById(id + '-overlay');
             if (! o) return;
-            o.classList.add('mst-active');
+            o.classList.add('mst-open');
             document.body.style.overflow = 'hidden';
-            setTimeout(function(){ var i = o.querySelector('.msts-search-input'); if(i) i.focus(); }, 200);
+            setTimeout(function(){
+                var inp = o.querySelector('.msts-search-input');
+                if (inp) inp.focus();
+            }, 200);
         }
         function mstHeadClose(id) {
             var o = document.getElementById(id + '-overlay');
             if (!o) return;
-            o.classList.remove('mst-active');
+            o.classList.remove('mst-open');
             document.body.style.overflow = '';
-            var i = o.querySelector('.msts-search-input');
-            if (i) { i.value = ''; i.blur(); }
-            var s = o.querySelector('.msts-suggestions');
-            if (s) { s.style.display = 'none'; s.innerHTML = ''; }
+            var inp = o.querySelector('.msts-search-input');
+            if (inp) { inp.value = ''; inp.blur(); }
+            var sug = o.querySelector('.msts-suggestions');
+            if (sug) { sug.style.display = 'none'; sug.innerHTML = ''; }
         }
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                document.querySelectorAll('.mst-head-overlay.mst-active').forEach(function(o) {
-                    var id = o.id.replace('-overlay', '');
-                    mstHeadClose(id);
+                document.querySelectorAll('.mst-head-overlay.mst-open').forEach(function(o) {
+                    mstHeadClose(o.id.replace('-overlay', ''));
                 });
             }
         });
         document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('mst-head-overlay') && e.target.classList.contains('mst-active')) {
-                var id = e.target.id.replace('-overlay', '');
-                mstHeadClose(id);
+            var o = e.target.closest('.mst-head-overlay');
+            if (o && o.classList.contains('mst-open') && e.target === o) {
+                mstHeadClose(o.id.replace('-overlay', ''));
             }
         });
         </script>

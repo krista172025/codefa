@@ -220,7 +220,7 @@ class MSTS_Ajax {
             $thumb = get_the_post_thumbnail_url($id, 'thumbnail');
             $out[] = [
                 'id' => $id,
-                'title' => mb_strimwidth(get_the_title($id), 0, 90, '…'),
+                'title' => html_entity_decode(mb_strimwidth(get_the_title($id), 0, 90, '…'), ENT_QUOTES, 'UTF-8'),
                 'url' => get_permalink($id),
                 'price' => $price,
                 'thumb' => $thumb ?: '',
