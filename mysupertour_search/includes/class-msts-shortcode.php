@@ -265,6 +265,21 @@ class MSTS_Shortcode {
                 display: none;
             }
         }
+        /* Скрыть кнопку НАЙТИ на мобильном в модалке поиска */
+        @media (max-width: 768px) {
+            .mst-hmodal .msts-search-btn {
+                display: none ! important;
+            }
+            
+            /* Инпут на всю ширину */
+            .mst-hmodal .msts-search-input {
+                border-radius: 50px !important;
+            }
+            
+            . mst-hmodal .msts-search-wrapper form {
+                padding: 4px !important;
+            }
+        }
         </style>
         
         <script>
