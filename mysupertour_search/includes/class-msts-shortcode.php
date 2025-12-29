@@ -257,6 +257,29 @@ class MSTS_Shortcode {
 
         /* === MOBILE === */
         @media (max-width: 768px) {
+        /* Форма на всю ширину */
+        .mst-hmodal-form {
+            max-width: 100% !important;
+            width: 100% ! important;
+            padding-right: 0 !important;
+        }
+        
+        .mst-hmodal-content {
+            padding: 16px !important;
+        }
+        
+        .mst-hmodal .msts-search-wrapper,
+        .mst-hmodal .msts-search-wrapper form {
+            width: 100% !important;
+        }
+        
+        .mst-hmodal .msts-suggestions {
+            width: 100% ! important;
+            max-width: 100% ! important;
+            border-radius: 20px !important;
+        }
+    }
+        @media (max-width: 768px) {
             .mst-hsearch {
                 padding: 8px;
                 border: none;

@@ -213,9 +213,6 @@
     box-shadow: var(--mst-shadow);
     border: 1px solid var(--mst-glass-border);
     margin-bottom: 24px;
-    flex:  1;
-    min-width: 0;
-    width: 100%;
 }
 
 .mst-lk-section-title {
@@ -235,8 +232,6 @@
 }
 
 .mst-lk-order-card {
-    display: flex;
-    flex-direction: column; /* Vertical layout for better content flow */
     background: var(--mst-glass-bg);
     backdrop-filter: blur(20px);
     border-radius: 20px;
@@ -273,20 +268,13 @@
 
 .mst-lk-order-info-wrap {
     flex: 1;
-    min-width: 0; /* Important for text-overflow to work properly in flex containers */
 }
 
 .mst-lk-order-top {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start; /* Align to top to prevent status badge from affecting title position */
-    gap: 12px; /* Add gap for better spacing between elements */
+    align-items: flex-start;
     margin-bottom: 16px;
-}
-
-.mst-lk-order-info {
-    flex: 1;
-    min-width: 0; /* Allow text to wrap/truncate properly */
 }
 
 .mst-lk-order-info h4 {
@@ -294,8 +282,6 @@
     font-weight: 700;
     color: #1d1d1f;
     margin: 0 0 4px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
 }
 
 .mst-lk-order-meta {
@@ -309,7 +295,6 @@
     font-size: 12px;
     font-weight: 600;
     white-space: nowrap;
-    flex-shrink: 0;
 }
 
 .mst-lk-order-status.completed,
@@ -1066,8 +1051,6 @@
         width: 100%;
         justify-content: center;
     }
-}
-
 /* КРАСИВАЯ ФОРМА РЕДАКТИРОВАНИЯ ПРОФИЛЯ */
 .mst-lk-profile-form-container {
     background: #f8f9fa;
@@ -1145,267 +1128,5 @@
     
     .mst-save-btn {
         width: 100%;
-    }
-}
-/* ============================================
-   HORIZONTAL ORDER CARDS - COMPLETE STYLES
-   ============================================ */
-.mst-lk-order-card-horizontal {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: flex-start !important;
-    gap: 20px;
-    background: var(--mst-glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: var(--mst-shadow);
-    border: 1px solid var(--mst-glass-border);
-    margin-bottom: 16px;
-    transition: all 0.3s ease;
-}
-
-.mst-lk-order-card-horizontal:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-}
-
-.mst-order-image-box {
-    width: 100px;
-    height: 100px;
-    flex-shrink: 0;
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-.mst-order-image-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.mst-order-content-box {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.mst-order-header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 16px;
-    flex-wrap: wrap;
-}
-
-.mst-order-info-box {
-    flex: 1;
-    min-width: 0;
-}
-
-.mst-order-name-text {
-    font-size: 16px;
-    font-weight: 600;
-    color: #1d1d1f;
-    margin: 0 0 4px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
-
-.mst-order-date-text {
-    font-size: 13px;
-    color: #888;
-    margin: 0;
-}
-
-.mst-order-divider {
-    height: 1px;
-    background: rgba(0, 0, 0, 0.06);
-}
-
-.mst-order-buttons-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-}
-
-.mst-order-buttons-row .mst-lk-btn {
-    flex: 0 0 auto;
-    white-space: nowrap;
-}
-
-/* ============================================
-   STAR RATING FOR REVIEWS
-   ============================================ */
-.mst-star-rating {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
-    gap: 4px;
-    margin: 12px 0;
-}
-
-.mst-star-rating input {
-    display: none;
-}
-
-.mst-star-rating label {
-    font-size: 32px;
-    color: #ddd;
-    cursor: pointer;
-    transition: color 0.2s ease;
-    line-height: 1;
-}
-
-.mst-star-rating input:checked ~ label,
-.mst-star-rating label:hover,
-.mst-star-rating label:hover ~ label {
-    color: #ffc107;
-}
-
-.mst-star-rating input:checked + label {
-    color: #ffc107;
-}
-
-/* ============================================
-   REVIEW MODAL FORM STYLES
-   ============================================ */
-#mst-lk-review-modal .mst-lk-modal-body {
-    padding: 30px;
-}
-
-#mst-lk-review-modal h2 {
-    font-size: 24px;
-    font-weight: 700;
-    margin: 0 0 24px;
-    color: #1d1d1f;
-}
-
-#mst-review-form .mst-form-group {
-    margin-bottom: 20px;
-}
-
-#mst-review-form .mst-form-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #333;
-    font-size: 14px;
-}
-
-#mst-review-form textarea {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #e0e0e0;
-    border-radius: 12px;
-    font-size: 15px;
-    font-family: inherit;
-    resize: vertical;
-    transition: border-color 0.3s ease;
-}
-
-#mst-review-form textarea:focus {
-    outline: none;
-    border-color: var(--mst-primary);
-    box-shadow: 0 0 0 3px rgba(0, 200, 150, 0.1);
-}
-
-#mst-review-form button[type="submit"] {
-    width: 100%;
-    margin-top: 8px;
-}
-
-/* ============================================
-   AFFILIATE DASHBOARD OVERRIDE
-   ============================================ */
-.mst-lk-section .afwc-dashboard,
-.mst-lk-section .affiliate-dashboard {
-    background: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
-    padding: 0 !important;
-}
-
-.mst-lk-section .afwc-dashboard .afwc-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-}
-
-.mst-lk-section .afwc-dashboard .afwc-stat-card {
-    background: var(--mst-glass-bg);
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: var(--mst-shadow);
-}
-
-/* ============================================
-   WISHLIST SHOP GRID STYLES
-   ============================================ */
-.mst-wishlist-grid {
-    --mst-primary: #8b5cf6;
-}
-
-.mst-wishlist-grid .mst-shop-grid-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.mst-wishlist-grid .mst-shop-grid-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-}
-
-.mst-wishlist-grid .mst-remove-from-wishlist {
-    transition: all 0.3s ease;
-}
-
-.mst-wishlist-grid .mst-remove-from-wishlist:hover {
-    background: rgba(255,255,255,1) !important;
-    transform: scale(1.1);
-}
-
-/* ============================================
-   RESPONSIVE STYLES
-   ============================================ */
-@media (max-width: 768px) {
-    .mst-lk-order-card-horizontal {
-        flex-direction: column !important;
-    }
-    
-    .mst-order-image-box {
-        width: 100%;
-        height: 150px;
-    }
-    
-    .mst-order-header-row {
-        flex-direction: column;
-    }
-    
-    .mst-order-buttons-row {
-        flex-direction: column;
-        width: 100%;
-    }
-    
-    .mst-order-buttons-row .mst-lk-btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .mst-wishlist-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
-    }
-    
-    #mst-lk-review-modal .mst-lk-modal-body {
-        padding: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .mst-wishlist-grid {
-        grid-template-columns: 1fr !important;
     }
 }
