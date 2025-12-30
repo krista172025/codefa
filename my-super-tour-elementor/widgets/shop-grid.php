@@ -186,6 +186,7 @@ class Shop_Grid extends Widget_Base {
 
         $this->end_controls_section();
 
+    // Guide Photo
         $this->start_controls_section(
             'guide_section',
             [
@@ -208,20 +209,6 @@ class Shop_Grid extends Widget_Base {
             [
                 'label' => __('Default Guide Photo', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::MEDIA,
-                'condition' => ['show_guide' => 'yes'],
-            ]
-        );
-        
-        $this->add_control(
-            'guide_source',
-            [
-                'label' => __('Guide Photo Source', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::SELECT,
-                'default' => 'product',
-                'options' => [
-                    'product' => __('From Product Meta (guide_photo)', 'my-super-tour-elementor'),
-                    'default' => __('Default Photo Only', 'my-super-tour-elementor'),
-                ],
                 'condition' => ['show_guide' => 'yes'],
             ]
         );
@@ -610,12 +597,64 @@ class Shop_Grid extends Widget_Base {
             ]
         );
 
+        $this->add_responsive_control(
+            'guide_photo_size',
+            [
+                'label' => __('Guide Photo Size', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => 40, 'max' => 100, 'step' => 2]],
+                'default' => ['size' => 64, 'unit' => 'px'],
+                'description' => __('Diameter of guide photo', 'my-super-tour-elementor'),
+            ]
+        );
+
+        $this->add_responsive_control(
+            'guide_border_width',
+            [
+                'label' => __('Guide Photo Border Width', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => 1, 'max' => 8, 'step' => 1]],
+                'default' => ['size' => 3, 'unit' => 'px'],
+            ]
+        );
+
         $this->add_control(
             'guide_border_color',
             [
-                'label' => __('Guide Border Color', 'my-super-tour-elementor'),
+                'label' => __('Guide Photo Border', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::COLOR,
                 'default' => 'hsl(45, 98%, 50%)',
+            ]
+        );
+
+        $this->add_control(
+            'guide_hover_border_color',
+            [
+                'label' => __('Guide Photo Hover Border', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => 'hsl(270, 70%, 60%)',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'guide_offset_right',
+            [
+                'label' => __('Guide Photo Right Offset', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => -50, 'max' => 50, 'step' => 1]],
+                'default' => ['size' => 0, 'unit' => 'px'],
+                'description' => __('Negative = outside button, Positive = inside button', 'my-super-tour-elementor'),
+            ]
+        );
+
+        $this->add_responsive_control(
+            'guide_offset_bottom',
+            [
+                'label' => __('Guide Photo Bottom Offset', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => -50, 'max' => 50, 'step' => 1]],
+                'default' => ['size' => 0, 'unit' => 'px'],
+                'description' => __('Negative = below button, Positive = above button edge', 'my-super-tour-elementor'),
             ]
         );
 
@@ -1094,20 +1133,19 @@ class Shop_Grid extends Widget_Base {
                     <!-- Spacer -->
                     <div style="flex: 1;"></div>
                     
-                    <!-- Button + Guide -->
-                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin: 0 -16px -16px -16px;">
-                        <a href="<?php echo esc_url($product->get_permalink()); ?>"
-                        class="mst-shop-grid-button mst-follow-glow"
-                        style="display: flex; align-items: center; justify-content: center; width: 100%; background: <?php echo esc_attr($button_bg); ?>; color: <?php echo esc_attr($button_text_color); ?>; padding: 14px 20px; border-radius: 0 0 <?php echo $card_radius; ?>px <?php echo $card_radius; ?>px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                    <!-- Button with Guide Photo -->
+                    <div class="mst-woo-carousel-button-wrapper" style="position: relative; margin: 0 -16px -16px -16px;">
+                        <a href="<?php echo esc_url($product->get_permalink()); ?>" class="mst-woo-carousel-button mst-follow-glow" style="display: flex; align-items: center; justify-content: center; width: 100%; background: <?php echo esc_attr($button_bg); ?>; color: <?php echo esc_attr($button_text); ?>; padding: 14px 20px; border-radius: 0 0 <?php echo $card_radius; ?>px <?php echo $card_radius; ?>px; text-decoration: none; font-weight: 600; font-size: 14px;">
                             <?php echo esc_html($settings['button_text']); ?>
                         </a>
                         
-                        <?php if ($show_guide && !empty($guide_photo_url)): ?>
-                        <a href="<?php echo esc_url($guide_profile_url); ?>"
-                        class="mst-shop-grid-guide-inside"
-                        style="position: absolute; right: <?php echo 16 + intval($guide_right); ?>px; top: 50%; transform: translateY(-50%); width: <?php echo intval($guide_size); ?>px; height: <?php echo intval($guide_size); ?>px; border-radius: 50%; overflow: hidden; border: <?php echo intval($guide_border_width); ?>px solid <?php echo esc_attr($guide_border_color); ?>; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 5;">
-                            <img src="<?php echo esc_url($guide_photo_url); ?>" alt="<?php echo esc_attr($guide_name ?: 'Guide'); ?>" style="width: 100%; height: 100%; object-fit: cover;">
-                        </a>
+                        
+                        <?php if ($show_guide && ! empty($guide_photo_url)): ?>
+                        <div style="position: absolute; right: <?php echo 16 + $guide_right; ?>px; top: 50%; transform: translateY(calc(-50% + <?php echo $guide_bottom; ?>px)); width: <?php echo $guide_size; ?>px; height: <?php echo $guide_size; ?>px; border-radius: 50%; overflow: hidden; border: <?php echo intval($guide_border_width); ?>px solid <?php echo esc_attr($guide_border_color); ?>; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 5;">
+                            <a href="<?php echo esc_url($guide_profile_url); ?>">
+                                <img src="<?php echo esc_url($guide_photo_url); ?>" alt="Guide" style="width: 100%; height: 100%; object-fit: cover;">
+                            </a>
+                        </div>
                         <?php endif; ?>
                     </div>
                 </div>

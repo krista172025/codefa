@@ -279,10 +279,9 @@ class MST_Auth_Form_Widget extends \Elementor\Widget_Base {
         $redirect = ! empty($s['redirect_url']['url']) ? $s['redirect_url']['url'] : home_url('/auth/');
         $uid = 'mst-auth-' .uniqid();
         
-        // Check if user is logged in
-        if (is_user_logged_in() && !$this->is_editor()) {
-            echo '<div class="mst-auth-logged-in"><p>Вы уже вошли в систему.  <a href="' .  esc_url(home_url('/auth/')) . '">Перейти в личный кабинет</a></p></div>';
-            return;
+        // Если пользователь авторизован - не показываем ничего (ЛК покажется отдельно)
+        if (is_user_logged_in() && ! $this->is_editor()) {
+            return; // Просто ничего не выводим
         }
         ?>
         

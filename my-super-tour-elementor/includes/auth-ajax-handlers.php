@@ -8,6 +8,10 @@ if (! defined('ABSPATH')) exit;
 // Login handler
 add_action('wp_ajax_nopriv_mst_auth_login', 'mst_auth_login_handler');
 function mst_auth_login_handler() {
+     if (! wp_verify_nonce($_POST['nonce'], 'mst_auth_nonce')) {
+        wp_send_json_error('Ошибка безопасности');
+    }
+    
     check_ajax_referer('mst_auth_nonce', 'nonce');
     
     $email = sanitize_email($_POST['email']);
@@ -30,9 +34,13 @@ function mst_auth_login_handler() {
     wp_send_json_success(['redirect' => $redirect, 'message' => 'Успешный вход']);
 }
 
-// Register handler
+// Register handler  
 add_action('wp_ajax_nopriv_mst_auth_register', 'mst_auth_register_handler');
+add_action('wp_ajax_mst_auth_register', 'mst_auth_register_handler');
 function mst_auth_register_handler() {
+    if (!wp_verify_nonce($_POST['nonce'], 'mst_auth_nonce')) {
+        wp_send_json_error('Ошибка безопасности');
+    }
     check_ajax_referer('mst_auth_nonce', 'nonce');
     
     $display_name = sanitize_text_field($_POST['display_name']);

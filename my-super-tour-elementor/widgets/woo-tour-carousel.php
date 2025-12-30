@@ -976,12 +976,11 @@ class Woo_Tour_Carousel extends Widget_Base {
         $card_radius = $border_radius; // уже объявлено выше
         
         // Guide settings
-        $guide_size = isset($settings['guide_photo_size']['size']) ? intval($settings['guide_photo_size']['size']) : 64;
-        $guide_border = isset($settings['guide_border_width']['size']) ? intval($settings['guide_border_width']['size']) : 3;
-        $guide_right = isset($settings['guide_offset_right']['size']) ? intval($settings['guide_offset_right']['size']) : 0;
-        $guide_bottom = isset($settings['guide_offset_bottom']['size']) ? intval($settings['guide_offset_bottom']['size']) : 0;
-        $guide_border_color = isset($settings['guide_border_color']) ? $settings['guide_border_color'] : 'hsl(45, 98%, 50%)';
-        $guide_hover_border = isset($settings['guide_hover_border_color']) ? $settings['guide_hover_border_color'] : 'hsl(270, 70%, 60%)';
+       $guide_size = $settings['guide_photo_size']['size'] ?? 64;
+        $guide_border_width = $settings['guide_border_width']['size'] ?? 3;
+        $guide_right = $settings['guide_offset_right']['size'] ?? 0;
+        $guide_bottom = $settings['guide_offset_bottom']['size'] ?? 0;
+        $guide_border_color = $settings['guide_border_color'] ?? 'hsl(45, 98%, 50%)';
         
         $container_class = 'mst-woo-carousel-container mst-carousel-universal';
         if (!$arrows_inside) $container_class .= ' mst-arrows-outside';

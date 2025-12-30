@@ -1318,29 +1318,344 @@
     width: 100%;
     margin-top: 8px;
 }
+/* ===== ИСПРАВЛЕНИЯ ===== */
 
-/* ============================================
-   AFFILIATE DASHBOARD OVERRIDE
-   ============================================ */
-.mst-lk-section .afwc-dashboard,
-.mst-lk-section .affiliate-dashboard {
-    background: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
-    padding: 0 !important;
+/* 1. Скрыть надпись "Вы уже вошли" */
+.mst-auth-logged-in {
+    display: none ! important;
 }
 
-.mst-lk-section .afwc-dashboard .afwc-stats {
+/* 2. Убрать дублирование иконки пароля */
+.mst-auth-password-wrap {
+    position: relative;
+}
+.mst-auth-password-wrap .mst-auth-toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+/* Убедиться что только одна кнопка */
+.mst-auth-password-wrap button + button {
+    display: none ! important;
+}
+
+/* 3. Скрыть желтую плашку WooCommerce */
+.woocommerce-info,
+.woocommerce-message {
+    display:  none !important;
+}
+
+/* ===== WISHLIST / ИЗБРАННОЕ ===== */
+.mst-lk-section[data-section-id="wishlist"] .mst-lk-wishlist-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
 }
 
-.mst-lk-section .afwc-dashboard .afwc-stat-card {
-    background: var(--mst-glass-bg);
+.mst-lk-wishlist-card {
+    background: #fff;
     border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s;
+}
+
+.mst-lk-wishlist-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+.mst-lk-wishlist-card .mst-wishlist-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.mst-lk-wishlist-card .mst-wishlist-content {
+    padding: 16px;
+}
+
+.mst-lk-wishlist-card .mst-wishlist-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin: 0 0 8px;
+    line-height: 1.3;
+}
+
+.mst-lk-wishlist-card .mst-wishlist-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #9952E0;
+}
+
+.mst-lk-wishlist-card .mst-wishlist-price del {
+    color: #999;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+/* Кнопка подробнее в wishlist */
+.mst-lk-wishlist-card .mst-wishlist-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #9952E0 0%, #7b3bbf 100%);
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-top: 12px;
+    transition: all 0.2s;
+}
+
+.mst-lk-wishlist-card .mst-wishlist-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 16px rgba(153,82,224,0.3);
+}
+
+/* Убрать фото гида из карточки wishlist */
+.mst-lk-wishlist-card .mst-guide-avatar,
+.mst-lk-wishlist-card .product-guide-avatar,
+.mst-lk-wishlist-card .guide-image,
+.mst-wishlist-card img[class*="guide"],
+.mst-wishlist-card .etheme-product-grid-item .guide {
+    display: none ! important;
+}
+
+/* Сердечко избранного */
+.mst-lk-wishlist-card .mst-wishlist-heart {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    color: #ef4444;
+    font-size: 18px;
+}
+/* Табы AFWC */
+.afwc-my-account-container .nav-tab-wrapper,
+.mst-lk-section .nav-tab-wrapper {
+    display: flex ! important;
+    gap: 8px ! important;
+    margin-bottom: 24px !important;
+    border-bottom: none !important;
+    background: none !important;
+}
+
+.nav-tab {
+    padding: 12px 24px ! important;
+    background: #f5f5f5 !important;
+    border: none !important;
+    border-radius: 12px !important;
+    color: #666 !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    transition: all 0.2s !important;
+}
+
+.nav-tab:hover {
+    background: rgba(153,82,224,0.1) !important;
+    color: #9952E0 ! important;
+}
+
+.nav-tab-active,
+.nav-tab.nav-tab-active {
+    background: linear-gradient(135deg, #9952E0 0%, #7b3bbf 100%) !important;
+    color: #fff !important;
+}
+/* KPI блоки */
+#afwc_dashboard_wrapper {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.afwc-kpi-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.afwc-kpi-box {
+    flex: 1;
+    min-width: 140px;
     padding: 20px;
-    box-shadow: var(--mst-shadow);
+    background: #f9fafb;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.afwc-kpi-number {
+    font-size: 24px;
+    font-weight: 700;
+    color: #9952E0;
+    margin-bottom: 4px;
+}
+
+.afwc-kpi-title {
+    font-size: 13px;
+    color: #666;
+}
+
+.afwc-kpi-separator {
+    width: 20px;
+    height: 20px;
+    fill: #ddd;
+    flex-shrink: 0;
+}
+
+/* Таблицы AFWC */
+.afwc-reports,
+.afwc-referrals-table,
+.afwc-products-table,
+.afwc-payouts-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 16px !important;
+}
+
+.afwc-reports th {
+    background: #f9fafb ! important;
+    padding: 12px 16px !important;
+    text-align: left !important;
+    font-weight: 600 ! important;
+    color: #333 !important;
+    border-bottom: 2px solid #e5e7eb !important;
+}
+
+.afwc-reports td {
+    padding: 12px 16px !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    color: #666 !important;
+}
+
+.afwc-table-header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+}
+
+.afwc-table-header {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1d1d1f;
+}
+
+.afwc-view-all-reports a {
+    color: #9952E0;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Дата фильтр */
+#afwc_date_range_container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+#afwc_date_range_container input[type="date"] {
+    padding: 10px 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+#afwc-smart-dates-dropdown-wrapper {
+    position: relative;
+}
+
+#afwc-smart-dates-dropdown-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+#afwc-smart-dates-dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    padding: 8px 0;
+    min-width: 180px;
+    z-index: 100;
+}
+
+#afwc-smart-dates-dropdown-list li {
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#afwc-smart-dates-dropdown-list li:hover {
+    background: rgba(153,82,224,0.1);
+    color: #9952E0;
+}
+
+#afwc-smart-dates-dropdown-list .afwc-separator {
+    height: 1px;
+    background: #e5e7eb;
+    margin: 4px 0;
+    padding: 0;
+}
+
+.afwc-hidden {
+    display:  none !important;
+}
+
+/* Секции */
+.afwc-referrals-section,
+.afwc-products-section,
+.afwc-payouts-section {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+    .afwc-affiliate-details-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .afwc-kpi-row {
+        flex-direction: column;
+    }
+    
+    .afwc-kpi-separator {
+        display: none;
+    }
+    
+    .afwc-kpi-box {
+        width: 100%;
+    }
+    
+    .nav-tab-wrapper {
+        flex-direction: column;
+    }
+    
+    .mst-lk-wishlist-grid {
+        grid-template-columns: 1fr ! important;
+    }
 }
 
 /* ============================================
