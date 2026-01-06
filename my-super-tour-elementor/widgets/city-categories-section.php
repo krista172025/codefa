@@ -497,9 +497,11 @@ class City_Categories_Section extends Widget_Base {
         ?>
         
         <style>
-            #<?php echo esc_attr($unique_id); ?> {
+           #<?php echo esc_attr($unique_id); ?> {
                 background: <?php echo esc_attr($bg_color); ?>;
+                padding: 3rem 1rem 2rem 1rem;
             }
+
             
             #<?php echo esc_attr($unique_id); ?> .mst-section-header {
                 text-align: center;
@@ -587,9 +589,39 @@ class City_Categories_Section extends Widget_Base {
                 font-weight: 600;
             }
             
+            @media (max-width: 1024px) {
+                #<?php echo esc_attr($unique_id); ?> .mst-categories-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
             @media (max-width: 768px) {
                 #<?php echo esc_attr($unique_id); ?> .mst-section-title {
                     font-size: 1.75rem;
+                }
+                #<?php echo esc_attr($unique_id); ?> .mst-categories-grid {
+                    grid-template-columns: 1fr;
+                }
+                #<?php echo esc_attr($unique_id); ?> .mst-category-card {
+                    flex-direction: row;
+                    align-items: flex-start;
+                    gap: 1rem;
+                    text-align: left;
+                }
+                #<?php echo esc_attr($unique_id); ?> .mst-category-icon {
+                    flex-shrink: 0;
+                }
+                #<?php echo esc_attr($unique_id); ?> .mst-category-content {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                #<?php echo esc_attr($unique_id); ?> .mst-category-title,
+                #<?php echo esc_attr($unique_id); ?> .mst-category-description {
+                    text-align: left;
+                }
+                #<?php echo esc_attr($unique_id); ?> .mst-category-badge {
+                    align-self: flex-start;
                 }
             }
         </style>

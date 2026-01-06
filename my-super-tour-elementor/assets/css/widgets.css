@@ -4662,11 +4662,11 @@ body,
 .mst-woo-carousel-wishlist:hover {
   transform: scale(1.1);
   background: rgba(255,255,255,0.7);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.12), inset 0 1px 2px rgba(255,255,255,0.8);
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.12), inset 0 1px 2px rgba(255,255,255,0.8);
 }
 
 .mst-woo-carousel-wishlist.mst-wishlist-active svg {
-  fill: currentColor;
+  fill: #ef4444;
 }
 
 .mst-woo-carousel-wishlist svg {
@@ -6977,7 +6977,7 @@ body,
 /* Wishlist specific enhancements */
 .mst-wishlist-btn.mst-star-trail-trigger:hover {
   transform: scale(1.15);
-  box-shadow: 0 0 20px hsla(0, 80%, 60%, 0.4), 0 8px 24px rgba(0,0,0,0.15);
+  box-shadow: 0 0 20px hsla(0, 80%, 60%, 0.4), 0 8px 24px rgb(238, 235, 235);
 }
 
 .mst-wishlist-btn.mst-star-trail-trigger:hover .mst-heart-icon {
@@ -8589,4 +8589,528 @@ body,
     display:  block !important;
     visibility: visible !important;
 }
+
+/* ========================================
+   SHOP GRID MOBILE CARD LAYOUT FIX
+   Matches woo-tour-carousel layout
+   ======================================== */
+
+/* Title + Price Row - always aligned properly */
+.mst-shop-grid-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.mst-shop-grid-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+    flex: 1;
+    min-width: 0;
+}
+
+.mst-shop-grid-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.mst-shop-grid-price {
+    font-weight: 700;
+    font-size: 15px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Location + Rating Row - single line, no wrap */
+.mst-shop-grid-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.mst-shop-grid-location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+}
+
+.mst-shop-grid-location span {
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mst-shop-grid-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 767px) {
+    .mst-shop-grid-title-row {
+        gap: 8px;
+    }
+    
+    .mst-shop-grid-title {
+        font-size: 14px;
+        line-height: 1.25;
+    }
+    
+    .mst-shop-grid-price {
+        font-size: 14px;
+    }
+    
+    .mst-shop-grid-meta {
+        gap: 6px;
+    }
+    
+    .mst-shop-grid-location span {
+        font-size: 12px;
+        max-width: 120px;
+    }
+    
+    .mst-shop-grid-rating {
+        font-size: 12px;
+    }
+    
+    .mst-shop-grid-rating span {
+        font-size: 12px;
+    }
+}
+
+/* ========================================
+   HEADER SIDEBAR PANELS (Cart & Wishlist)
+   Liquid Glass style like xstore
+   ======================================== */
+
+/* Sidebar Overlay */
+.mst-sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 99998;
+}
+
+.mst-sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Sidebar Panel */
+.mst-sidebar {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 380px;
+    max-width: 90vw;
+    height: 100vh;
+    background: var(--sidebar-bg, rgba(255, 255, 255, 0.95));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-left: 1px solid var(--sidebar-border, rgba(255, 255, 255, 0.3));
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 99999;
+}
+
+.mst-sidebar.active {
+    right: 0;
+}
+
+/* Sidebar Header */
+.mst-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.mst-sidebar-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.mst-sidebar-close {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mst-sidebar-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    transform: rotate(90deg);
+}
+
+.mst-sidebar-close svg {
+    width: 18px;
+    height: 18px;
+    color: #1a1a1a;
+}
+
+/* Sidebar Content */
+.mst-sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 24px;
+}
+
+.mst-sidebar-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Empty State */
+.mst-sidebar-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: #666;
+}
+
+.mst-sidebar-empty p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Sidebar Item */
+.mst-sidebar-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.mst-sidebar-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.mst-sidebar-item-image {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.mst-sidebar-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mst-sidebar-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.mst-sidebar-item-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 6px 0;
+    color: #1a1a1a;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.mst-sidebar-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #666;
+}
+
+.mst-sidebar-item-price {
+    font-weight: 600;
+    color: hsl(270, 70%, 60%);
+}
+
+.mst-sidebar-item-remove {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.mst-sidebar-item-remove:hover {
+    background: hsl(0, 70%, 60%);
+}
+
+.mst-sidebar-item-remove:hover svg {
+    color: #fff;
+}
+
+.mst-sidebar-item-remove svg {
+    width: 14px;
+    height: 14px;
+    color: #999;
+    transition: color 0.2s ease;
+}
+ 
+/* Subtotal */
+.mst-sidebar-subtotal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    margin-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 16px;
+}
+
+.mst-sidebar-subtotal span:first-child {
+    color: #666;
+}
+
+.mst-cart-subtotal-value {
+    font-weight: 700;
+    color: #1a1a1a;
+    font-size: 18px;
+}
+
+/* Sidebar Footer */
+.mst-sidebar-footer {
+    padding: 20px 24px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mst-sidebar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.mst-sidebar-btn-primary {
+    background: var(--btn-bg, hsl(270, 70%, 60%));
+    color: var(--btn-color, #fff);
+}
+
+.mst-sidebar-btn-primary:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.mst-sidebar-btn-secondary {
+    background: var(--btn-bg, rgba(0, 0, 0, 0.05));
+    color: var(--btn-color, #1a1a1a);
+}
+
+.mst-sidebar-btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+/* Sidebar footer - Z-INDEX И ПОЗИЦИОНИРОВАНИЕ */
+.mst-sidebar {
+    z-index: 99999 !important;
+}
+.mst-sidebar-overlay {
+    z-index: 99998 !important;
+}
+
+.mst-sidebar-footer {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1 !important;
+    background: var(--sidebar-bg, rgba(255,255,255,0.95)) !important;
+    padding: 16px !important;
+    border-top: 1px solid rgba(0,0,0,0.05) !important;
+}
+
+.mst-sidebar-content {
+    padding-bottom: 120px !important;
+}
+
+
+/* Header Cart Count Badge */
+.mst-header-cart-count,
+.mst-header-wishlist-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: hsl(270, 70%, 60%);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.mst-header-cart-trigger,
+.mst-header-wishlist-trigger {
+    position: relative;
+}
+
+/* Скрыть dropdown-панели по умолчанию */
+.mst-favorites-dropdown,
+.mst-cart-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1000;
+    background: #fff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    min-width: 300px;
+}
+
+/* Показывать при наведении или активации */
+.mst-favorites-wrapper:hover .mst-favorites-dropdown,
+.mst-cart-wrapper:hover .mst-cart-dropdown,
+.mst-favorites-dropdown.active,
+.mst-cart-dropdown.active {
+    display: block;
+}
+
+/* Wrapper должен быть relative */
+.mst-favorites-wrapper,
+.mst-cart-wrapper {
+    position: relative;
+}
+
+
+/* Mobile Sidebar */
+@media (max-width: 480px) {
+    .mst-sidebar {
+        width: 100%;
+        max-width: 100%;
+        right: -100%;
+    }
+    
+    .mst-sidebar.active {
+        right: 0;
+    }
+}
+
+/* Liquid Glass grain texture for sidebar */
+.mst-sidebar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.mst-sidebar > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Header dropdown arrow */
+.mst-header.mst-header-show-arrows .menu-item-has-children > a {
+  display: inline-flex;
+  align-items: center;
+}
+
+.mst-header.mst-header-show-arrows .mst-menu-arrow {
+  width: 18px;
+  height: 18px;
+  margin-left: 8px;
+  flex: 0 0 18px;
+  display: inline-block;
+  vertical-align: middle;
+  opacity: 0.7;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.mst-header.mst-header-show-arrows .menu-item-has-children:hover > a > .mst-menu-arrow {
+  opacity: 1;
+  transform: rotate(180deg);
+}
+
+/* FIX: prevent theme rules from overriding our sidebars (often themes use [class*="sidebar"]) */
+.mst-sidebar,
+.mst-sidebar-overlay {
+  position: fixed !important;
+}
+
+.mst-sidebar-overlay {
+  inset: 0 !important;
+}
+
+.mst-sidebar {
+  top: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  right: -400px !important;
+  float: none !important;
+  margin: 0 !important;
+}
+
+.mst-sidebar.active {
+  right: 0 !important;
+}
+
 

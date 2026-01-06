@@ -436,13 +436,19 @@ class City_Quiz_Section extends Widget_Base {
             
             #<?php echo esc_attr($unique_id); ?> .mst-quiz-progress {
                 margin-bottom: 2rem;
+                height: auto !important;  
+                min-height: 1px !important;
             }
             
             #<?php echo esc_attr($unique_id); ?> .mst-quiz-progress-header {
-                display: flex;
+                display: flex !important;  
                 justify-content: space-between;
                 align-items: center;
                 margin-bottom: 0.75rem;
+
+                visibility: visible !important;
+                opacity: 1 !important;
+                height: auto !important;
             }
             
             #<?php echo esc_attr($unique_id); ?> .mst-quiz-progress-text {
@@ -500,7 +506,25 @@ class City_Quiz_Section extends Widget_Base {
                 #<?php echo esc_attr($unique_id); ?> .mst-quiz-card {
                     padding: 1.5rem;
                 }
+                
+                #<?php echo esc_attr($unique_id); ?> .mst-quiz-progress-header {
+                    display: flex !important;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 0.75rem;
+                }
+                
+                #<?php echo esc_attr($unique_id); ?> .mst-quiz-progress-text {
+                    font-size: 0.75rem;
+                }
+                
+                #<?php echo esc_attr($unique_id); ?> .mst-quiz-score-badge {
+                    font-size: 0.75rem;
+                    padding: 0.2rem 0.5rem;
+                }
             }
+
             
             #<?php echo esc_attr($unique_id); ?> .mst-quiz-option {
                 background: rgba(255, 255, 255, 0.6);

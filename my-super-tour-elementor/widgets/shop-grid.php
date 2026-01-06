@@ -474,6 +474,20 @@ class Shop_Grid extends Widget_Base {
             ]
         );
 
+        $this->add_control(
+            'image_container_mode',
+            [
+                'label' => __('Image Container Mode', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'inside',
+                'options' => [
+                    'inside' => __('Inside (with margin)', 'my-super-tour-elementor'),
+                    'outside' => __('Outside (edge-to-edge)', 'my-super-tour-elementor'),
+                ],
+                'description' => __('Inside: image has margin from card edges. Outside: image stretches to card edges.', 'my-super-tour-elementor'),
+            ]
+        );
+
         $this->add_responsive_control(
             'gap',
             [
@@ -833,8 +847,17 @@ class Shop_Grid extends Widget_Base {
         $card_bg = $settings['card_bg_color'] ?? '#ffffff';
         $card_radius = $settings['card_border_radius']['size'] ?? 24;
         $image_height = $settings['image_height']['size'] ?? 200;
+        $image_border_radius = $settings['image_border_radius']['size'] ?? 20;
+        $image_container_mode = $settings['image_container_mode'] ?? 'inside';
         $gap = $settings['gap']['size'] ?? 24;
         $columns = intval($settings['columns'] ?? 4);
+        
+        // Image container styles based on mode
+        if ($image_container_mode === 'outside') {
+            $image_container_style = "height: {$image_height}px; width: 100%; border-radius: {$card_radius}px {$card_radius}px 0 0; margin: 0; overflow: hidden; position: relative; flex-shrink: 0;";
+        } else {
+            $image_container_style = "height: {$image_height}px; width: calc(100% - 16px); box-sizing: border-box; border-radius: {$image_border_radius}px; margin: 8px; overflow: hidden; position: relative; flex-shrink: 0;";
+        }
         
         // Guide settings
         $guide_size = $settings['guide_photo_size']['size'] ?? 64;
@@ -925,39 +948,48 @@ class Shop_Grid extends Widget_Base {
                 $guide_profile_url = '#';
 
                 if ($show_guide) {
-                    // 1.Try guide_user_id from product meta
-                    $guide_user_id = get_post_meta($product_id, '_guide_user_id', true);
+                    // 1. PRIORITY: Try _mst_guide_id from product meta (set via WooCommerce metabox)
+                    $guide_user_id = get_post_meta($product_id, '_mst_guide_id', true);
+                    
+                    // 2. Fallback: Try legacy meta keys
+                    if (!$guide_user_id) {
+                        $guide_user_id = get_post_meta($product_id, '_guide_user_id', true);
+                    }
                     if (!$guide_user_id) {
                         $guide_user_id = get_post_meta($product_id, 'guide_id', true);
                     }
                     
-                    // 2.Fallback: check product author
+                    // 3. Fallback: check product author if has guide role
                     if (!$guide_user_id) {
                         $post_author = get_post_field('post_author', $product_id);
                         if ($post_author) {
-                            $author_data = get_userdata($post_author);
-                            if ($author_data) {
-                                $roles = (array) $author_data->roles;
-                                if (array_intersect($roles, ['guide', 'gid', 'administrator'])) {
-                                    $guide_user_id = $post_author;
-                                }
+                            $author_status = get_user_meta($post_author, 'mst_user_status', true);
+                            if ($author_status === 'guide' || $author_status === 'gold' || $author_status === 'silver' || $author_status === 'bronze') {
+                                $guide_user_id = $post_author;
                             }
                         }
                     }
                     
                     if ($guide_user_id) {
-                        // Photo from mst_lk
-                        $guide_photo_id = get_user_meta($guide_user_id, 'mst_guide_photo_id', true);
-                        if ($guide_photo_id) {
-                            $guide_photo_url = wp_get_attachment_url($guide_photo_id);
+                        // Photo from mst_lk - priority: mst_lk_avatar (from LK)
+                        $mst_lk_avatar_id = get_user_meta($guide_user_id, 'mst_lk_avatar', true);
+                        if ($mst_lk_avatar_id) {
+                            $guide_photo_url = wp_get_attachment_url($mst_lk_avatar_id);
+                        }
+                        // Fallback to mst_guide_photo_id
+                        if (!$guide_photo_url) {
+                            $guide_photo_id = get_user_meta($guide_user_id, 'mst_guide_photo_id', true);
+                            if ($guide_photo_id) {
+                                $guide_photo_url = wp_get_attachment_url($guide_photo_id);
+                            }
                         }
                         if (!$guide_photo_url) {
                             $guide_photo_url = get_user_meta($guide_user_id, 'guide_photo', true);
                         }
-                        if (! $guide_photo_url) {
+                        if (!$guide_photo_url) {
                             $guide_photo_url = get_user_meta($guide_user_id, 'profile_photo', true);
                         }
-                        if (! $guide_photo_url) {
+                        if (!$guide_photo_url) {
                             $guide_photo_url = get_avatar_url($guide_user_id, ['size' => 128]);
                         }
                         
@@ -993,8 +1025,8 @@ class Shop_Grid extends Widget_Base {
             ?>
             <div class="<?php echo esc_attr($card_class); ?>" data-product-id="<?php echo esc_attr($product_id); ?>" style="background-color: <?php echo esc_attr($card_bg); ?>; border-radius: <?php echo $card_radius; ?>px; overflow: hidden; display: flex; flex-direction: column;">
                 
-                <!-- Image -->
-                <div class="mst-shop-grid-image" style="height: <?php echo $image_height; ?>px; position: relative; overflow: hidden;">
+                <!-- Image with overflow hidden (mode: <?php echo esc_attr($image_container_mode); ?>) -->
+                <div class="mst-shop-grid-image" style="<?php echo esc_attr($image_container_style); ?>">
                     <a href="<?php echo esc_url($product->get_permalink()); ?>">
                         <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>" style="width: 100%; height: 100%; object-fit: cover;">
                     </a>
@@ -1061,52 +1093,25 @@ class Shop_Grid extends Widget_Base {
                     </button>
                     <?php endif; ?>
 
-                    <?php
-                    // Inline JS для wishlist toggle (один раз)
-                    static $wishlist_js_added = false;
-                    if (!$wishlist_js_added && $show_wishlist):
-                        $wishlist_js_added = true;
-                    ?>
-                    <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        document.querySelectorAll('.mst-wishlist-btn').forEach(function(btn) {
-                            btn.addEventListener('click', function(e) {
-                                e.preventDefault();
-                                var isActive = this.classList.toggle('active');
-                                var svg = this.querySelector('svg');
-                                
-                                if (isActive) {
-                                    this.style.background = this.dataset.activeBg;
-                                    svg.setAttribute('fill', this.dataset.activeFill);
-                                    svg.setAttribute('stroke', this.dataset.activeStroke);
-                                } else {
-                                    this.style.background = this.dataset.defaultBg;
-                                    svg.setAttribute('fill', this.dataset.defaultFill);
-                                    svg.setAttribute('stroke', this.dataset.defaultStroke);
-                                }
-                            });
-                        });
-                    });
-                    </script>
-                    <?php endif; ?>
+                    <?php // Wishlist JS moved to shop-grid.js ?>
                 </div>
                 
                 <!-- Content -->
                 <div class="mst-shop-grid-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
-                    <!-- Row 1: Title + Price -->
-                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center;">
+                    <!-- Row 1: Title + Price (price always top-right) -->
+                    <div class="mst-shop-grid-title-row" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 6px;">
                         <h3 class="mst-shop-grid-title" style="color: <?php echo esc_attr($title_color); ?>; margin: 0; font-size: 16px; font-weight: 600; line-height: 1.3; flex: 1; min-width: 0;">
                             <a href="<?php echo esc_url($product->get_permalink()); ?>" style="color: inherit; text-decoration: none;">
                                 <?php echo esc_html($product->get_name()); ?>
                             </a>
                         </h3>
-                        <div class="mst-shop-grid-price" style="color: <?php echo esc_attr($price_color); ?>; font-weight: 700; font-size: 15px; white-space: nowrap; flex-shrink: 0;">
+                        <div class="mst-shop-grid-price" style="color: <?php echo esc_attr($price_color); ?>; font-weight: 700; font-size: 15px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;">
                             <?php echo $price; ?>
                         </div>
                     </div>
                     
-                    <!-- Row 2: Location + Rating -->
-                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <!-- Row 2: Location + Rating (single line) -->
+                    <div class="mst-shop-grid-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: nowrap;">
                         <?php if (!empty($location)): ?>
                         <div class="mst-shop-grid-location" style="display: flex; align-items: center; gap: 4px;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="<?php echo esc_attr($location_icon_color); ?>">

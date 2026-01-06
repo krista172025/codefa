@@ -201,11 +201,170 @@ class Header extends Widget_Base {
         );
 
         $this->add_control(
+            'enable_wishlist_sidebar',
+            [
+                'label' => __('Enable Wishlist Sidebar', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'yes',
+                'description' => __('Show wishlist items in a sidebar panel (like xstore)', 'my-super-tour-elementor'),
+                'condition' => [
+                    'show_wishlist' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'wishlist_sidebar_title',
+            [
+                'label' => __('Wishlist Sidebar Title', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'default' => 'Избранное',
+                'condition' => [
+                    'show_wishlist' => 'yes',
+                    'enable_wishlist_sidebar' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'wishlist_view_btn_text',
+            [
+                'label' => __('View Wishlist Button Text', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'default' => 'Посмотреть избранное',
+                'condition' => [
+                    'show_wishlist' => 'yes',
+                    'enable_wishlist_sidebar' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'wishlist_profile_btn_text',
+            [
+                'label' => __('Profile Button Text', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'default' => 'Перейти в профиль',
+                'condition' => [
+                    'show_wishlist' => 'yes',
+                    'enable_wishlist_sidebar' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'profile_link',
+            [
+                'label' => __('Profile Link', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::URL,
+                'default' => [
+                    'url' => '/my-account',
+                ],
+                'condition' => [
+                    'show_wishlist' => 'yes',
+                    'enable_wishlist_sidebar' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'show_cart',
+            [
+                'label' => __('Show Cart Icon', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'yes',
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_control(
+            'cart_link',
+            [
+                'label' => __('Cart Link', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::URL,
+                'default' => [
+                    'url' => '/cart',
+                ],
+                'condition' => [
+                    'show_cart' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'enable_cart_sidebar',
+            [
+                'label' => __('Enable Cart Sidebar', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'yes',
+                'description' => __('Show cart items in a sidebar panel (like xstore)', 'my-super-tour-elementor'),
+                'condition' => [
+                    'show_cart' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'cart_sidebar_title',
+            [
+                'label' => __('Cart Sidebar Title', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'default' => 'Корзина',
+                'condition' => [
+                    'show_cart' => 'yes',
+                    'enable_cart_sidebar' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'cart_checkout_btn_text',
+            [
+                'label' => __('Checkout Button Text', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'default' => 'Оформить заказ',
+                'condition' => [
+                    'show_cart' => 'yes',
+                    'enable_cart_sidebar' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'cart_view_btn_text',
+            [
+                'label' => __('View Cart Button Text', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'default' => 'Посмотреть корзину',
+                'condition' => [
+                    'show_cart' => 'yes',
+                    'enable_cart_sidebar' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'checkout_link',
+            [
+                'label' => __('Checkout Link', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::URL,
+                'default' => [
+                    'url' => '/checkout',
+                ],
+                'condition' => [
+                    'show_cart' => 'yes',
+                    'enable_cart_sidebar' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
             'show_account',
             [
                 'label' => __('Show Account Icon', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::SWITCHER,
                 'default' => 'yes',
+                'separator' => 'before',
             ]
         );
 
@@ -388,6 +547,71 @@ class Header extends Widget_Base {
         );
 
         $this->end_controls_section();
+
+        // Style - Sidebar
+        $this->start_controls_section(
+            'style_sidebar',
+            [
+                'label' => __('Sidebar Style', 'my-super-tour-elementor'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'sidebar_bg_color',
+            [
+                'label' => __('Sidebar Background', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => 'rgba(255, 255, 255, 0.95)',
+            ]
+        );
+
+        $this->add_control(
+            'sidebar_border_color',
+            [
+                'label' => __('Sidebar Border', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => 'rgba(255, 255, 255, 0.3)',
+            ]
+        );
+
+        $this->add_control(
+            'sidebar_btn_bg',
+            [
+                'label' => __('Button Background', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => 'hsl(270, 70%, 60%)',
+            ]
+        );
+
+        $this->add_control(
+            'sidebar_btn_color',
+            [
+                'label' => __('Button Text Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#ffffff',
+            ]
+        );
+
+        $this->add_control(
+            'sidebar_secondary_btn_bg',
+            [
+                'label' => __('Secondary Button Background', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => 'rgba(0, 0, 0, 0.05)',
+            ]
+        );
+
+        $this->add_control(
+            'sidebar_secondary_btn_color',
+            [
+                'label' => __('Secondary Button Text', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#1a1a1a',
+            ]
+        );
+
+        $this->end_controls_section();
     }
 
     protected function render() {
@@ -399,6 +623,16 @@ class Header extends Widget_Base {
         $liquid_glass = $settings['enable_liquid_glass'] ?? 'yes';
         $show_arrows = $settings['show_dropdown_arrows'] ?? 'yes';
         $shortcode = $settings['header_shortcode'] ?? '';
+        
+        // Sidebar settings
+        $enable_wishlist_sidebar = $settings['enable_wishlist_sidebar'] ?? 'yes';
+        $enable_cart_sidebar = $settings['enable_cart_sidebar'] ?? 'yes';
+        $sidebar_bg = $settings['sidebar_bg_color'] ?? 'rgba(255, 255, 255, 0.95)';
+        $sidebar_border = $settings['sidebar_border_color'] ?? 'rgba(255, 255, 255, 0.3)';
+        $btn_bg = $settings['sidebar_btn_bg'] ?? 'hsl(270, 70%, 60%)';
+        $btn_color = $settings['sidebar_btn_color'] ?? '#ffffff';
+        $sec_btn_bg = $settings['sidebar_secondary_btn_bg'] ?? 'rgba(0, 0, 0, 0.05)';
+        $sec_btn_color = $settings['sidebar_secondary_btn_color'] ?? '#1a1a1a';
         
         $header_classes = ['mst-header', 'mst-header-hover-' . esc_attr($hover_effect)];
         if ($liquid_glass === 'yes') {
@@ -441,7 +675,7 @@ class Header extends Widget_Base {
                             'menu_class' => 'mst-header-menu',
                             'fallback_cb' => false,
                             'depth' => 3,
-                            'walker' => new \MST_Elementor\Walker_Nav_Menu_Arrows($show_arrows === 'yes'),
+                            'walker' => new \MST_Walker_Nav_Menu_Arrows($show_arrows === 'yes'),
                         ]);
                     } else {
                         echo '<p class="mst-no-menu">' . __('Please select a menu in widget settings', 'my-super-tour-elementor') . '</p>';
@@ -458,11 +692,57 @@ class Header extends Widget_Base {
                     <?php endif; ?>
                     
                     <?php if ($settings['show_wishlist'] === 'yes'): ?>
-                        <a href="<?php echo esc_url($settings['wishlist_link']['url']); ?>" class="mst-header-icon-btn">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </a>
+                        <?php if ($enable_wishlist_sidebar === 'yes'): ?>
+                            <button type="button" class="mst-header-icon-btn mst-header-wishlist-trigger" data-sidebar="wishlist">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                                <?php
+                                $wishlist_count = 0;
+                                if (is_user_logged_in()) {
+                                    $wishlist_data = get_user_meta(get_current_user_id(), 'xstore_wishlist_ids_0', true);
+                                    if ($wishlist_data) {
+                                        $items = explode('|', $wishlist_data);
+                                        foreach ($items as $item) {
+                                            $decoded = json_decode($item, true);
+                                            if ($decoded && isset($decoded['id'])) {
+                                                $wishlist_count++;
+                                            }
+                                        }
+                                    }
+                                }
+                                ?>
+                                <span class="mst-header-wishlist-count" <?php echo $wishlist_count === 0 ? 'style="display: none;"' : ''; ?>><?php echo $wishlist_count; ?></span>
+                            </button>
+                        <?php else: ?>
+                            <a href="<?php echo esc_url($settings['wishlist_link']['url']); ?>" class="mst-header-icon-btn mst-header-wishlist">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                            </a>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php if ($settings['show_cart'] === 'yes'): ?>
+                        <?php if ($enable_cart_sidebar === 'yes'): ?>
+                            <button type="button" class="mst-header-icon-btn mst-header-cart-trigger" data-sidebar="cart">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="9" cy="21" r="1"></circle>
+                                    <circle cx="20" cy="21" r="1"></circle>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                </svg>
+                                <span class="mst-header-cart-count"><?php echo function_exists('WC') ? WC()->cart->get_cart_contents_count() : 0; ?></span>
+                            </button>
+                        <?php else: ?>
+                            <a href="<?php echo esc_url($settings['cart_link']['url']); ?>" class="mst-header-icon-btn mst-header-cart">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="9" cy="21" r="1"></circle>
+                                    <circle cx="20" cy="21" r="1"></circle>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                </svg>
+                                <span class="mst-header-cart-count"><?php echo function_exists('WC') ? WC()->cart->get_cart_contents_count() : 0; ?></span>
+                            </a>
+                        <?php endif; ?>
                     <?php endif; ?>
                     
                     <?php if ($settings['show_account'] === 'yes'): ?>
@@ -476,85 +756,175 @@ class Header extends Widget_Base {
                     
                     <!-- Mobile Toggle -->
                     <button class="mst-header-icon-btn mst-header-mobile-toggle" onclick="this.closest('.mst-header').classList.toggle('mst-menu-open')">
-                        <svg class="mst-icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="3" y1="12" x2="21" y2="12"></line>
                             <line x1="3" y1="6" x2="21" y2="6"></line>
                             <line x1="3" y1="18" x2="21" y2="18"></line>
                         </svg>
-                        <svg class="mst-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
                     </button>
                 </div>
             </div>
-            
-            <!-- Mobile Menu -->
-            <div class="mst-header-mobile-menu">
-                <?php 
-                if (!empty($wp_menu)) {
-                    wp_nav_menu([
-                        'menu' => $wp_menu,
-                        'container' => false,
-                        'menu_class' => 'mst-mobile-menu-list',
-                        'fallback_cb' => false,
-                        'depth' => 3,
-                    ]);
-                }
-                ?>
-            </div>
         </header>
+
+        <?php if ($settings['show_wishlist'] === 'yes' && $enable_wishlist_sidebar === 'yes'): ?>
+        <!-- Wishlist Sidebar -->
+        <div class="mst-sidebar-overlay" data-sidebar="wishlist"></div>
+        <aside class="mst-sidebar mst-sidebar-wishlist" data-sidebar="wishlist" style="--sidebar-bg: <?php echo esc_attr($sidebar_bg); ?>; --sidebar-border: <?php echo esc_attr($sidebar_border); ?>;">
+            <div class="mst-sidebar-header">
+                <h3 class="mst-sidebar-title"><?php echo esc_html($settings['wishlist_sidebar_title'] ?? 'Избранное'); ?></h3>
+                <button type="button" class="mst-sidebar-close" data-sidebar="wishlist">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="mst-sidebar-content">
+                <div class="mst-sidebar-items mst-wishlist-items">
+                    <?php
+                    $wishlist_html = '';
+                    if (is_user_logged_in()) {
+                        $user_id = get_current_user_id();
+                        $wishlist_data = get_user_meta($user_id, 'xstore_wishlist_ids_0', true);
+                        
+                        if ($wishlist_data) {
+                            $items = explode('|', $wishlist_data);
+                            $product_ids = [];
+                            
+                            foreach ($items as $item) {
+                                $decoded = json_decode($item, true);
+                                if ($decoded && isset($decoded['id'])) {
+                                    $product_ids[] = $decoded['id'];
+                                }
+                            }
+                            
+                            if (!empty($product_ids)) {
+                                foreach ($product_ids as $product_id) {
+                                    $product = wc_get_product($product_id);
+                                    if (!$product) continue;
+                                    
+                                    $thumbnail = wp_get_attachment_image_src(get_post_thumbnail_id($product_id), 'thumbnail');
+                                    $thumbnail_url = $thumbnail ? $thumbnail[0] : wc_placeholder_img_src('thumbnail');
+                                    ?>
+                                    <div class="mst-sidebar-item" data-product-id="<?php echo esc_attr($product_id); ?>">
+                                        <div class="mst-sidebar-item-image">
+                                            <img src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>">
+                                        </div>
+                                        <div class="mst-sidebar-item-info">
+                                            <h4 class="mst-sidebar-item-title">
+                                                <a href="<?php echo get_permalink($product_id); ?>">
+                                                    <?php echo esc_html($product->get_name()); ?>
+                                                </a>
+                                            </h4>
+                                            <div class="mst-sidebar-item-meta">
+                                                <span class="mst-sidebar-item-price"><?php echo $product->get_price_html(); ?></span>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="mst-sidebar-item-remove mst-remove-wishlist-item" data-product-id="<?php echo esc_attr($product_id); ?>">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <?php
+                                }
+                                $wishlist_html = 'has_items';
+                            }
+                        }
+                    }
+                    
+                    if (empty($wishlist_html)): ?>
+                    <div class="mst-sidebar-empty">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; margin-bottom: 12px; opacity: 0.4;">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <p>Список избранного пуст</p>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="mst-sidebar-footer">
+                <a href="<?php echo esc_url($settings['wishlist_link']['url'] ?? '/wishlist'); ?>" class="mst-sidebar-btn mst-sidebar-btn-primary" style="--btn-bg: <?php echo esc_attr($btn_bg); ?>; --btn-color: <?php echo esc_attr($btn_color); ?>;">
+                    <?php echo esc_html($settings['wishlist_view_btn_text'] ?? 'Посмотреть избранное'); ?>
+                </a>
+                <a href="<?php echo esc_url($settings['profile_link']['url'] ?? '/my-account'); ?>" class="mst-sidebar-btn mst-sidebar-btn-secondary" style="--btn-bg: <?php echo esc_attr($sec_btn_bg); ?>; --btn-color: <?php echo esc_attr($sec_btn_color); ?>;">
+                    <?php echo esc_html($settings['wishlist_profile_btn_text'] ?? 'Перейти в профиль'); ?>
+                </a>
+            </div>
+        </aside>
+        <?php endif; ?>
+
+        <?php if ($settings['show_cart'] === 'yes' && $enable_cart_sidebar === 'yes'): ?>
+        <!-- Cart Sidebar -->
+        <div class="mst-sidebar-overlay" data-sidebar="cart"></div>
+        <aside class="mst-sidebar mst-sidebar-cart" data-sidebar="cart" style="--sidebar-bg: <?php echo esc_attr($sidebar_bg); ?>; --sidebar-border: <?php echo esc_attr($sidebar_border); ?>;">
+            <div class="mst-sidebar-header">
+                <h3 class="mst-sidebar-title"><?php echo esc_html($settings['cart_sidebar_title'] ?? 'Корзина'); ?></h3>
+                <button type="button" class="mst-sidebar-close" data-sidebar="cart">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="mst-sidebar-content">
+                <div class="mst-sidebar-items mst-cart-items">
+                    <?php if (function_exists('WC') && !WC()->cart->is_empty()): ?>
+                        <?php foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item): 
+                            $product = $cart_item['data'];
+                            $product_id = $cart_item['product_id'];
+                            $quantity = $cart_item['quantity'];
+                            $thumbnail = wp_get_attachment_image_src(get_post_thumbnail_id($product_id), 'thumbnail');
+                            $thumbnail_url = $thumbnail ? $thumbnail[0] : wc_placeholder_img_src('thumbnail');
+                        ?>
+                            <div class="mst-sidebar-item" data-cart-key="<?php echo esc_attr($cart_item_key); ?>">
+                                <div class="mst-sidebar-item-image">
+                                    <img src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>">
+                                </div>
+                                <div class="mst-sidebar-item-info">
+                                    <h4 class="mst-sidebar-item-title"><?php echo esc_html($product->get_name()); ?></h4>
+                                    <div class="mst-sidebar-item-meta">
+                                        <span class="mst-sidebar-item-qty"><?php echo esc_html($quantity); ?> x</span>
+                                        <span class="mst-sidebar-item-price"><?php echo $product->get_price_html(); ?></span>
+                                    </div>
+                                </div>
+                                <button type="button" class="mst-sidebar-item-remove" data-cart-key="<?php echo esc_attr($cart_item_key); ?>">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="mst-sidebar-empty">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; margin-bottom: 12px; opacity: 0.4;">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            <p>Корзина пуста</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <?php if (function_exists('WC') && !WC()->cart->is_empty()): ?>
+                    <div class="mst-sidebar-subtotal">
+                        <span>Итого:</span>
+                        <span class="mst-cart-subtotal-value"><?php echo WC()->cart->get_cart_subtotal(); ?></span>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="mst-sidebar-footer">
+                <a href="<?php echo esc_url($settings['checkout_link']['url'] ?? '/checkout'); ?>" class="mst-sidebar-btn mst-sidebar-btn-primary" style="--btn-bg: <?php echo esc_attr($btn_bg); ?>; --btn-color: <?php echo esc_attr($btn_color); ?>;">
+                    <?php echo esc_html($settings['cart_checkout_btn_text'] ?? 'Оформить заказ'); ?>
+                </a>
+                <a href="<?php echo esc_url($settings['cart_link']['url'] ?? '/cart'); ?>" class="mst-sidebar-btn mst-sidebar-btn-secondary" style="--btn-bg: <?php echo esc_attr($sec_btn_bg); ?>; --btn-color: <?php echo esc_attr($sec_btn_color); ?>;">
+                    <?php echo esc_html($settings['cart_view_btn_text'] ?? 'Посмотреть корзину'); ?>
+                </a>
+            </div>
+        </aside>
+        <?php endif; ?>
         <?php
-    }
-}
-
-// Custom Walker for dropdown arrows
-namespace MST_Elementor;
-
-class Walker_Nav_Menu_Arrows extends \Walker_Nav_Menu {
-    private $show_arrows;
-    
-    public function __construct($show_arrows = true) {
-        $this->show_arrows = $show_arrows;
-    }
-    
-    public function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
-        $classes = empty($item->classes) ? array() : (array) $item->classes;
-        $has_children = in_array('menu-item-has-children', $classes);
-        
-        $class_names = join(' ', array_filter($classes));
-        $class_names = $class_names ? ' class="' . esc_attr($class_names) . '"' : '';
-        
-        $output .= '<li' . $class_names . '>';
-        
-        $atts = array();
-        $atts['title']  = !empty($item->attr_title) ? $item->attr_title : '';
-        $atts['target'] = !empty($item->target) ? $item->target : '';
-        $atts['rel']    = !empty($item->xfn) ? $item->xfn : '';
-        $atts['href']   = !empty($item->url) ? $item->url : '';
-        
-        $attributes = '';
-        foreach ($atts as $attr => $value) {
-            if (!empty($value)) {
-                $attributes .= ' ' . $attr . '="' . esc_attr($value) . '"';
-            }
-        }
-        
-        $title = apply_filters('the_title', $item->title, $item->ID);
-        
-        $item_output = isset($args->before) ? $args->before : '';
-        $item_output .= '<a' . $attributes . '>';
-        $item_output .= (isset($args->link_before) ? $args->link_before : '') . $title . (isset($args->link_after) ? $args->link_after : '');
-        
-        // Add dropdown arrow for items with children (all levels)
-        if ($has_children && $this->show_arrows) {
-            $arrow_class = $depth > 0 ? 'mst-dropdown-arrow mst-submenu-arrow' : 'mst-dropdown-arrow';
-            $item_output .= '<svg class="' . $arrow_class . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
-        }
-        
-        $item_output .= '</a>';
-        $item_output .= isset($args->after) ? $args->after : '';
-        
-        $output .= $item_output;
     }
 }

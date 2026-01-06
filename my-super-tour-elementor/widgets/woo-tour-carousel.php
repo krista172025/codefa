@@ -594,6 +594,20 @@ class Woo_Tour_Carousel extends Widget_Base {
             ]
         );
 
+        $this->add_control(
+            'image_container_mode',
+            [
+                'label' => __('Image Container Mode', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'inside',
+                'options' => [
+                    'inside' => __('Inside (with margin)', 'my-super-tour-elementor'),
+                    'outside' => __('Outside (edge-to-edge)', 'my-super-tour-elementor'),
+                ],
+                'description' => __('Inside: image has margin from card edges. Outside: image stretches to card edges.', 'my-super-tour-elementor'),
+            ]
+        );
+
         $this->add_responsive_control(
             'card_min_height',
             [
@@ -958,8 +972,16 @@ class Woo_Tour_Carousel extends Widget_Base {
         $border_radius = isset($settings['card_border_radius']['size']) ? $settings['card_border_radius']['size'] : 24;
         $image_height = isset($settings['image_height']['size']) ? $settings['image_height']['size'] : 200;
         $image_border_radius = isset($settings['image_border_radius']['size']) ? $settings['image_border_radius']['size'] : 20;
+        $image_container_mode = isset($settings['image_container_mode']) ? $settings['image_container_mode'] : 'inside';
         $card_min_height = isset($settings['card_min_height']['size']) ? $settings['card_min_height']['size'] : 420;
         $gap = isset($settings['gap']['size']) ? $settings['gap']['size'] : 16;
+        
+        // Image container styles based on mode
+        if ($image_container_mode === 'outside') {
+            $image_container_style = "height: {$image_height}px; width: 100%; border-radius: {$border_radius}px {$border_radius}px 0 0; margin: 0; overflow: hidden; position: relative; flex-shrink: 0;";
+        } else {
+            $image_container_style = "height: {$image_height}px; width: calc(100% - 16px); box-sizing: border-box; border-radius: {$image_border_radius}px; margin: 8px; overflow: hidden; position: relative; flex-shrink: 0;";
+        }
         $show_badges = $settings['show_badges'] === 'yes';
         $badge_border_radius = isset($settings['badge_border_radius']['size']) ? $settings['badge_border_radius']['size'] : 20;
         $show_guide = $settings['show_guide'] === 'yes';
@@ -1118,9 +1140,9 @@ class Woo_Tour_Carousel extends Widget_Base {
                         $guide_size_for_var = isset($settings['guide_photo_size']['size']) ? intval($settings['guide_photo_size']['size']) : 64;
                     ?>
                     <div class="<?php echo esc_attr($card_class); ?>" data-product-id="<?php echo esc_attr($product_id); ?>" style="background: <?php echo esc_attr($settings['card_bg_color']); ?>; border-radius: <?php echo esc_attr($border_radius); ?>px; min-height: <?php echo esc_attr($card_min_height); ?>px; display: flex; flex-direction: column; overflow: hidden; --card-hover-glow-color: <?php echo esc_attr($card_hover_glow_color); ?>; --card-hover-glow-size: <?php echo esc_attr($card_hover_glow_size); ?>px; --card-hover-border-color: <?php echo esc_attr($card_hover_border_color); ?>; --guide-photo-size: <?php echo esc_attr($guide_size_for_var); ?>px;">
-                        <!-- Image with overflow hidden -->
-                        <div class="mst-woo-carousel-image" style="height: <?php echo esc_attr($image_height); ?>px; border-radius: <?php echo esc_attr($image_border_radius); ?>px; margin: 8px; overflow: hidden; position: relative; flex-shrink: 0;">
-                            <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                        <!-- Image with overflow hidden (mode: <?php echo esc_attr($image_container_mode); ?>) -->
+                        <div class="mst-woo-carousel-image" style="<?php echo esc_attr($image_container_style); ?>">
+                            <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>" style="width: 100%; height: 100%; object-fit: cover; display: block;">
                             
                             <?php if ($show_badges): 
                                 // Always get badges from WooCommerce product attributes (per-product)
@@ -1175,6 +1197,12 @@ class Woo_Tour_Carousel extends Widget_Base {
                                class="mst-woo-carousel-wishlist mst-wishlist-btn mst-follow-glow" 
                                data-product-id="<?php echo esc_attr($product_id); ?>"
                                data-hover-bg="<?php echo esc_attr($wishlist_hover_bg); ?>"
+                               data-default-bg="<?php echo esc_attr($wishlist_bg); ?>"
+                               data-default-fill="<?php echo esc_attr($wishlist_icon); ?>"
+                               data-default-stroke="<?php echo esc_attr($wishlist_stroke); ?>"
+                               data-active-bg="rgba(255,255,255,0.95)"
+                               data-active-fill="hsl(0, 80%, 60%)"
+                               data-active-stroke="hsl(0, 80%, 50%)"
                                style="position: absolute; top: 12px; right: 12px; z-index: 2; <?php echo $wishlist_style; ?>"
                                aria-label="Add to wishlist">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="<?php echo esc_attr($wishlist_icon_size); ?>" height="<?php echo esc_attr($wishlist_icon_size); ?>" viewBox="0 0 24 24" fill="<?php echo esc_attr($wishlist_icon); ?>" stroke="<?php echo esc_attr($wishlist_stroke); ?>" stroke-width="2" class="mst-heart-icon"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
@@ -1183,31 +1211,21 @@ class Woo_Tour_Carousel extends Widget_Base {
                         </div>
                         
                         <!-- Content -->
-                        <?php 
-                            $content_padding_top = isset($settings['content_padding']['top']) ? intval($settings['content_padding']['top']) : 8;
-                            $content_padding_right = isset($settings['content_padding']['right']) ? intval($settings['content_padding']['right']) : 16;
-                            $content_padding_bottom = isset($settings['content_padding']['bottom']) ? intval($settings['content_padding']['bottom']) : 16;
-                            $content_padding_left = isset($settings['content_padding']['left']) ? intval($settings['content_padding']['left']) : 16;
-                            $title_margin = isset($settings['title_margin_bottom']['size']) ? intval($settings['title_margin_bottom']['size']) : 6;
-                            $location_margin = isset($settings['location_margin_bottom']['size']) ? intval($settings['location_margin_bottom']['size']) : 6;
-                            $info_gap = isset($settings['info_block_gap']['size']) ? intval($settings['info_block_gap']['size']) : 12;
-                            $info_margin = isset($settings['info_block_margin_bottom']['size']) ? intval($settings['info_block_margin_bottom']['size']) : 12;
-                        ?>
                         <div class="mst-woo-carousel-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
-                            <!-- Row 1: Title + Price -->
-                            <div class="mst-woo-carousel-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 6px;">
-                                <h3 class="mst-woo-carousel-title" style="color: <?php echo esc_attr($title_color); ?>; margin: 0; font-size: 16px; font-weight: 600; line-height: 1.3; flex: 1;">
+                            <!-- Row 1: Title + Price (price always top-right) -->
+                            <div class="mst-woo-carousel-title-row" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 6px;">
+                                <h3 class="mst-woo-carousel-title" style="color: <?php echo esc_attr($title_color); ?>; margin: 0; font-size: 16px; font-weight: 600; line-height: 1.3; flex: 1; min-width: 0;">
                                     <a href="<?php echo esc_url($product->get_permalink()); ?>" style="color: inherit; text-decoration: none;">
                                         <?php echo esc_html($product->get_name()); ?>
                                     </a>
                                 </h3>
-                                <div class="mst-woo-carousel-price" style="color: <?php echo esc_attr($price_color); ?>; font-weight: 700; font-size: 15px; white-space: nowrap;">
+                                <div class="mst-woo-carousel-price" style="color: <?php echo esc_attr($price_color); ?>; font-weight: 700; font-size: 15px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;">
                                     <?php echo $price; ?>
                                 </div>
                             </div>
                             
-                            <!-- Row 2: Location + Rating -->
-                            <div class="mst-woo-carousel-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <!-- Row 2: Location + Rating (single line) -->
+                            <div class="mst-woo-carousel-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: nowrap;">
                                 <?php if (!empty($location)): ?>
                                 <div class="mst-woo-carousel-location" style="display: flex; align-items: center; gap: 4px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="<?php echo esc_attr($location_icon_color); ?>"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3" fill="#fff"></circle></svg>
@@ -1233,7 +1251,7 @@ class Woo_Tour_Carousel extends Widget_Base {
                                 
                                 
                                 <?php if ($show_guide && ! empty($guide_photo_url)): ?>
-                                <div style="position: absolute; right: <?php echo 16 + $guide_right; ?>px; top: 50%; transform: translateY(calc(-50% + <?php echo $guide_bottom; ?>px)); width: <?php echo $guide_size; ?>px; height: <?php echo $guide_size; ?>px; border-radius: 50%; overflow: hidden; border: <?php echo $guide_border; ?>px solid <?php echo esc_attr($guide_border_color); ?>; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 5;">
+                                <div style="position: absolute; right: <?php echo 16 + $guide_right; ?>px; top: 50%; transform: translateY(calc(-50% + <?php echo $guide_bottom; ?>px)); width: <?php echo $guide_size; ?>px; height: <?php echo $guide_size; ?>px; border-radius: 50%; overflow: hidden; border: <?php echo intval($guide_border_width); ?>px solid <?php echo esc_attr($guide_border_color); ?>; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 5;">
                                     <a href="<?php echo esc_url($guide_profile_url); ?>">
                                         <img src="<?php echo esc_url($guide_photo_url); ?>" alt="Guide" style="width: 100%; height: 100%; object-fit: cover;">
                                     </a>
@@ -1260,6 +1278,8 @@ class Woo_Tour_Carousel extends Widget_Base {
                 <?php endif; ?>
             </div>
         </div>
+        
+        <?php // Wishlist JS moved to shop-grid.js ?>
         <?php
     }
 }

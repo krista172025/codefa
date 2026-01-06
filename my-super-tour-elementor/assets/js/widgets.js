@@ -1407,4 +1407,298 @@
     }
   });
 
+  // ========================================
+  // SIDEBAR PANELS (Cart & Wishlist)
+  // ========================================
+  function initSidebars() {
+    // Open sidebar triggers
+    document.querySelectorAll('[data-sidebar]').forEach(trigger => {
+      if (trigger.classList.contains('mst-sidebar') || 
+          trigger.classList.contains('mst-sidebar-overlay') ||
+          trigger.classList.contains('mst-sidebar-close')) {
+        return;
+      }
+      
+      trigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        const sidebarType = this.dataset.sidebar;
+        openSidebar(sidebarType);
+      });
+    });
+    
+    // Close sidebar triggers
+    document.querySelectorAll('.mst-sidebar-close, .mst-sidebar-overlay').forEach(el => {
+      el.addEventListener('click', function() {
+        const sidebarType = this.dataset.sidebar;
+        closeSidebar(sidebarType);
+      });
+    });
+    
+    // Close on ESC key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.mst-sidebar.active').forEach(sidebar => {
+          const type = sidebar.dataset.sidebar;
+          closeSidebar(type);
+        });
+      }
+    });
+    
+    // Remove cart items
+    document.querySelectorAll('.mst-sidebar-item-remove[data-cart-key]').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const cartKey = this.dataset.cartKey;
+        removeCartItem(cartKey, this.closest('.mst-sidebar-item'));
+      });
+    });
+  }
+  
+  function openSidebar(type) {
+    const sidebar = document.querySelector(`.mst-sidebar[data-sidebar="${type}"]`);
+    const overlay = document.querySelector(`.mst-sidebar-overlay[data-sidebar="${type}"]`);
+    
+    if (sidebar) {
+      sidebar.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    if (overlay) {
+      overlay.classList.add('active');
+    }
+    
+    // Load wishlist items dynamically if needed
+    if (type === 'wishlist') {
+      loadWishlistItems();
+    }
+  }
+  
+  function closeSidebar(type) {
+    const sidebar = document.querySelector(`.mst-sidebar[data-sidebar="${type}"]`);
+    const overlay = document.querySelector(`.mst-sidebar-overlay[data-sidebar="${type}"]`);
+    
+    if (sidebar) {
+      sidebar.classList.remove('active');
+    }
+    if (overlay) {
+      overlay.classList.remove('active');
+    }
+    
+    // Restore body scroll if no sidebars are open
+    const anyOpen = document.querySelectorAll('.mst-sidebar.active').length > 0;
+    if (!anyOpen) {
+      document.body.style.overflow = '';
+    }
+  }
+  
+  function removeCartItem(cartKey, itemElement) {
+    if (!cartKey) return;
+    
+    // Add loading state
+    itemElement.style.opacity = '0.5';
+    itemElement.style.pointerEvents = 'none';
+    
+    $.ajax({
+      url: window.mstData?.ajaxUrl || '/wp-admin/admin-ajax.php',
+      type: 'POST',
+      data: {
+        action: 'mst_remove_cart_item',
+        cart_key: cartKey,
+        nonce: window.mstData?.nonce || ''
+      },
+      success: function(response) {
+        if (response.success) {
+          // Animate item removal
+          itemElement.style.transition = 'all 0.3s ease';
+          itemElement.style.transform = 'translateX(100%)';
+          itemElement.style.opacity = '0';
+          
+          setTimeout(() => {
+            itemElement.remove();
+            
+            // Update cart count
+            const countBadge = document.querySelector('.mst-header-cart-count');
+            if (countBadge && response.data?.cart_count !== undefined) {
+              countBadge.textContent = response.data.cart_count;
+              if (response.data.cart_count === 0) {
+                countBadge.style.display = 'none';
+              }
+            }
+            
+            // Update subtotal
+            const subtotal = document.querySelector('.mst-cart-subtotal-value');
+            if (subtotal && response.data?.cart_subtotal) {
+              subtotal.innerHTML = response.data.cart_subtotal;
+            }
+            
+            // Show empty state if no items
+            const itemsContainer = document.querySelector('.mst-cart-items');
+            if (itemsContainer && itemsContainer.querySelectorAll('.mst-sidebar-item').length === 0) {
+              itemsContainer.innerHTML = `
+                <div class="mst-sidebar-empty">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; margin-bottom: 12px; opacity: 0.4;">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                  </svg>
+                  <p>Корзина пуста</p>
+                </div>
+              `;
+              
+              // Hide subtotal
+              const subtotalEl = document.querySelector('.mst-sidebar-subtotal');
+              if (subtotalEl) subtotalEl.style.display = 'none';
+            }
+          }, 300);
+        } else {
+          itemElement.style.opacity = '';
+          itemElement.style.pointerEvents = '';
+          console.error('Failed to remove cart item');
+        }
+      },
+      error: function() {
+        itemElement.style.opacity = '';
+        itemElement.style.pointerEvents = '';
+        console.error('AJAX error removing cart item');
+      }
+    });
+  }
+  
+  function loadWishlistItems() {
+    const container = document.querySelector('.mst-wishlist-items');
+    if (!container) return;
+    
+    // Check if already loaded
+    if (container.dataset.loaded === 'true') return;
+    
+    $.ajax({
+      url: window.mstData?.ajaxUrl || '/wp-admin/admin-ajax.php',
+      type: 'POST',
+      data: {
+        action: 'mst_get_wishlist_items',
+        nonce: window.mstData?.nonce || ''
+      },
+      success: function(response) {
+        if (response.success && response.data?.items) {
+          const items = response.data.items;
+          
+          if (items.length === 0) {
+            return; // Keep empty state
+          }
+          
+          container.innerHTML = items.map(item => `
+            <div class="mst-sidebar-item" data-product-id="${item.id}">
+              <div class="mst-sidebar-item-image">
+                <a href="${item.url}">
+                  <img src="${item.thumbnail}" alt="${item.title}">
+                </a>
+              </div>
+              <div class="mst-sidebar-item-info">
+                <h4 class="mst-sidebar-item-title">
+                  <a href="${item.url}" style="color: inherit; text-decoration: none;">${item.title}</a>
+                </h4>
+                <div class="mst-sidebar-item-meta">
+                  <span class="mst-sidebar-item-price">${item.price}</span>
+                </div>
+              </div>
+              <button type="button" class="mst-sidebar-item-remove mst-wishlist-remove" data-product-id="${item.id}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          `).join('');
+          
+          container.dataset.loaded = 'true';
+          
+          // Update wishlist count
+          const countBadge = document.querySelector('.mst-header-wishlist-count');
+          if (countBadge) {
+            countBadge.textContent = items.length;
+            countBadge.style.display = items.length > 0 ? '' : 'none';
+          }
+          
+          // Attach remove handlers
+          container.querySelectorAll('.mst-wishlist-remove').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+              e.stopPropagation();
+              removeWishlistItem(this.dataset.productId, this.closest('.mst-sidebar-item'));
+            });
+          });
+        }
+      }
+    });
+  }
+  // Attach remove handlers to SSR wishlist items
+document.querySelectorAll('.mst-remove-wishlist-item').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        removeWishlistItem(this.dataset.productId, this.closest('.mst-sidebar-item'));
+    });
+});
+
+  
+  function removeWishlistItem(productId, itemElement) {
+    if (!productId) return;
+    
+    itemElement.style.opacity = '0.5';
+    itemElement.style.pointerEvents = 'none';
+    
+    $.ajax({
+      url: window.mstData?.ajaxUrl || '/wp-admin/admin-ajax.php',
+      type: 'POST',
+      data: {
+        action: 'mst_remove_wishlist_item',
+        product_id: productId,
+        nonce: window.mstData?.nonce || ''
+      },
+      success: function(response) {
+        if (response.success) {
+          itemElement.style.transition = 'all 0.3s ease';
+          itemElement.style.transform = 'translateX(100%)';
+          itemElement.style.opacity = '0';
+          
+          setTimeout(() => {
+            itemElement.remove();
+            
+            const countBadge = document.querySelector('.mst-header-wishlist-count');
+            if (countBadge && response.data?.count !== undefined) {
+              countBadge.textContent = response.data.count;
+              if (response.data.count === 0) {
+                countBadge.style.display = 'none';
+              }
+            }
+            
+            const container = document.querySelector('.mst-wishlist-items');
+            if (container && container.querySelectorAll('.mst-sidebar-item').length === 0) {
+              container.innerHTML = `
+                <div class="mst-sidebar-empty">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; margin-bottom: 12px; opacity: 0.4;">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                  </svg>
+                  <p>Список избранного пуст</p>
+                </div>
+              `;
+            }
+          }, 300);
+        } else {
+          itemElement.style.opacity = '';
+          itemElement.style.pointerEvents = '';
+        }
+      }
+    });
+  }
+  
+  // Initialize sidebars on ready
+  $(document).ready(function() {
+    initSidebars();
+  });
+  
+  // Re-initialize on Elementor preview
+  if (typeof elementorFrontend !== 'undefined') {
+    elementorFrontend.hooks.addAction('frontend/element_ready/widget', function() {
+      setTimeout(initSidebars, 100);
+    });
+  }
+
 })(jQuery);

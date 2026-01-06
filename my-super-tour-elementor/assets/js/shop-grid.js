@@ -6,14 +6,164 @@
 (function($) {
     'use strict';
 
+    // Inject Liquid Glass Toast styles once
+    function injectToastStyles() {
+        if (document.getElementById('mst-wishlist-toast-styles')) return;
+        
+        var style = document.createElement('style');
+        style.id = 'mst-wishlist-toast-styles';
+        style.textContent = `
+            .mst-wishlist-toast {
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                z-index: 99999;
+                background: rgba(255, 255, 255, 0.85);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                border-radius: 16px;
+                padding: 16px 20px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+                max-width: 320px;
+                transform: translateX(120%);
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                font-family: inherit;
+            }
+            .mst-wishlist-toast.show { transform: translateX(0); }
+            .mst-wishlist-toast-title {
+                font-weight: 600;
+                font-size: 14px;
+                color: #1a1a1a;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .mst-wishlist-toast-title svg { color: hsl(0, 80%, 60%); }
+            .mst-wishlist-toast-text {
+                font-size: 13px;
+                color: #666;
+                line-height: 1.4;
+            }
+            .mst-wishlist-toast-link {
+                display: inline-block;
+                margin-top: 12px;
+                padding: 8px 16px;
+                background: hsl(270, 70%, 60%);
+                color: #fff !important;
+                border-radius: 20px;
+                text-decoration: none;
+                font-size: 13px;
+                font-weight: 500;
+                transition: background 0.2s;
+            }
+            .mst-wishlist-toast-link:hover { background: hsl(270, 70%, 50%); color: #fff !important; }
+            .mst-wishlist-toast-close {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 4px;
+                color: #999;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Show toast for unauthorized users
+    function showWishlistToast() {
+        var existingToast = document.querySelector('.mst-wishlist-toast');
+        if (existingToast) existingToast.remove();
+
+        var toast = document.createElement('div');
+        toast.className = 'mst-wishlist-toast';
+        toast.innerHTML = 
+            '<button class="mst-wishlist-toast-close" onclick="this.parentElement.remove()">' +
+                '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
+            '</button>' +
+            '<div class="mst-wishlist-toast-title">' +
+                '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>' +
+                'Добавить в избранное' +
+            '</div>' +
+            '<div class="mst-wishlist-toast-text">' +
+                'Для того чтобы добавлять товары в вишлист, зарегистрируйтесь или войдите в аккаунт.' +
+            '</div>' +
+            '<a href="/auth" class="mst-wishlist-toast-link">Войти / Регистрация</a>';
+        
+        document.body.appendChild(toast);
+
+        requestAnimationFrame(function() {
+            toast.classList.add('show');
+        });
+
+        setTimeout(function() {
+            toast.classList.remove('show');
+            setTimeout(function() { toast.remove(); }, 400);
+        }, 5000);
+    }
+
+    // Fly heart animation to header
+    function flyToHeaderWishlist($btn) {
+        var headerWishlist = document.querySelector(
+            '.mst-header-icon-btn[href*="wishlist"], ' +
+            '.header-wishlist, ' +
+            '.etheme-wishlist-widget, ' +
+            '.et-wishlist, ' +
+            '[class*="wishlist-icon"]'
+        );
+        if (!headerWishlist) return;
+
+        var btnRect = $btn[0].getBoundingClientRect();
+        var headerRect = headerWishlist.getBoundingClientRect();
+
+        var flyingHeart = document.createElement('div');
+        flyingHeart.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="hsl(0, 80%, 60%)" stroke="hsl(0, 80%, 50%)" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>';
+        flyingHeart.style.cssText = 'position:fixed;z-index:99998;pointer-events:none;';
+        flyingHeart.style.left = (btnRect.left + btnRect.width/2 - 9) + 'px';
+        flyingHeart.style.top = (btnRect.top + btnRect.height/2 - 9) + 'px';
+        document.body.appendChild(flyingHeart);
+
+        var targetX = headerRect.left + headerRect.width/2 - 9;
+        var targetY = headerRect.top + headerRect.height/2 - 9;
+        var deltaX = targetX - btnRect.left - btnRect.width/2 + 9;
+        var deltaY = targetY - btnRect.top - btnRect.height/2 + 9;
+        
+        flyingHeart.animate([
+            { transform: 'scale(1)', opacity: 1 },
+            { transform: 'scale(1.3)', opacity: 1, offset: 0.2 },
+            { transform: 'translate(' + deltaX + 'px, ' + deltaY + 'px) scale(0.5)', opacity: 0.5 }
+        ], { duration: 600, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' }).onfinish = function() {
+            flyingHeart.remove();
+            headerWishlist.style.transform = 'scale(1.2)';
+            setTimeout(function() { headerWishlist.style.transform = ''; }, 200);
+        };
+    }
+
     // XStore Wishlist Sync
     function initWishlistSync() {
+        // Inject toast styles
+        injectToastStyles();
+        
+        // Check if user is logged in
+        var isLoggedIn = document.body.classList.contains('logged-in') || 
+                         (typeof mstShopGrid !== 'undefined' && mstShopGrid.userId > 0);
+
         $(document).on('click', '.mst-wishlist-btn', function(e) {
             e.preventDefault();
+            e.stopPropagation();
             
-            const $btn = $(this);
-            const productId = $btn.data('product-id');
-            const isActive = $btn.hasClass('mst-wishlist-active');
+            var $btn = $(this);
+            var productId = $btn.data('product-id');
+            var isActive = $btn.hasClass('mst-wishlist-active');
+            
+            // If not logged in, show toast and return
+            if (!isLoggedIn) {
+                showWishlistToast();
+                return;
+            }
             
             // Prevent double clicks
             if ($btn.hasClass('mst-wishlist-loading')) {
@@ -23,22 +173,23 @@
             $btn.addClass('mst-wishlist-loading');
             
             // INSTANT ANIMATION - Update UI immediately before AJAX
-            const $icon = $btn.find('.mst-heart-icon');
-            const strokeColor = $icon.attr('stroke') || 'hsl(0, 80%, 60%)';
-            // FIXED: Use 'none' or 'transparent' for outline-only (empty) state
-            const defaultFill = $btn.data('icon-fill') || 'none';
+            var $icon = $btn.find('.mst-heart-icon');
+            var strokeColor = $icon.attr('stroke') || 'hsl(0, 80%, 60%)';
+            var defaultFill = $btn.data('icon-fill') || 'none';
             
             // Add animation class for scale effect
             $btn.addClass('mst-wishlist-animating');
             
             if (isActive) {
-                // Removing from wishlist - animate out to outline only
+                // Removing from wishlist
                 $icon.attr('fill', defaultFill);
                 $btn.removeClass('mst-wishlist-active');
             } else {
-                // Adding to wishlist - animate in with fill color
+                // Adding to wishlist
                 $icon.attr('fill', strokeColor);
                 $btn.addClass('mst-wishlist-active');
+                // Fly animation to header
+                flyToHeaderWishlist($btn);
             }
             
             // Remove animation class after animation completes
@@ -46,7 +197,7 @@
                 $btn.removeClass('mst-wishlist-animating');
             }, 300);
             
-            const action = isActive ? 'mst_remove_wishlist' : 'mst_add_wishlist';
+            var action = isActive ? 'mst_remove_wishlist' : 'mst_add_wishlist';
             
             $.ajax({
                 url: mstShopGrid.ajaxUrl,
@@ -58,16 +209,15 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        // Update XStore header counter if exists
                         updateWishlistCounter(isActive ? -1 : 1);
                     } else {
-                        // Revert on error
                         console.error('Wishlist error:', response.data);
+                        // Revert on error
                         if (isActive) {
                             $icon.attr('fill', strokeColor);
                             $btn.addClass('mst-wishlist-active');
                         } else {
-                            $icon.attr('fill', 'none');
+                            $icon.attr('fill', defaultFill);
                             $btn.removeClass('mst-wishlist-active');
                         }
                     }
@@ -79,7 +229,7 @@
                         $icon.attr('fill', strokeColor);
                         $btn.addClass('mst-wishlist-active');
                     } else {
-                        $icon.attr('fill', 'none');
+                        $icon.attr('fill', defaultFill);
                         $btn.removeClass('mst-wishlist-active');
                     }
                 },
