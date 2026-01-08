@@ -8,6 +8,10 @@ use Elementor\Repeater;
 
 if (!defined('ABSPATH')) exit;
 
+/**
+ * Tour Booking Card Widget - v2.0
+ * Полностью рабочие API отзывы + Elementor настройка fake/real/mixed со звездочками
+ */
 class Tour_Booking_Card extends Widget_Base {
 
     public function get_name() {
@@ -123,11 +127,6 @@ class Tour_Booking_Card extends Widget_Base {
                         'detail_label' => __('Можно с детьми', 'my-super-tour-elementor'),
                         'detail_value' => '',
                     ],
-                    [
-                        'detail_icon' => ['value' => 'fas fa-map-marker-alt', 'library' => 'solid'],
-                        'detail_label' => __('Проходит:', 'my-super-tour-elementor'),
-                        'detail_value' => __('В помещении', 'my-super-tour-elementor'),
-                    ],
                 ],
                 'title_field' => '{{{ detail_label }}}',
             ]
@@ -136,12 +135,74 @@ class Tour_Booking_Card extends Widget_Base {
         $this->end_controls_section();
 
         // =============================================
-        // RATING SECTION
+        // REVIEWS SOURCE SECTION (API) - ГЛАВНАЯ СЕКЦИЯ
+        // =============================================
+        $this->start_controls_section(
+            'section_reviews_source',
+            [
+                'label' => __('⭐ Reviews Source (API)', 'my-super-tour-elementor'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $this->add_control(
+            'review_source',
+            [
+                'label' => __('Reviews Source', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'live',
+                'options' => [
+                    'fake' => __('⭐ Fake (Manual Stars)', 'my-super-tour-elementor'),
+                    'live' => __('🔗 Real Reviews (API)', 'my-super-tour-elementor'),
+                    'mixed' => __('🔀 Mixed (Real + Fake Fallback)', 'my-super-tour-elementor'),
+                ],
+                'description' => __('Fake = ручной ввод звездочек. Live = реальные отзывы из БД. Mixed = real с fallback на fake если отзывов нет.', 'my-super-tour-elementor'),
+            ]
+        );
+
+        $this->add_control(
+            'live_product_id',
+            [
+                'label' => __('Product ID (for API)', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'description' => __('Leave empty for current product', 'my-super-tour-elementor'),
+                'condition' => ['review_source' => ['live', 'mixed']],
+            ]
+        );
+
+        $this->add_control(
+            'info_live_reviews',
+            [
+                'type' => Controls_Manager::RAW_HTML,
+                'raw' => '<div style="background:#e8f5e9;padding:10px;border-radius:8px;font-size:12px;">
+                    <strong>🔗 Real Reviews (API)</strong><br>
+                    Рейтинг и количество отзывов берутся из WooCommerce отзывов текущего товара. Звездочки рассчитываются автоматически.
+                </div>',
+                'condition' => ['review_source' => 'live'],
+            ]
+        );
+
+        $this->add_control(
+            'info_mixed_reviews',
+            [
+                'type' => Controls_Manager::RAW_HTML,
+                'raw' => '<div style="background:#fff3e0;padding:10px;border-radius:8px;font-size:12px;">
+                    <strong>🔀 Mixed Mode</strong><br>
+                    Сначала пытается получить реальные отзывы. Если отзывов нет — использует ручные значения ниже как fallback.
+                </div>',
+                'condition' => ['review_source' => 'mixed'],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // =============================================
+        // RATING SECTION (Manual / Fallback)
         // =============================================
         $this->start_controls_section(
             'rating_section',
             [
-                'label' => __('Rating', 'my-super-tour-elementor'),
+                'label' => __('Rating (Manual/Fallback)', 'my-super-tour-elementor'),
                 'tab' => Controls_Manager::TAB_CONTENT,
             ]
         );
@@ -168,31 +229,37 @@ class Tour_Booking_Card extends Widget_Base {
         );
 
         $this->add_control(
-            'rating_value',
+            'fake_rating_value',
             [
-                'label' => __('Rating Value', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::TEXT,
-                'default' => '4.75',
+                'label' => __('⭐ Rating Value (1.0 - 5.0)', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::NUMBER,
+                'min' => 1,
+                'max' => 5,
+                'step' => 0.1,
+                'default' => 4.75,
+                'description' => __('Ручной рейтинг для fake/fallback режима', 'my-super-tour-elementor'),
             ]
         );
 
         $this->add_control(
-            'rating_stars',
+            'fake_stars_count',
             [
-                'label' => __('Stars Count (1-5)', 'my-super-tour-elementor'),
+                'label' => __('⭐ Stars Display (1-5)', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::NUMBER,
                 'min' => 1,
                 'max' => 5,
                 'default' => 5,
+                'description' => __('Количество закрашенных звездочек', 'my-super-tour-elementor'),
             ]
         );
 
         $this->add_control(
-            'reviews_count',
+            'fake_reviews_count',
             [
                 'label' => __('Reviews Count Text', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::TEXT,
                 'default' => __('по 69 отзывам', 'my-super-tour-elementor'),
+                'description' => __('Текст количества отзывов для fake/fallback', 'my-super-tour-elementor'),
             ]
         );
 
@@ -210,11 +277,25 @@ class Tour_Booking_Card extends Widget_Base {
         );
 
         $this->add_control(
+            'price_source',
+            [
+                'label' => __('Price Source', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'auto',
+                'options' => [
+                    'auto' => __('Auto (Current Product)', 'my-super-tour-elementor'),
+                    'manual' => __('Manual Value', 'my-super-tour-elementor'),
+                ],
+            ]
+        );
+
+        $this->add_control(
             'price',
             [
                 'label' => __('Price', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::TEXT,
                 'default' => '2200 ₽',
+                'condition' => ['price_source' => 'manual'],
             ]
         );
 
@@ -385,9 +466,7 @@ class Tour_Booking_Card extends Widget_Base {
                     'px' => ['min' => 2, 'max' => 20, 'step' => 1],
                 ],
                 'default' => ['size' => 8],
-                'condition' => [
-                    'enable_gradient_animation' => 'yes',
-                ],
+                'condition' => ['enable_gradient_animation' => 'yes'],
             ]
         );
 
@@ -522,84 +601,43 @@ class Tour_Booking_Card extends Widget_Base {
         $this->end_controls_section();
 
         // =============================================
-        // STYLE - TABS
-        // =============================================
-        $this->start_controls_section(
-            'style_tabs',
-            [
-                'label' => __('Tabs Style', 'my-super-tour-elementor'),
-                'tab' => Controls_Manager::TAB_STYLE,
-            ]
-        );
-
-        $this->add_control(
-            'tab_active_color',
-            [
-                'label' => __('Active Tab Text Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#1a1a1a',
-            ]
-        );
-
-        $this->add_control(
-            'tab_inactive_color',
-            [
-                'label' => __('Inactive Tab Text Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#666666',
-            ]
-        );
-
-        $this->end_controls_section();
-
-        // =============================================
-        // STYLE - DETAILS
-        // =============================================
-        $this->start_controls_section(
-            'style_details',
-            [
-                'label' => __('Details Style', 'my-super-tour-elementor'),
-                'tab' => Controls_Manager::TAB_STYLE,
-            ]
-        );
-
-        $this->add_control(
-            'detail_icon_color',
-            [
-                'label' => __('Icon Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#888888',
-            ]
-        );
-
-        $this->add_control(
-            'detail_text_color',
-            [
-                'label' => __('Text Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#333333',
-            ]
-        );
-
-        $this->end_controls_section();
-
-        // =============================================
-        // STYLE - RATING
+        // STYLE - RATING (STARS)
         // =============================================
         $this->start_controls_section(
             'style_rating',
             [
-                'label' => __('Rating Style', 'my-super-tour-elementor'),
+                'label' => __('⭐ Rating & Stars Style', 'my-super-tour-elementor'),
                 'tab' => Controls_Manager::TAB_STYLE,
             ]
         );
 
         $this->add_control(
-            'star_color',
+            'star_color_filled',
             [
-                'label' => __('Star Color', 'my-super-tour-elementor'),
+                'label' => __('⭐ Filled Star Color', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::COLOR,
                 'default' => 'hsl(45, 98%, 50%)',
+            ]
+        );
+
+        $this->add_control(
+            'star_color_empty',
+            [
+                'label' => __('☆ Empty Star Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#e0e0e0',
+            ]
+        );
+
+        $this->add_control(
+            'star_size',
+            [
+                'label' => __('Star Size (px)', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => [
+                    'px' => ['min' => 10, 'max' => 30],
+                ],
+                'default' => ['size' => 14],
             ]
         );
 
@@ -609,36 +647,6 @@ class Tour_Booking_Card extends Widget_Base {
                 'label' => __('Rating Text Color', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::COLOR,
                 'default' => '#333333',
-            ]
-        );
-
-        $this->end_controls_section();
-
-        // =============================================
-        // STYLE - PRICE
-        // =============================================
-        $this->start_controls_section(
-            'style_price',
-            [
-                'label' => __('Price Style', 'my-super-tour-elementor'),
-                'tab' => Controls_Manager::TAB_STYLE,
-            ]
-        );
-
-        $this->add_control(
-            'price_color',
-            [
-                'label' => __('Price Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#1a1a1a',
-            ]
-        );
-
-        $this->add_group_control(
-            Group_Control_Typography::get_type(),
-            [
-                'name' => 'price_typography',
-                'selector' => '{{WRAPPER}} .mst-booking-price',
             ]
         );
 
@@ -686,6 +694,98 @@ class Tour_Booking_Card extends Widget_Base {
                 'selectors' => [
                     '{{WRAPPER}} .mst-booking-button' => 'border-radius: {{SIZE}}{{UNIT}};',
                 ],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // =============================================
+        // STYLE - DETAILS
+        // =============================================
+        $this->start_controls_section(
+            'style_details',
+            [
+                'label' => __('Details Style', 'my-super-tour-elementor'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'detail_icon_color',
+            [
+                'label' => __('Icon Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#888888',
+            ]
+        );
+
+        $this->add_control(
+            'detail_text_color',
+            [
+                'label' => __('Text Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#333333',
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // =============================================
+        // STYLE - PRICE
+        // =============================================
+        $this->start_controls_section(
+            'style_price',
+            [
+                'label' => __('Price Style', 'my-super-tour-elementor'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'price_color',
+            [
+                'label' => __('Price Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#1a1a1a',
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'price_typography',
+                'selector' => '{{WRAPPER}} .mst-booking-price',
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // =============================================
+        // STYLE - TABS
+        // =============================================
+        $this->start_controls_section(
+            'style_tabs',
+            [
+                'label' => __('Tabs Style', 'my-super-tour-elementor'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'tab_active_color',
+            [
+                'label' => __('Active Tab Text Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#1a1a1a',
+            ]
+        );
+
+        $this->add_control(
+            'tab_inactive_color',
+            [
+                'label' => __('Inactive Tab Text Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#666666',
             ]
         );
 
@@ -741,9 +841,105 @@ class Tour_Booking_Card extends Widget_Base {
         $this->end_controls_section();
     }
 
+    /**
+     * Get LIVE reviews data from WooCommerce API
+     */
+    private function get_live_reviews_data($product_id) {
+        global $wpdb;
+        
+        if (!$product_id) {
+            return null;
+        }
+        
+        // Query reviews from WooCommerce
+        $sql = "SELECT c.*, cm.meta_value as rating
+                FROM {$wpdb->comments} c
+                JOIN {$wpdb->commentmeta} cm ON c.comment_ID = cm.comment_id AND cm.meta_key = 'rating'
+                WHERE c.comment_approved = 1 
+                AND c.comment_type = 'review'
+                AND c.comment_post_ID = %d";
+        
+        $comments = $wpdb->get_results($wpdb->prepare($sql, $product_id));
+        
+        if (empty($comments)) {
+            return null; // No reviews found
+        }
+        
+        $total_rating = 0;
+        $count = count($comments);
+        
+        foreach ($comments as $c) {
+            $total_rating += intval($c->rating);
+        }
+        
+        $avg_rating = $count > 0 ? round($total_rating / $count, 2) : 0;
+        $stars = $count > 0 ? min(5, round($avg_rating)) : 5;
+        
+        return [
+            'rating' => $avg_rating,
+            'count' => $count,
+            'stars' => $stars
+        ];
+    }
+
     protected function render() {
         $settings = $this->get_settings_for_display();
         
+        // Get product ID
+        $product_id = 0;
+        $review_source = $settings['review_source'] ?? 'live';
+        
+        if (!empty($settings['live_product_id'])) {
+            $product_id = intval($settings['live_product_id']);
+        } elseif (function_exists('wc_get_product')) {
+            global $product;
+            if (is_a($product, 'WC_Product')) {
+                $product_id = $product->get_id();
+            } elseif (is_singular('product')) {
+                $product_id = get_the_ID();
+            }
+        }
+        
+        // Default to fake values
+        $rating_value = floatval($settings['fake_rating_value'] ?? 4.75);
+        $stars_count = intval($settings['fake_stars_count'] ?? 5);
+        $reviews_text = $settings['fake_reviews_count'] ?? 'по 69 отзывам';
+        
+        // Get live data if needed
+        if ($review_source === 'live' || $review_source === 'mixed') {
+            if ($product_id) {
+                $live_data = $this->get_live_reviews_data($product_id);
+                
+                if ($live_data && $live_data['count'] > 0) {
+                    // Use live data
+                    $rating_value = $live_data['rating'];
+                    $stars_count = $live_data['stars'];
+                    $reviews_text = sprintf(__('по %d отзывам', 'my-super-tour-elementor'), $live_data['count']);
+                } elseif ($review_source === 'live') {
+                    // Live mode but no reviews - show zeros
+                    $rating_value = 0;
+                    $stars_count = 0;
+                    $reviews_text = __('нет отзывов', 'my-super-tour-elementor');
+                }
+                // For mixed mode, fallback to fake values (already set above)
+            }
+        }
+        
+        // Format rating for display
+        $rating_display = number_format($rating_value, 2);
+        
+        // Get price
+        $price = $settings['price'] ?? '2200 ₽';
+        $price_source = $settings['price_source'] ?? 'auto';
+        
+        if ($price_source === 'auto' && $product_id && function_exists('wc_get_product')) {
+            $wc_product = wc_get_product($product_id);
+            if ($wc_product) {
+                $price = $wc_product->get_price_html();
+            }
+        }
+        
+        // Style settings
         $animate_gradient = $settings['enable_gradient_animation'] === 'yes';
         $gradient_speed = $settings['gradient_animation_speed']['size'] ?? 8;
         $color1 = $settings['gradient_color_1'] ?? 'hsl(270, 70%, 85%)';
@@ -754,14 +950,16 @@ class Tour_Booking_Card extends Widget_Base {
         
         $unique_id = 'mst-booking-' . $this->get_id();
         
-        $star_color = $settings['star_color'] ?? 'hsl(45, 98%, 50%)';
-        $stars_count = intval($settings['rating_stars'] ?? 5);
+        $star_color_filled = $settings['star_color_filled'] ?? 'hsl(45, 98%, 50%)';
+        $star_color_empty = $settings['star_color_empty'] ?? '#e0e0e0';
+        $star_size = $settings['star_size']['size'] ?? 14;
         
         $button_bg = $settings['button_bg_color'] ?? 'hsl(270, 70%, 60%)';
         $button_text = $settings['button_text_color'] ?? '#ffffff';
         
         $detail_icon_color = $settings['detail_icon_color'] ?? '#888888';
         $detail_text_color = $settings['detail_text_color'] ?? '#333333';
+        $rating_text_color = $settings['rating_text_color'] ?? '#333333';
         
         $feature_icon_color = $settings['feature_icon_color'] ?? 'hsl(270, 70%, 60%)';
         $feature_title_color = $settings['feature_title_color'] ?? '#1a1a1a';
@@ -772,7 +970,6 @@ class Tour_Booking_Card extends Widget_Base {
         $tab_inactive_color = $settings['tab_inactive_color'] ?? '#666666';
         
         $price_color = $settings['price_color'] ?? '#1a1a1a';
-        $rating_text_color = $settings['rating_text_color'] ?? '#333333';
         ?>
         
         <div class="mst-booking-card <?php echo $animate_gradient ? 'mst-booking-gradient-anim' : ''; ?>" id="<?php echo esc_attr($unique_id); ?>">
@@ -806,7 +1003,7 @@ class Tour_Booking_Card extends Widget_Base {
                     <?php endforeach; ?>
                 </div>
                 
-                <!-- Rating -->
+                <!-- Rating (API-based with REAL stars display) -->
                 <div class="mst-booking-rating-row">
                     <span class="mst-booking-rating-icon" style="color: <?php echo esc_attr($detail_icon_color); ?>;">
                         <?php \Elementor\Icons_Manager::render_icon($settings['rating_icon'], ['aria-hidden' => 'true']); ?>
@@ -815,24 +1012,30 @@ class Tour_Booking_Card extends Widget_Base {
                         <?php echo esc_html($settings['rating_label']); ?>
                     </span>
                     <span class="mst-booking-rating-value" style="color: <?php echo esc_attr($rating_text_color); ?>;">
-                        <?php echo esc_html($settings['rating_value']); ?>
+                        <?php echo esc_html($rating_display); ?>
                     </span>
+                    
+                    <!-- STARS: Display based on actual count -->
                     <span class="mst-booking-stars">
-                        <?php for ($i = 0; $i < $stars_count; $i++): ?>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="<?php echo esc_attr($star_color); ?>">
+                        <?php for ($i = 1; $i <= 5; $i++): 
+                            $is_filled = $i <= $stars_count;
+                            $star_fill_color = $is_filled ? $star_color_filled : $star_color_empty;
+                        ?>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="<?php echo esc_attr($star_size); ?>" height="<?php echo esc_attr($star_size); ?>" viewBox="0 0 24 24" fill="<?php echo esc_attr($star_fill_color); ?>">
                             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                         </svg>
                         <?php endfor; ?>
                     </span>
+                    
                     <span class="mst-booking-reviews" style="color: <?php echo esc_attr($tab_inactive_color); ?>;">
-                        <?php echo esc_html($settings['reviews_count']); ?>
+                        <?php echo esc_html($reviews_text); ?>
                     </span>
                 </div>
                 
                 <!-- Price -->
                 <div class="mst-booking-price-block">
                     <span class="mst-booking-price" style="color: <?php echo esc_attr($price_color); ?>;">
-                        <?php echo esc_html($settings['price']); ?>
+                        <?php echo $price_source === 'auto' ? $price : esc_html($price); ?>
                     </span>
                     <span class="mst-booking-price-suffix" style="color: <?php echo esc_attr($price_color); ?>;">
                         <?php echo esc_html($settings['price_suffix']); ?>

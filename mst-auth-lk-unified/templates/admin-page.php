@@ -1,7 +1,6 @@
 <?php
 /**
- * Admin Page Template - OAuth + OTP + Guides + Profile Settings + Fake Reviews
- * UPDATED v4.1: Added Guide Profile Display Settings tab
+ * Admin Page Template - OAuth + OTP Settings + Logs + Guides Management + Fake Reviews
  * Author: Telegram @l1ghtsun
  */
 if (!defined('ABSPATH')) exit;
@@ -36,6 +35,7 @@ if (isset($_POST['mst_oauth_save']) && wp_verify_nonce($_POST['mst_oauth_nonce']
         'expiry_minutes'  => intval($_POST['otp_expiry_minutes'] ?? 10),
         'max_attempts'    => intval($_POST['otp_max_attempts'] ?? 5),
         'debug_mode'      => !empty($_POST['otp_debug_mode']),
+        // SMS Provider Settings
         'sms_provider'    => sanitize_text_field($_POST['sms_provider'] ?? 'none'),
         'twilio_sid'      => sanitize_text_field($_POST['twilio_sid'] ?? ''),
         'twilio_token'    => sanitize_text_field($_POST['twilio_token'] ?? ''),
@@ -46,21 +46,6 @@ if (isset($_POST['mst_oauth_save']) && wp_verify_nonce($_POST['mst_oauth_nonce']
     update_option('mst_otp_settings', $otp_settings);
 
     $success = true;
-}
-
-// Handle profile settings save
-if (isset($_POST['mst_save_profile_settings']) && wp_verify_nonce($_POST['mst_profile_settings_nonce'], 'mst_save_profile_settings')) {
-    $profile_settings = [
-        'card_width'       => intval($_POST['card_width'] ?? 380),
-        'card_padding'     => intval($_POST['card_padding'] ?? 20),
-        'avatar_size'      => intval($_POST['avatar_size'] ?? 60),
-        'title_size'       => intval($_POST['title_size'] ?? 16),
-        'text_size'        => intval($_POST['text_size'] ?? 14),
-        'reviews_per_page' => intval($_POST['reviews_per_page'] ?? 9),
-        'lightbox_image_width' => intval($_POST['lightbox_image_width'] ?? 70),
-    ];
-    update_option('mst_guide_profile_settings', $profile_settings);
-    $profile_settings_saved = true;
 }
 
 // Handle guide save
@@ -109,7 +94,9 @@ if (isset($_POST['mst_clear_logs']) && wp_verify_nonce($_POST['mst_log_nonce'], 
     $logs_cleared = true;
 }
 
-// Handle fake reviews
+/**
+ * ОБНОВЛЕНО: Fake reviews c загрузкой аватара и фото (из admin-pagenew.php)
+ */
 if (isset($_POST['mst_add_fake_review']) && wp_verify_nonce($_POST['mst_fake_review_nonce'], 'mst_save_fake_review')) {
     $guide_id = intval($_POST['fake_review_guide_id'] ?? 0);
     if ($guide_id) {
@@ -135,9 +122,13 @@ if (isset($_POST['mst_add_fake_review']) && wp_verify_nonce($_POST['mst_fake_rev
             }
         }
 
-        // Upload review photos
+        // Upload review photos (multiple)
         $review_photos = [];
         if (!empty($_FILES['fake_review_photos']['tmp_name'][0])) {
+            require_once(ABSPATH . 'wp-admin/includes/file.php');
+            require_once(ABSPATH . 'wp-admin/includes/image.php');
+            require_once(ABSPATH . 'wp-admin/includes/media.php');
+
             foreach ($_FILES['fake_review_photos']['tmp_name'] as $key => $tmp_name) {
                 if (!empty($tmp_name)) {
                     $file = [
@@ -184,7 +175,7 @@ if (isset($_POST['mst_add_fake_review']) && wp_verify_nonce($_POST['mst_fake_rev
     }
 }
 
-// Handle fake review delete
+// Handle fake review delete (та же логика, что и была)
 if (isset($_POST['mst_delete_fake_review']) && wp_verify_nonce($_POST['mst_fake_review_nonce'], 'mst_save_fake_review')) {
     $guide_id  = intval($_POST['delete_review_guide_id'] ?? 0);
     $review_id = sanitize_text_field($_POST['delete_review_id'] ?? '');
@@ -210,15 +201,6 @@ $otp_settings   = get_option('mst_otp_settings', [
     'sms_provider'   => 'none',
 ]);
 $otp_logs       = get_option('mst_otp_logs', []);
-$profile_settings = get_option('mst_guide_profile_settings', [
-    'card_width'       => 380,
-    'card_padding'     => 20,
-    'avatar_size'      => 60,
-    'title_size'       => 16,
-    'text_size'        => 14,
-    'reviews_per_page' => 9,
-    'lightbox_image_width' => 70,
-]);
 
 // Get guides
 $guides = get_users([
@@ -228,6 +210,8 @@ $guides = get_users([
 
 // Active tab
 $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'oauth';
+
+// Edit guide
 $edit_guide_id = isset($_GET['edit_guide']) ? intval($_GET['edit_guide']) : 0;
 $edit_guide    = $edit_guide_id ? get_userdata($edit_guide_id) : null;
 ?>
@@ -259,8 +243,12 @@ $edit_guide    = $edit_guide_id ? get_userdata($edit_guide_id) : null;
         .mst-form-row { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
         .mst-form-group { display: flex; flex-direction: column; }
         .mst-form-group label { font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 6px; }
-        .mst-form-group input, .mst-form-group select, .mst-form-group textarea { padding: 12px 14px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 14px; transition: all .2s; }
-        .mst-form-group input:focus, .mst-form-group select:focus, .mst-form-group textarea:focus { outline: none; border-color: #9952E0; box-shadow: 0 0 0 3px rgba(153,82,224,0.1); }
+        .mst-form-group input,
+        .mst-form-group select,
+        .mst-form-group textarea { padding: 12px 14px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 14px; transition: all .2s; }
+        .mst-form-group input:focus,
+        .mst-form-group select:focus,
+        .mst-form-group textarea:focus { outline: none; border-color: #9952E0; box-shadow: 0 0 0 3px rgba(153,82,224,0.1); }
         .mst-form-group input:disabled { background: #f3f4f6; cursor: not-allowed; }
         .mst-form-group textarea { min-height: 100px; resize: vertical; }
         .mst-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: linear-gradient(135deg,#9952E0 0%,#7B3FC4 100%); color:#fff; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; transition:all .3s; text-decoration:none; }
@@ -273,10 +261,24 @@ $edit_guide    = $edit_guide_id ? get_userdata($edit_guide_id) : null;
         .mst-notice { padding:16px; border-radius:10px; margin-bottom:20px; }
         .mst-notice-success { background:#d1fae5; color:#059669; border:1px solid #34d399; }
         .mst-help-text { font-size:12px; color:#6b7280; margin-top:4px; }
+        .mst-callback-url { background:#f3f4f6; padding:10px 14px; border-radius:8px; font-family:monospace; font-size:13px; color:#374151; word-break:break-all; margin-top:8px; }
         .mst-tabs { display:flex; gap:8px; margin-bottom:24px; border-bottom:2px solid #e5e7eb; flex-wrap:wrap; }
         .mst-tab { padding:12px 20px; font-size:14px; font-weight:500; color:#6b7280; text-decoration:none; border-radius:8px 8px 0 0; transition:all .2s; margin-bottom:-2px; }
         .mst-tab:hover { color:#9952E0; background:#f9fafb; }
         .mst-tab.active { color:#9952E0; background:#fff; border-bottom:2px solid #9952E0; }
+        .mst-log-table { width:100%; border-collapse:collapse; font-size:13px; }
+        .mst-log-table th { background:#f9fafb; padding:12px; text-align:left; font-weight:600; color:#374151; border-bottom:1px solid #e5e7eb; }
+        .mst-log-table td { padding:12px; border-bottom:1px solid #f3f4f6; }
+        .mst-log-table tr:hover { background:#f9fafb; }
+        .mst-log-status { padding:4px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+        .mst-log-status.success { background:#d1fae5; color:#059669; }
+        .mst-log-status.failed { background:#fee2e2; color:#dc2626; }
+        .mst-log-status.sent { background:#dbeafe; color:#2563eb; }
+        .mst-log-status.expired { background:#fef3c7; color:#d97706; }
+        .mst-empty-logs { text-align:center; padding:40px; color:#9ca3af; }
+        .mst-code-display { font-family:monospace; background:#f3f4f6; padding:4px 8px; border-radius:4px; }
+
+        /* Guides Table */
         .mst-guides-table { width:100%; border-collapse:collapse; }
         .mst-guides-table th { background:#f9fafb; padding:14px; text-align:left; font-weight:600; color:#374151; border-bottom:1px solid #e5e7eb; }
         .mst-guides-table td { padding:14px; border-bottom:1px solid #f3f4f6; vertical-align:middle; }
@@ -291,197 +293,357 @@ $edit_guide    = $edit_guide_id ? get_userdata($edit_guide_id) : null;
         .mst-guide-actions { display:flex; gap:8px; }
         .mst-add-guide-form { display:flex; gap:12px; align-items:flex-end; padding:20px; background:#f9fafb; border-radius:12px; margin-bottom:24px; }
         .mst-add-guide-form .mst-form-group { flex:1; margin:0; }
+
+        /* Fake Reviews */
         .mst-fake-review-card { background:#f9fafb; border-radius:12px; padding:16px; margin-bottom:16px; }
         .mst-fake-review-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
         .mst-fake-review-author { display:flex; align-items:center; gap:12px; }
-        .mst-fake-review-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#9952E0,#fbd603); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:600; font-size:16px; overflow:hidden; }
+        .mst-fake-review-avatar { width:48px; height:48px; border-radius:50%; background:#9952E0; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:14px; overflow:hidden; flex-shrink:0; }
         .mst-fake-review-avatar img { width:100%; height:100%; object-fit:cover; }
         .mst-fake-review-meta { font-size:13px; color:#6b7280; }
-        .mst-fake-review-stars { color:#fbbf24; font-size:18px; }
-        .mst-fake-review-text { color:#4b5563; line-height:1.6; font-size:14px; margin-bottom:12px; }
-        .mst-fake-review-footer { display:flex; justify-content:space-between; align-items:center; padding-top:12px; border-top:1px solid #e5e7eb; }
-        .mst-fake-review-photos { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+        .mst-fake-review-stars { color:#fbbf24; }
+        .mst-fake-review-text { font-size:14px; line-height:1.6; color:#374151; }
+        .mst-fake-review-photos { display:flex; gap:8px; margin:12px 0; flex-wrap:wrap; }
         .mst-fake-review-photo { width:60px; height:60px; border-radius:8px; overflow:hidden; }
         .mst-fake-review-photo img { width:100%; height:100%; object-fit:cover; }
+        .mst-fake-review-footer { display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:12px; border-top:1px solid #e5e7eb; }
+
+        /* File Upload Styling */
         .mst-file-upload-wrapper { display:flex; flex-direction:column; gap:8px; }
-        .mst-file-upload-label { display:inline-flex; align-items:center; gap:8px; padding:10px 16px; background:#fff; border:1.5px dashed #d1d5db; border-radius:10px; cursor:pointer; font-size:14px; color:#6b7280; transition:all .2s; }
-        .mst-file-upload-label:hover { border-color:#9952E0; color:#9952E0; }
-        .mst-file-preview { display:flex; gap:8px; flex-wrap:wrap; }
-        .mst-file-preview-item { width:60px; height:60px; border-radius:8px; overflow:hidden; border:2px solid #e5e7eb; }
+        .mst-file-upload-label { display:flex; align-items:center; justify-content:center; gap:8px; padding:16px; border:2px dashed #d1d5db; border-radius:10px; cursor:pointer; transition:all .2s; color:#6b7280; }
+        .mst-file-upload-label:hover { border-color:#9952E0; color:#9952E0; background:rgba(153,82,224,0.05); }
+        .mst-file-preview { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+        .mst-file-preview-item { position:relative; width:60px; height:60px; border-radius:8px; overflow:hidden; }
         .mst-file-preview-item img { width:100%; height:100%; object-fit:cover; }
-        .mst-log-table { width:100%; border-collapse:collapse; font-size:13px; }
-        .mst-log-table th { background:#f9fafb; padding:12px; text-align:left; font-weight:600; color:#374151; border-bottom:1px solid #e5e7eb; }
-        .mst-log-table td { padding:12px; border-bottom:1px solid #f3f4f6; }
-        .mst-log-table tr:hover { background:#f9fafb; }
-        .mst-log-status { padding:4px 10px; border-radius:20px; font-size:11px; font-weight:600; }
-        .mst-log-status.success { background:#d1fae5; color:#059669; }
-        .mst-log-status.failed { background:#fee2e2; color:#dc2626; }
-        .mst-log-status.sent { background:#dbeafe; color:#2563eb; }
-        .mst-log-status.expired { background:#fef3c7; color:#d97706; }
-        .mst-empty-logs { text-align:center; padding:40px; color:#9ca3af; }
-        .mst-preview-box { background:#1a1a2e; border-radius:12px; padding:20px; margin-top:16px; }
-        .mst-preview-card { background:linear-gradient(135deg,rgba(255,255,255,0.9),rgba(255,255,255,0.7)); border-radius:16px; padding:16px; display:flex; gap:12px; }
-        .mst-preview-avatar { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,#9952E0,#fbd603); }
-        .mst-preview-content { flex:1; }
-        .mst-preview-name { font-weight:600; color:#1a1a2e; margin-bottom:4px; }
-        .mst-preview-text { color:#4b5563; font-size:14px; }
+
+        @media (max-width:768px) {
+            .mst-form-row { grid-template-columns:1fr; }
+            .mst-tabs { flex-wrap:wrap; }
+            .mst-add-guide-form { flex-direction:column; }
+        }
     </style>
 
     <div class="mst-admin-header">
-        <h1>MySuperTour Auth + LK</h1>
-        <span class="badge">v4.1</span>
+        <h1>👤 Auth + ЛК Settings</h1>
+        <span class="badge">v<?php echo defined('MST_AUTH_LK_VERSION') ? MST_AUTH_LK_VERSION : '4.0.0'; ?></span>
     </div>
 
-    <?php if (!empty($success) || !empty($guide_saved) || !empty($guide_added) || !empty($guide_removed) || !empty($logs_cleared) || !empty($fake_review_added) || !empty($fake_review_deleted) || !empty($profile_settings_saved)): ?>
-        <div class="mst-notice mst-notice-success">✅ <?php _e('Настройки успешно сохранены!', 'mst-auth-lk'); ?></div>
+    <?php if (!empty($success)): ?>
+        <div class="mst-notice mst-notice-success">✅ Настройки успешно сохранены!</div>
     <?php endif; ?>
 
-    <!-- TABS -->
+    <?php if (!empty($logs_cleared)): ?>
+        <div class="mst-notice mst-notice-success">🗑️ Логи успешно очищены!</div>
+    <?php endif; ?>
+
+    <?php if (!empty($guide_saved)): ?>
+        <div class="mst-notice mst-notice-success">✅ Профиль гида успешно обновлен!</div>
+    <?php endif; ?>
+
+    <?php if (!empty($guide_added)): ?>
+        <div class="mst-notice mst-notice-success">✅ Пользователь добавлен как гид!</div>
+    <?php endif; ?>
+
+    <?php if (!empty($guide_removed)): ?>
+        <div class="mst-notice mst-notice-success">🗑️ Статус гида удален!</div>
+    <?php endif; ?>
+
+    <?php if (!empty($fake_review_added)): ?>
+        <div class="mst-notice mst-notice-success">✅ Фейк-отзыв успешно добавлен!</div>
+    <?php endif; ?>
+
+    <?php if (!empty($fake_review_deleted)): ?>
+        <div class="mst-notice mst-notice-success">🗑️ Фейк-отзыв удален!</div>
+    <?php endif; ?>
+
+    <!-- Tabs -->
     <div class="mst-tabs">
-        <a href="?page=mst-auth-lk-settings&tab=oauth" class="mst-tab <?php echo $active_tab === 'oauth' ? 'active' : ''; ?>">🔐 OAuth + OTP</a>
-        <a href="?page=mst-auth-lk-settings&tab=guides" class="mst-tab <?php echo $active_tab === 'guides' ? 'active' : ''; ?>">👥 <?php _e('Гиды', 'mst-auth-lk'); ?></a>
-        <a href="?page=mst-auth-lk-settings&tab=profile_settings" class="mst-tab <?php echo $active_tab === 'profile_settings' ? 'active' : ''; ?>">🎨 <?php _e('Настройки профиля', 'mst-auth-lk'); ?></a>
-        <a href="?page=mst-auth-lk-settings&tab=fake_reviews" class="mst-tab <?php echo $active_tab === 'fake_reviews' ? 'active' : ''; ?>">⭐ <?php _e('Фейк-отзывы', 'mst-auth-lk'); ?></a>
-        <a href="?page=mst-auth-lk-settings&tab=logs" class="mst-tab <?php echo $active_tab === 'logs' ? 'active' : ''; ?>">📋 <?php _e('Логи', 'mst-auth-lk'); ?></a>
+        <a href="?page=mst-auth-lk-settings&tab=oauth" class="mst-tab <?php echo $active_tab === 'oauth' ? 'active' : ''; ?>">🔐 OAuth</a>
+        <a href="?page=mst-auth-lk-settings&tab=otp" class="mst-tab <?php echo $active_tab === 'otp' ? 'active' : ''; ?>">📱 OTP</a>
+        <a href="?page=mst-auth-lk-settings&tab=guides" class="mst-tab <?php echo $active_tab === 'guides' ? 'active' : ''; ?>">👥 Гиды (<?php echo count($guides); ?>)</a>
+        <a href="?page=mst-auth-lk-settings&tab=fake_reviews" class="mst-tab <?php echo $active_tab === 'fake_reviews' ? 'active' : ''; ?>">⭐ Фейк-отзывы</a>
+        <a href="?page=mst-auth-lk-settings&tab=logs" class="mst-tab <?php echo $active_tab === 'logs' ? 'active' : ''; ?>">📋 Логи (<?php echo count($otp_logs); ?>)</a>
     </div>
 
-    <?php if ($active_tab === 'profile_settings'): ?>
-        <!-- Profile Display Settings -->
-        <div class="mst-card">
-            <div class="mst-card-header">
-                <div class="icon" style="background:#f0e6fa;">🎨</div>
-                <h2><?php _e('Настройки отображения профиля гида', 'mst-auth-lk'); ?></h2>
-            </div>
-
-            <form method="post">
-                <?php wp_nonce_field('mst_save_profile_settings', 'mst_profile_settings_nonce'); ?>
-
-                <div class="mst-provider-section">
-                    <h3 style="margin:0 0 16px; font-size:16px; font-weight:600;">📐 <?php _e('Размеры карточки отзыва', 'mst-auth-lk'); ?></h3>
-
-                    <div class="mst-form-row">
-                        <div class="mst-form-group">
-                            <label><?php _e('Отступ внутри карточки (px)', 'mst-auth-lk'); ?></label>
-                            <input type="number" name="card_padding" value="<?php echo esc_attr($profile_settings['card_padding'] ?? 20); ?>" min="10" max="40">
-                        </div>
-                        <div class="mst-form-group">
-                            <label><?php _e('Размер аватара автора (px)', 'mst-auth-lk'); ?></label>
-                            <input type="number" name="avatar_size" value="<?php echo esc_attr($profile_settings['avatar_size'] ?? 60); ?>" min="40" max="100">
-                        </div>
-                    </div>
-
-                    <div class="mst-form-row">
-                        <div class="mst-form-group">
-                            <label><?php _e('Размер заголовка (px)', 'mst-auth-lk'); ?></label>
-                            <input type="number" name="title_size" value="<?php echo esc_attr($profile_settings['title_size'] ?? 16); ?>" min="14" max="24">
-                        </div>
-                        <div class="mst-form-group">
-                            <label><?php _e('Размер текста отзыва (px)', 'mst-auth-lk'); ?></label>
-                            <input type="number" name="text_size" value="<?php echo esc_attr($profile_settings['text_size'] ?? 14); ?>" min="12" max="20">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mst-provider-section">
-                    <h3 style="margin:0 0 16px; font-size:16px; font-weight:600;">📷 <?php _e('Лайтбокс фотографий', 'mst-auth-lk'); ?></h3>
-
-                    <div class="mst-form-row">
-                        <div class="mst-form-group">
-                            <label><?php _e('Ширина изображения (%)', 'mst-auth-lk'); ?></label>
-                            <input type="number" name="lightbox_image_width" value="<?php echo esc_attr($profile_settings['lightbox_image_width'] ?? 70); ?>" min="50" max="85">
-                            <p class="mst-help-text"><?php _e('Оставшееся место займёт панель с информацией', 'mst-auth-lk'); ?></p>
-                        </div>
-                        <div class="mst-form-group">
-                            <label><?php _e('Отзывов на странице', 'mst-auth-lk'); ?></label>
-                            <input type="number" name="reviews_per_page" value="<?php echo esc_attr($profile_settings['reviews_per_page'] ?? 9); ?>" min="3" max="30">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mst-provider-section">
-                    <h3 style="margin:0 0 16px; font-size:16px; font-weight:600;">👁️ <?php _e('Предпросмотр карточки', 'mst-auth-lk'); ?></h3>
-                    
-                    <div class="mst-preview-box">
-                        <div class="mst-preview-card" style="padding: <?php echo intval($profile_settings['card_padding'] ?? 20); ?>px;">
-                            <div class="mst-preview-avatar" style="width: <?php echo intval($profile_settings['avatar_size'] ?? 60); ?>px; height: <?php echo intval($profile_settings['avatar_size'] ?? 60); ?>px;"></div>
-                            <div class="mst-preview-content">
-                                <div class="mst-preview-name" style="font-size: <?php echo intval($profile_settings['title_size'] ?? 16); ?>px;">Анна С. ★★★★★</div>
-                                <div class="mst-preview-text" style="font-size: <?php echo intval($profile_settings['text_size'] ?? 14); ?>px;">Спасибо за честность! Все было именно так, как обещали. Отличный гид!</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" name="mst_save_profile_settings" class="mst-btn">💾 <?php _e('Сохранить настройки', 'mst-auth-lk'); ?></button>
-            </form>
-        </div>
-
-    <?php elseif ($active_tab === 'oauth'): ?>
-        <!-- OAuth Settings -->
+    <?php if ($active_tab === 'oauth'): ?>
+        <!-- OAuth Settings (3 провайдера, как в старом файле) -->
         <form method="post">
             <?php wp_nonce_field('mst_save_oauth_settings', 'mst_oauth_nonce'); ?>
-            
+
             <div class="mst-card">
                 <div class="mst-card-header">
                     <div class="icon" style="background:#f0e6fa;">🔐</div>
-                    <h2>OAuth провайдеры</h2>
+                    <h2>OAuth Providers</h2>
                 </div>
+
+                <!-- Google -->
                 <div class="mst-provider-section">
-                    <h3><?php _e('Google', 'mst-auth-lk'); ?></h3>
+                    <div class="mst-provider-header">
+                        <div class="mst-provider-info">
+                            <div class="mst-provider-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="mst-provider-name">Google</div>
+                                <div class="mst-provider-desc">Sign in with Google account</div>
+                            </div>
+                        </div>
+                        <label class="mst-toggle">
+                            <input type="checkbox" name="google_enabled" value="1" <?php checked(!empty($oauth_enabled['google'])); ?>>
+                            <span class="mst-toggle-slider"></span>
+                        </label>
+                    </div>
+
                     <div class="mst-form-row">
                         <div class="mst-form-group">
-                            <label><?php _e('Client ID', 'mst-auth-lk'); ?></label>
-                            <input type="text" name="google_client_id" value="<?php echo esc_attr($oauth_settings['google_client_id'] ?? ''); ?>">
+                            <label>Client ID</label>
+                            <input type="text" name="google_client_id"
+                                   value="<?php echo esc_attr($oauth_settings['google_client_id'] ?? ''); ?>"
+                                   placeholder="xxx.apps.googleusercontent.com">
                         </div>
                         <div class="mst-form-group">
-                            <label><?php _e('Client Secret', 'mst-auth-lk'); ?></label>
-                            <input type="text" name="google_client_secret" value="<?php echo esc_attr($oauth_settings['google_client_secret'] ?? ''); ?>">
+                            <label>Client Secret</label>
+                            <input type="password" name="google_client_secret"
+                                   value="<?php echo esc_attr($oauth_settings['google_client_secret'] ?? ''); ?>"
+                                   placeholder="GOCSPX-xxxxxxxx">
                         </div>
                     </div>
-                    <label>
-                        <input type="checkbox" name="google_enabled" <?php checked($oauth_enabled['google']); ?>>
-                        <?php _e('Включить', 'mst-auth-lk'); ?>
-                    </label>
+
+                    <div>
+                        <strong style="font-size:13px;">Callback URL:</strong>
+                        <div class="mst-callback-url"><?php echo home_url('/?mst_oauth_callback=google'); ?></div>
+                    </div>
                 </div>
+
+                <!-- VK -->
                 <div class="mst-provider-section">
-                    <h3><?php _e('VK', 'mst-auth-lk'); ?></h3>
+                    <div class="mst-provider-header">
+                        <div class="mst-provider-info">
+                            <div class="mst-provider-icon">
+                                <svg viewBox="0 0 24 24" fill="#4C75A3">
+                                    <path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.523-2.052-1.727-1.032-1.008-1.488-1.143-1.744-1.143-.36 0-.456.096-.456.552v1.584c0 .396-.12.624-1.128.624-1.668 0-3.516-.996-4.812-2.868-1.956-2.76-2.496-4.836-2.496-5.268 0-.252.096-.492.552-.492h1.752c.408 0 .564.18.72.612.792 2.292 2.112 4.296 2.652 4.296.204 0 .3-.096.3-.612V9.123c-.072-1.2-.696-1.296-.696-1.728 0-.18.144-.36.384-.36h2.748c.324 0 .444.18.444.576v3.108c0 .324.144.444.24.444.204 0 .372-.12.744-.492 1.152-1.284 1.968-3.264 1.968-3.264.108-.228.3-.444.696-.444h1.752c.528 0 .648.276.528.66-.216 1.02-2.352 3.99-2.352 3.99-.18.3-.252.432 0 .768.18.252.792.768 1.2 1.236.756.864 1.32 1.584 1.476 2.076.156.48-.084.732-.564.732z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="mst-provider-name">VK (ВКонтакте)</div>
+                                <div class="mst-provider-desc">Вход через VK ID</div>
+                            </div>
+                        </div>
+                        <label class="mst-toggle">
+                            <input type="checkbox" name="vk_enabled" value="1" <?php checked(!empty($oauth_enabled['vk'])); ?>>
+                            <span class="mst-toggle-slider"></span>
+                        </label>
+                    </div>
+
                     <div class="mst-form-row">
                         <div class="mst-form-group">
-                            <label><?php _e('Client ID', 'mst-auth-lk'); ?></label>
-                            <input type="text" name="vk_client_id" value="<?php echo esc_attr($oauth_settings['vk_client_id'] ?? ''); ?>">
+                            <label>App ID</label>
+                            <input type="text" name="vk_client_id"
+                                   value="<?php echo esc_attr($oauth_settings['vk_client_id'] ?? ''); ?>">
                         </div>
                         <div class="mst-form-group">
-                            <label><?php _e('Client Secret', 'mst-auth-lk'); ?></label>
-                            <input type="text" name="vk_client_secret" value="<?php echo esc_attr($oauth_settings['vk_client_secret'] ?? ''); ?>">
+                            <label>Secure Key</label>
+                            <input type="password" name="vk_client_secret"
+                                   value="<?php echo esc_attr($oauth_settings['vk_client_secret'] ?? ''); ?>">
                         </div>
                     </div>
-                    <label>
-                        <input type="checkbox" name="vk_enabled" <?php checked($oauth_enabled['vk']); ?>>
-                        <?php _e('Включить', 'mst-auth-lk'); ?>
-                    </label>
+
+                    <div>
+                        <strong style="font-size:13px;">Callback URL:</strong>
+                        <div class="mst-callback-url"><?php echo home_url('/?mst_oauth_callback=vk'); ?></div>
+                    </div>
                 </div>
+
+                <!-- Yandex -->
                 <div class="mst-provider-section">
-                    <h3><?php _e('Yandex', 'mst-auth-lk'); ?></h3>
+                    <div class="mst-provider-header">
+                        <div class="mst-provider-info">
+                            <div class="mst-provider-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path fill="#FC3F1D" d="M2.04 12c0-5.523 4.476-10 10-10 5.522 0 10 4.477 10 10s-4.478 10-10 10c-5.524 0-10-4.477-10-10zm6.627 6.325h2.008V6.625h-1.26c-2.334 0-3.566 1.256-3.566 3.067 0 1.515.602 2.402 1.848 3.319l-2.091 5.314h2.187l1.975-4.924.547.367c1.066.712 1.54 1.283 1.54 2.528v2.029h-.001zm-.16-8.437c0-1.022.596-1.643 1.52-1.643h.16v4.268l-.49-.327c-.802-.535-1.19-1.093-1.19-2.298z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="mst-provider-name">Яндекс</div>
+                                <div class="mst-provider-desc">Вход через Яндекс ID</div>
+                            </div>
+                        </div>
+                        <label class="mst-toggle">
+                            <input type="checkbox" name="yandex_enabled" value="1" <?php checked(!empty($oauth_enabled['yandex'])); ?>>
+                            <span class="mst-toggle-slider"></span>
+                        </label>
+                    </div>
+
                     <div class="mst-form-row">
                         <div class="mst-form-group">
-                            <label><?php _e('Client ID', 'mst-auth-lk'); ?></label>
-                            <input type="text" name="yandex_client_id" value="<?php echo esc_attr($oauth_settings['yandex_client_id'] ?? ''); ?>">
+                            <label>Client ID</label>
+                            <input type="text" name="yandex_client_id"
+                                   value="<?php echo esc_attr($oauth_settings['yandex_client_id'] ?? ''); ?>">
                         </div>
                         <div class="mst-form-group">
-                            <label><?php _e('Client Secret', 'mst-auth-lk'); ?></label>
-                            <input type="text" name="yandex_client_secret" value="<?php echo esc_attr($oauth_settings['yandex_client_secret'] ?? ''); ?>">
+                            <label>Client Secret</label>
+                            <input type="password" name="yandex_client_secret"
+                                   value="<?php echo esc_attr($oauth_settings['yandex_client_secret'] ?? ''); ?>">
                         </div>
                     </div>
-                    <label>
-                        <input type="checkbox" name="yandex_enabled" <?php checked($oauth_enabled['yandex']); ?>>
-                        <?php _e('Включить', 'mst-auth-lk'); ?>
-                    </label>
+
+                    <div>
+                        <strong style="font-size:13px;">Callback URL:</strong>
+                        <div class="mst-callback-url"><?php echo home_url('/?mst_oauth_callback=yandex'); ?></div>
+                    </div>
                 </div>
-                <p style="color:#6b7280;">OAuth настройки сохранены в основном файле.</p>
             </div>
 
             <button type="submit" name="mst_oauth_save" class="mst-btn">💾 Сохранить настройки</button>
         </form>
+
+    <?php elseif ($active_tab === 'otp'): ?>
+        <!-- OTP Settings -->
+        <form method="post">
+            <?php wp_nonce_field('mst_save_oauth_settings', 'mst_oauth_nonce'); ?>
+
+            <div class="mst-card">
+                <div class="mst-card-header">
+                    <div class="icon" style="background:#dbeafe;">📱</div>
+                    <h2>OTP Верификация</h2>
+                </div>
+
+                <!-- Main OTP Settings -->
+                <div class="mst-provider-section">
+                    <div class="mst-provider-header">
+                        <div class="mst-provider-info">
+                            <div class="mst-provider-icon" style="font-size:24px;">🔐</div>
+                            <div>
+                                <div class="mst-provider-name">Двухфакторная аутентификация</div>
+                                <div class="mst-provider-desc">Требовать OTP код при входе с нового устройства</div>
+                            </div>
+                        </div>
+                        <label class="mst-toggle">
+                            <input type="checkbox" name="otp_enabled" value="1" <?php checked(!empty($otp_settings['enabled'])); ?>>
+                            <span class="mst-toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="mst-form-row">
+                        <div class="mst-form-group">
+                            <label>Метод отправки OTP</label>
+                            <select name="otp_method">
+                                <option value="email" <?php selected($otp_settings['method'] ?? 'email', 'email'); ?>>📧 Email</option>
+                                <option value="sms"   <?php selected($otp_settings['method'] ?? 'email', 'sms'); ?>>📱 SMS</option>
+                                <option value="both"  <?php selected($otp_settings['method'] ?? 'email', 'both'); ?>>📧+📱 Email + SMS</option>
+                            </select>
+                        </div>
+                        <div class="mst-form-group">
+                            <label>Длина кода</label>
+                            <select name="otp_code_length">
+                                <option value="4" <?php selected($otp_settings['code_length'] ?? 6, 4); ?>>4 цифры</option>
+                                <option value="6" <?php selected($otp_settings['code_length'] ?? 6, 6); ?>>6 цифр</option>
+                                <option value="8" <?php selected($otp_settings['code_length'] ?? 6, 8); ?>>8 цифр</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mst-form-row">
+                        <div class="mst-form-group">
+                            <label>Срок действия кода (минуты)</label>
+                            <input type="number" name="otp_expiry_minutes"
+                                   value="<?php echo esc_attr($otp_settings['expiry_minutes'] ?? 10); ?>" min="1" max="60">
+                        </div>
+                        <div class="mst-form-group">
+                            <label>Максимум попыток ввода</label>
+                            <input type="number" name="otp_max_attempts"
+                                   value="<?php echo esc_attr($otp_settings['max_attempts'] ?? 5); ?>" min="3" max="10">
+                        </div>
+                    </div>
+
+                    <div class="mst-provider-header" style="margin-top:16px;">
+                        <div class="mst-provider-info">
+                            <div class="mst-provider-icon" style="font-size:24px;">🐛</div>
+                            <div>
+                                <div class="mst-provider-name">Debug режим</div>
+                                <div class="mst-provider-desc">Показывать OTP код в логах (только для тестирования!)</div>
+                            </div>
+                        </div>
+                        <label class="mst-toggle">
+                            <input type="checkbox" name="otp_debug_mode" value="1" <?php checked(!empty($otp_settings['debug_mode'])); ?>>
+                            <span class="mst-toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- SMS Provider Settings -->
+                <div class="mst-provider-section">
+                    <div class="mst-card-header" style="border:0; padding:0; margin-bottom:16px;">
+                        <div class="icon" style="background:#fef3c7; font-size:16px;">📲</div>
+                        <h2 style="font-size:16px;">SMS Провайдер</h2>
+                    </div>
+
+                    <div class="mst-form-group" style="margin-bottom:16px;">
+                        <label>Провайдер SMS</label>
+                        <select name="sms_provider" id="sms_provider" onchange="toggleSmsFields()">
+                            <option value="none"   <?php selected($otp_settings['sms_provider'] ?? 'none', 'none'); ?>>Не выбран</option>
+                            <option value="twilio" <?php selected($otp_settings['sms_provider'] ?? 'none', 'twilio'); ?>>Twilio</option>
+                            <option value="smsru"  <?php selected($otp_settings['sms_provider'] ?? 'none', 'smsru'); ?>>SMS.ru</option>
+                        </select>
+                        <p class="mst-help-text">Для отправки SMS необходимо настроить провайдера</p>
+                    </div>
+
+                    <!-- Twilio Settings -->
+                    <div id="twilio_fields" style="<?php echo ($otp_settings['sms_provider'] ?? 'none') !== 'twilio' ? 'display:none;' : ''; ?>">
+                        <div class="mst-form-row">
+                            <div class="mst-form-group">
+                                <label>Account SID</label>
+                                <input type="text" name="twilio_sid"
+                                       value="<?php echo esc_attr($otp_settings['twilio_sid'] ?? ''); ?>" placeholder="ACxxxxxxxx">
+                            </div>
+                            <div class="mst-form-group">
+                                <label>Auth Token</label>
+                                <input type="password" name="twilio_token"
+                                       value="<?php echo esc_attr($otp_settings['twilio_token'] ?? ''); ?>">
+                            </div>
+                        </div>
+                        <div class="mst-form-group">
+                            <label>Номер отправителя</label>
+                            <input type="text" name="twilio_phone"
+                                   value="<?php echo esc_attr($otp_settings['twilio_phone'] ?? ''); ?>" placeholder="+1234567890">
+                            <p class="mst-help-text">Номер Twilio в формате +1234567890</p>
+                        </div>
+                    </div>
+
+                    <!-- SMS.ru Settings -->
+                    <div id="smsru_fields" style="<?php echo ($otp_settings['sms_provider'] ?? 'none') !== 'smsru' ? 'display:none;' : ''; ?>">
+                        <div class="mst-form-row">
+                            <div class="mst-form-group">
+                                <label>API Key</label>
+                                <input type="password" name="smsru_api_key"
+                                       value="<?php echo esc_attr($otp_settings['smsru_api_key'] ?? ''); ?>">
+                            </div>
+                            <div class="mst-form-group">
+                                <label>Имя отправителя</label>
+                                <input type="text" name="smsru_sender"
+                                       value="<?php echo esc_attr($otp_settings['smsru_sender'] ?? ''); ?>" placeholder="MySuperTour">
+                                <p class="mst-help-text">Должно быть подтверждено в SMS.ru</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" name="mst_oauth_save" class="mst-btn">💾 Сохранить настройки</button>
+        </form>
+
+        <script>
+            function toggleSmsFields() {
+                var provider = document.getElementById('sms_provider').value;
+                document.getElementById('twilio_fields').style.display = provider === 'twilio' ? 'block' : 'none';
+                document.getElementById('smsru_fields').style.display  = provider === 'smsru'  ? 'block' : 'none';
+            }
+        </script>
 
     <?php elseif ($active_tab === 'guides'): ?>
         <!-- Guides Management -->
@@ -492,7 +654,118 @@ $edit_guide    = $edit_guide_id ? get_userdata($edit_guide_id) : null;
                     <div class="icon" style="background:#f0e6fa;">✏️</div>
                     <h2><?php _e('Редактирование профиля гида', 'mst-auth-lk'); ?>: <?php echo esc_html($edit_guide->display_name); ?></h2>
                 </div>
-                <p><a href="?page=mst-auth-lk-settings&tab=guides" class="mst-btn mst-btn-secondary">← <?php _e('Назад к списку', 'mst-auth-lk'); ?></a></p>
+
+                <form method="post">
+                    <?php wp_nonce_field('mst_save_guide_settings', 'mst_guide_nonce'); ?>
+                    <input type="hidden" name="guide_user_id" value="<?php echo esc_attr($edit_guide_id); ?>">
+
+                    <div class="mst-provider-section">
+                        <div style="display:flex; align-items:center; gap:20px; margin-bottom:20px;">
+                            <?php
+                            $guide_avatar    = get_user_meta($edit_guide_id, 'mst_lk_avatar', true);
+                            $guide_avatar_url = $guide_avatar ? wp_get_attachment_url($guide_avatar) : get_avatar_url($edit_guide_id, ['size' => 100]);
+                            ?>
+                            <img src="<?php echo esc_url($guide_avatar_url); ?>" alt="" class="mst-guide-row-avatar" style="width:80px; height:80px;">
+                            <div>
+                                <h3 style="margin:0 0 4px;"><?php echo esc_html($edit_guide->display_name); ?></h3>
+                                <p style="margin:0; color:#6b7280; font-size:14px;"><?php echo esc_html($edit_guide->user_email); ?></p>
+                                <p style="margin:4px 0 0; color:#9952E0; font-size:13px;">ID: <?php echo $edit_guide_id; ?></p>
+                            </div>
+                        </div>
+
+                        <div class="mst-form-row">
+                            <div class="mst-form-group">
+                                <label><?php _e('Город', 'mst-auth-lk'); ?></label>
+                                <input type="text" name="guide_city"
+                                       value="<?php echo esc_attr(get_user_meta($edit_guide_id, 'mst_guide_city', true)); ?>"
+                                       placeholder="Санкт-Петербург">
+                            </div>
+                            <div class="mst-form-group">
+                                <label><?php _e('Опыт (лет)', 'mst-auth-lk'); ?></label>
+                                <input type="number" name="guide_experience_years"
+                                       value="<?php echo esc_attr(get_user_meta($edit_guide_id, 'mst_guide_experience_years', true) ?: 0); ?>"
+                                       min="0" max="50">
+                            </div>
+                        </div>
+
+                        <div class="mst-form-row">
+                            <div class="mst-form-group">
+                                <label><?php _e('Туров проведено', 'mst-auth-lk'); ?></label>
+                                <input type="number" name="guide_tours_count"
+                                       value="<?php echo esc_attr(get_user_meta($edit_guide_id, 'mst_guide_tours_count', true) ?: 0); ?>"
+                                       min="0">
+                            </div>
+                            <div class="mst-form-group">
+                                <label><?php _e('Рейтинг', 'mst-auth-lk'); ?></label>
+                                <input type="text" name="guide_rating"
+                                       value="<?php echo esc_attr(get_user_meta($edit_guide_id, 'mst_guide_rating', true) ?: '5.0'); ?>"
+                                       placeholder="5.0">
+                            </div>
+                        </div>
+
+                        <div class="mst-form-row">
+                            <div class="mst-form-group">
+                                <label><?php _e('Кол-во отзывов', 'mst-auth-lk'); ?></label>
+                                <input type="number" name="guide_reviews_count"
+                                       value="<?php echo esc_attr(get_user_meta($edit_guide_id, 'mst_guide_reviews_count', true) ?: 0); ?>"
+                                       min="0">
+                            </div>
+                            <div class="mst-form-group">
+                                <label><?php _e('Ученая степень', 'mst-auth-lk'); ?></label>
+                                <input type="text" name="guide_academic_title"
+                                       value="<?php echo esc_attr(get_user_meta($edit_guide_id, 'mst_guide_academic_title', true)); ?>"
+                                       placeholder="к.и.н., PhD">
+                            </div>
+                        </div>
+
+                        <div class="mst-form-group">
+                            <label><?php _e('Языки', 'mst-auth-lk'); ?> <small style="color:#6b7280;">(через запятую)</small></label>
+                            <input type="text" name="guide_languages"
+                                   value="<?php echo esc_attr(get_user_meta($edit_guide_id, 'mst_guide_languages', true)); ?>"
+                                   placeholder="Русский, Английский, Французский">
+                        </div>
+
+                        <div class="mst-form-group">
+                            <label><?php _e('Специализация', 'mst-auth-lk'); ?> <small style="color:#6b7280;">(через запятую)</small></label>
+                            <input type="text" name="guide_specialization"
+                                   value="<?php echo esc_attr(get_user_meta($edit_guide_id, 'mst_guide_specialization', true)); ?>"
+                                   placeholder="Исторические туры, Музеи, Архитектура">
+                        </div>
+
+                        <div class="mst-form-group">
+                            <label><?php _e('О гиде (биография)', 'mst-auth-lk'); ?></label>
+                            <textarea name="guide_bio" placeholder="Расскажите о себе..."><?php echo esc_textarea(get_user_meta($edit_guide_id, 'mst_guide_bio', true)); ?></textarea>
+                        </div>
+
+                        <div class="mst-form-group">
+                            <label><?php _e('Достижения', 'mst-auth-lk'); ?> <small style="color:#6b7280;">(каждое с новой строки)</small></label>
+                            <textarea name="guide_achievements" placeholder="Лучший гид 2023&#10;Сертифицированный историк&#10;500+ довольных туристов"><?php echo esc_textarea(get_user_meta($edit_guide_id, 'mst_guide_achievements', true)); ?></textarea>
+                        </div>
+
+                        <div class="mst-form-row">
+                            <div class="mst-form-group">
+                                <label><?php _e('Статус', 'mst-auth-lk'); ?></label>
+                                <select name="guide_status">
+                                    <option value="guide"  <?php selected(get_user_meta($edit_guide_id, 'mst_user_status', true), 'guide'); ?>><?php _e('Гид', 'mst-auth-lk'); ?></option>
+                                    <option value="bronze" <?php selected(get_user_meta($edit_guide_id, 'mst_user_status', true), 'bronze'); ?>><?php _e('Бронза', 'mst-auth-lk'); ?></option>
+                                    <option value="silver" <?php selected(get_user_meta($edit_guide_id, 'mst_user_status', true), 'silver'); ?>><?php _e('Серебро', 'mst-auth-lk'); ?></option>
+                                    <option value="gold"   <?php selected(get_user_meta($edit_guide_id, 'mst_user_status', true), 'gold'); ?>><?php _e('Золото', 'mst-auth-lk'); ?></option>
+                                </select>
+                            </div>
+                            <div class="mst-form-group">
+                                <label style="display:flex; align-items:center; gap:8px; margin-top:28px;">
+                                    <input type="checkbox" name="guide_verified" value="1" <?php checked(get_user_meta($edit_guide_id, 'mst_guide_verified', true)); ?>>
+                                    ✅ <?php _e('Верифицированный гид', 'mst-auth-lk'); ?>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:12px;">
+                        <button type="submit" name="mst_save_guide" class="mst-btn">💾 <?php _e('Сохранить', 'mst-auth-lk'); ?></button>
+                        <a href="?page=mst-auth-lk-settings&tab=guides" class="mst-btn mst-btn-secondary">← <?php _e('Назад к списку', 'mst-auth-lk'); ?></a>
+                    </div>
+                </form>
             </div>
         <?php else: ?>
             <!-- Guides List -->
@@ -501,6 +774,23 @@ $edit_guide    = $edit_guide_id ? get_userdata($edit_guide_id) : null;
                     <div class="icon" style="background:#f0e6fa;">👥</div>
                     <h2><?php _e('Управление гидами', 'mst-auth-lk'); ?></h2>
                 </div>
+
+                <!-- Add New Guide -->
+                <form method="post" class="mst-add-guide-form">
+                    <?php wp_nonce_field('mst_save_guide_settings', 'mst_guide_nonce'); ?>
+                    <div class="mst-form-group">
+                        <label><?php _e('Добавить пользователя как гида', 'mst-auth-lk'); ?></label>
+                        <select name="add_guide_user_id">
+                            <option value=""><?php _e('Выберите пользователя...', 'mst-auth-lk'); ?></option>
+                            <?php
+                            $all_users = get_users(['exclude' => wp_list_pluck($guides, 'ID')]);
+                            foreach ($all_users as $user): ?>
+                                <option value="<?php echo $user->ID; ?>"><?php echo esc_html($user->display_name); ?> (<?php echo esc_html($user->user_email); ?>)</option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <button type="submit" name="mst_add_guide" class="mst-btn mst-btn-sm">➕ <?php _e('Добавить гида', 'mst-auth-lk'); ?></button>
+                </form>
 
                 <?php if (empty($guides)): ?>
                     <div class="mst-empty-logs">
@@ -515,6 +805,7 @@ $edit_guide    = $edit_guide_id ? get_userdata($edit_guide_id) : null;
                             <th><?php _e('Гид', 'mst-auth-lk'); ?></th>
                             <th><?php _e('Город', 'mst-auth-lk'); ?></th>
                             <th><?php _e('Рейтинг', 'mst-auth-lk'); ?></th>
+                            <th><?php _e('Туров', 'mst-auth-lk'); ?></th>
                             <th><?php _e('Статус', 'mst-auth-lk'); ?></th>
                             <th><?php _e('Действия', 'mst-auth-lk'); ?></th>
                         </tr>
@@ -526,7 +817,8 @@ $edit_guide    = $edit_guide_id ? get_userdata($edit_guide_id) : null;
                             $g_verified   = get_user_meta($g->ID, 'mst_guide_verified', true);
                             $g_city       = get_user_meta($g->ID, 'mst_guide_city', true) ?: '-';
                             $g_rating     = get_user_meta($g->ID, 'mst_guide_rating', true) ?: '5.0';
-                        ?>
+                            $g_tours      = get_user_meta($g->ID, 'mst_guide_tours_count', true) ?: '0';
+                            ?>
                             <tr>
                                 <td><code><?php echo $g->ID; ?></code></td>
                                 <td>
@@ -540,6 +832,7 @@ $edit_guide    = $edit_guide_id ? get_userdata($edit_guide_id) : null;
                                 </td>
                                 <td><?php echo esc_html($g_city); ?></td>
                                 <td>⭐ <?php echo esc_html($g_rating); ?></td>
+                                <td><?php echo esc_html($g_tours); ?></td>
                                 <td>
                                     <?php if ($g_verified): ?>
                                         <span class="mst-guide-badge verified">✅ <?php _e('Верифицирован', 'mst-auth-lk'); ?></span>
@@ -549,8 +842,13 @@ $edit_guide    = $edit_guide_id ? get_userdata($edit_guide_id) : null;
                                 </td>
                                 <td>
                                     <div class="mst-guide-actions">
-                                        <a href="?page=mst-auth-lk-settings&tab=guides&edit_guide=<?php echo $g->ID; ?>" class="mst-btn mst-btn-sm mst-btn-secondary">✏️</a>
-                                        <a href="<?php echo add_query_arg('guide_id', $g->ID, home_url('/guide/')); ?>" class="mst-btn mst-btn-sm mst-btn-secondary" target="_blank">👁️</a>
+                                        <a href="?page=mst-auth-lk-settings&tab=guides&edit_guide=<?php echo $g->ID; ?>" class="mst-btn mst-btn-sm mst-btn-secondary">✏️ <?php _e('Изменить', 'mst-auth-lk'); ?></a>
+                                        <a href="<?php echo add_query_arg('guide_id', $g->ID, home_url('/guide-profile/')); ?>" class="mst-btn mst-btn-sm mst-btn-secondary" target="_blank">👁️</a>
+                                        <form method="post" style="display:inline;" onsubmit="return confirm('<?php _e('Удалить статус гида?', 'mst-auth-lk'); ?>');">
+                                            <?php wp_nonce_field('mst_save_guide_settings', 'mst_guide_nonce'); ?>
+                                            <input type="hidden" name="remove_guide_id" value="<?php echo $g->ID; ?>">
+                                            <button type="submit" name="mst_remove_guide" class="mst-btn mst-btn-sm mst-btn-danger">🗑️</button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -562,14 +860,236 @@ $edit_guide    = $edit_guide_id ? get_userdata($edit_guide_id) : null;
         <?php endif; ?>
 
     <?php elseif ($active_tab === 'fake_reviews'): ?>
-        <!-- Fake Reviews -->
+        <!-- Fake Reviews Management с загрузкой фото (обновлённый) -->
         <div class="mst-card">
             <div class="mst-card-header">
                 <div class="icon" style="background:#fef3c7;">⭐</div>
                 <h2><?php _e('Управление фейк-отзывами гидов', 'mst-auth-lk'); ?></h2>
             </div>
-            <p style="color:#6b7280;"><?php _e('Добавляйте отзывы для демонстрации на профилях гидов', 'mst-auth-lk'); ?></p>
+
+            <!-- Add New Fake Review -->
+            <form method="post" enctype="multipart/form-data" class="mst-provider-section">
+                <?php wp_nonce_field('mst_save_fake_review', 'mst_fake_review_nonce'); ?>
+
+                <h3 style="margin:0 0 16px; font-size:16px; font-weight:600;">➕ <?php _e('Добавить новый отзыв', 'mst-auth-lk'); ?></h3>
+
+                <div class="mst-form-row">
+                    <div class="mst-form-group">
+                        <label><?php _e('Выберите гида', 'mst-auth-lk'); ?> *</label>
+                        <select name="fake_review_guide_id" required>
+                            <option value=""><?php _e('Выберите гида...', 'mst-auth-lk'); ?></option>
+                            <?php foreach ($guides as $g): ?>
+                                <option value="<?php echo $g->ID; ?>"><?php echo esc_html($g->display_name); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mst-form-group">
+                        <label><?php _e('Рейтинг', 'mst-auth-lk'); ?></label>
+                        <select name="fake_review_rating">
+                            <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4)</option>
+                            <option value="3">⭐⭐⭐ (3)</option>
+                            <option value="2">⭐⭐ (2)</option>
+                            <option value="1">⭐ (1)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mst-form-row">
+                    <div class="mst-form-group">
+                        <label><?php _e('Имя автора', 'mst-auth-lk'); ?> *</label>
+                        <input type="text" name="fake_review_author" placeholder="Анна С." required>
+                    </div>
+                    <div class="mst-form-group">
+                        <label><?php _e('Инициалы', 'mst-auth-lk'); ?></label>
+                        <input type="text" name="fake_review_initials" placeholder="АС" maxlength="3">
+                    </div>
+                </div>
+
+                <!-- NEW: Author Avatar Upload -->
+                <div class="mst-form-row">
+                    <div class="mst-form-group">
+                        <label><?php _e('Аватар автора', 'mst-auth-lk'); ?></label>
+                        <div class="mst-file-upload-wrapper">
+                            <label class="mst-file-upload-label" for="fake_review_avatar">
+                                📷 <?php _e('Загрузить фото автора', 'mst-auth-lk'); ?>
+                            </label>
+                            <input type="file" name="fake_review_avatar" id="fake_review_avatar" accept="image/*" style="display:none;">
+                            <div id="avatar-preview" class="mst-file-preview"></div>
+                        </div>
+                        <p class="mst-help-text"><?php _e('Если не загружено, будут показаны инициалы', 'mst-auth-lk'); ?></p>
+                    </div>
+                    <div class="mst-form-group">
+                        <label><?php _e('Фотографии отзыва', 'mst-auth-lk'); ?></label>
+                        <div class="mst-file-upload-wrapper">
+                            <label class="mst-file-upload-label" for="fake_review_photos">
+                                🖼️ <?php _e('Загрузить фото (до 5)', 'mst-auth-lk'); ?>
+                            </label>
+                            <input type="file" name="fake_review_photos[]" id="fake_review_photos" accept="image/*" multiple style="display:none;">
+                            <div id="photos-preview" class="mst-file-preview"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mst-form-row">
+                    <div class="mst-form-group">
+                        <label><?php _e('Город', 'mst-auth-lk'); ?></label>
+                        <input type="text" name="fake_review_city" placeholder="Прага">
+                    </div>
+                    <div class="mst-form-group">
+                        <label><?php _e('Название тура', 'mst-auth-lk'); ?></label>
+                        <input type="text" name="fake_review_tour_title" placeholder="Историческая прогулка по старому городу">
+                    </div>
+                </div>
+
+                <div class="mst-form-row">
+                    <div class="mst-form-group">
+                        <label><?php _e('Дата отзыва', 'mst-auth-lk'); ?></label>
+                        <input type="text" name="fake_review_date" placeholder="15 ноября 2024" value="<?php echo date('d F Y'); ?>">
+                    </div>
+                </div>
+
+                <div class="mst-form-group">
+                    <label><?php _e('Текст отзыва', 'mst-auth-lk'); ?> *</label>
+                    <textarea name="fake_review_text" placeholder="Спасибо за честность! Все было именно так, как обещали." required></textarea>
+                </div>
+
+                <button type="submit" name="mst_add_fake_review" class="mst-btn">➕ <?php _e('Добавить отзыв', 'mst-auth-lk'); ?></button>
+            </form>
+
+            <!-- Existing Fake Reviews by Guide -->
+            <?php
+            $has_any_reviews = false;
+            foreach ($guides as $g):
+                $fake_reviews = get_user_meta($g->ID, 'mst_guide_fake_reviews', true) ?: [];
+                if (empty($fake_reviews)) {
+                    continue;
+                }
+                $has_any_reviews = true;
+                ?>
+                <div style="margin-top:32px;">
+                    <h3 style="margin:0 0 16px; font-size:16px; font-weight:600; display:flex; align-items:center; gap:8px;">
+                        <?php
+                        $g_avatar    = get_user_meta($g->ID, 'mst_lk_avatar', true);
+                        $g_avatar_url = $g_avatar ? wp_get_attachment_url($g_avatar) : get_avatar_url($g->ID, ['size' => 32]);
+                        ?>
+                        <img src="<?php echo esc_url($g_avatar_url); ?>" alt="" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
+                        <?php echo esc_html($g->display_name); ?>
+                        <span style="font-weight:normal; color:#6b7280;">(<?php echo count($fake_reviews); ?> <?php _e('отзывов', 'mst-auth-lk'); ?>)</span>
+                    </h3>
+
+                    <?php foreach ($fake_reviews as $review):
+                        $author_avatar_url = '';
+                        if (!empty($review['author_avatar_id'])) {
+                            $author_avatar_url = wp_get_attachment_image_url($review['author_avatar_id'], 'thumbnail');
+                        }
+                        ?>
+                        <div class="mst-fake-review-card">
+                            <div class="mst-fake-review-header">
+                                <div class="mst-fake-review-author">
+                                    <div class="mst-fake-review-avatar">
+                                        <?php if ($author_avatar_url): ?>
+                                            <img src="<?php echo esc_url($author_avatar_url); ?>" alt="">
+                                        <?php else: ?>
+                                            <?php echo esc_html($review['author_initials'] ?? mb_substr($review['author_name'] ?? 'U', 0, 2)); ?>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div>
+                                        <strong><?php echo esc_html($review['author_name'] ?? __('Аноним', 'mst-auth-lk')); ?></strong>
+                                        <div class="mst-fake-review-meta">
+                                            <?php if (!empty($review['city'])): ?>
+                                                <span style="color:#9952E0;"><?php echo esc_html($review['city']); ?></span> •
+                                            <?php endif; ?>
+                                            <?php echo esc_html($review['date'] ?? ''); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mst-fake-review-stars">
+                                    <?php for ($i = 0; $i < intval($review['rating'] ?? 5); $i++): ?>★<?php endfor; ?>
+                                </div>
+                            </div>
+
+                            <?php if (!empty($review['tour_title'])): ?>
+                                <div style="font-weight:600; margin-bottom:8px;"><?php echo esc_html($review['tour_title']); ?></div>
+                            <?php endif; ?>
+
+                            <div class="mst-fake-review-text"><?php echo esc_html($review['text'] ?? ''); ?></div>
+
+                            <!-- Display review photos -->
+                            <?php if (!empty($review['photos']) && is_array($review['photos'])): ?>
+                                <div class="mst-fake-review-photos">
+                                    <?php foreach ($review['photos'] as $photo_id):
+                                        $photo_url = wp_get_attachment_image_url($photo_id, 'thumbnail');
+                                        if (!$photo_url) continue;
+                                        ?>
+                                        <div class="mst-fake-review-photo">
+                                            <img src="<?php echo esc_url($photo_url); ?>" alt="">
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="mst-fake-review-footer">
+                                <small style="color:#9ca3af;">ID: <?php echo esc_html($review['id'] ?? ''); ?></small>
+                                <form method="post" style="display:inline;" onsubmit="return confirm('<?php _e('Удалить этот отзыв?', 'mst-auth-lk'); ?>');">
+                                    <?php wp_nonce_field('mst_save_fake_review', 'mst_fake_review_nonce'); ?>
+                                    <input type="hidden" name="delete_review_guide_id" value="<?php echo $g->ID; ?>">
+                                    <input type="hidden" name="delete_review_id" value="<?php echo esc_attr($review['id'] ?? ''); ?>">
+                                    <button type="submit" name="mst_delete_fake_review" class="mst-btn mst-btn-sm mst-btn-danger">🗑️ <?php _e('Удалить', 'mst-auth-lk'); ?></button>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endforeach; ?>
+
+            <?php if (!$has_any_reviews): ?>
+                <div class="mst-empty-logs" style="margin-top:32px;">
+                    <div style="font-size:48px; margin-bottom:16px;">⭐</div>
+                    <p><?php _e('Фейк-отзывы пока не добавлены', 'mst-auth-lk'); ?></p>
+                </div>
+            <?php endif; ?>
         </div>
+
+        <script>
+            // Preview uploaded files (avatar + photos)
+            document.addEventListener('DOMContentLoaded', function () {
+                const avatarInput   = document.getElementById('fake_review_avatar');
+                const avatarPreview = document.getElementById('avatar-preview');
+                if (avatarInput) {
+                    avatarInput.addEventListener('change', function () {
+                        avatarPreview.innerHTML = '';
+                        if (this.files[0]) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                avatarPreview.innerHTML =
+                                    '<div class="mst-file-preview-item"><img src="' + e.target.result + '" alt=""></div>';
+                            };
+                            reader.readAsDataURL(this.files[0]);
+                        }
+                    });
+                }
+
+                const photosInput   = document.getElementById('fake_review_photos');
+                const photosPreview = document.getElementById('photos-preview');
+                if (photosInput) {
+                    photosInput.addEventListener('change', function () {
+                        photosPreview.innerHTML = '';
+                        const files = Array.from(this.files).slice(0, 5);
+                        files.forEach(function (file) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                const div = document.createElement('div');
+                                div.className = 'mst-file-preview-item';
+                                div.innerHTML = '<img src="' + e.target.result + '" alt="">';
+                                photosPreview.appendChild(div);
+                            };
+                            reader.readAsDataURL(file);
+                        });
+                    });
+                }
+            });
+        </script>
 
     <?php else: ?>
         <!-- OTP Logs -->
@@ -585,7 +1105,67 @@ $edit_guide    = $edit_guide_id ? get_userdata($edit_guide_id) : null;
                     <p>Логи пока пусты</p>
                 </div>
             <?php else: ?>
-                <p style="color:#6b7280;">Последние <?php echo count($otp_logs); ?> записей</p>
+                <table class="mst-log-table">
+                    <thead>
+                    <tr>
+                        <th>Дата/Время</th>
+                        <th>Пользователь</th>
+                        <th>IP</th>
+                        <th>Код</th>
+                        <th>Метод</th>
+                        <th>Статус</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $logs_reversed = array_reverse($otp_logs);
+                    foreach (array_slice($logs_reversed, 0, 100) as $log): ?>
+                        <tr>
+                            <td><?php echo esc_html($log['date'] ?? '-'); ?></td>
+                            <td>
+                                <strong><?php echo esc_html($log['user_email'] ?? '-'); ?></strong>
+                                <?php if (!empty($log['user_id'])): ?>
+                                    <br><small style="color:#6b7280;">ID: <?php echo esc_html($log['user_id']); ?></small>
+                                <?php endif; ?>
+                            </td>
+                            <td><code><?php echo esc_html($log['ip'] ?? '-'); ?></code></td>
+                            <td>
+                                <?php if (!empty($otp_settings['debug_mode']) && !empty($log['code'])): ?>
+                                    <span class="mst-code-display"><?php echo esc_html($log['code']); ?></span>
+                                <?php else: ?>
+                                    <span style="color:#9ca3af;">******</span>
+                                <?php endif; ?>
+                            </td>
+                            <td><?php echo esc_html($log['method'] ?? 'email'); ?></td>
+                            <td>
+                                <span class="mst-log-status <?php echo esc_attr($log['status'] ?? 'sent'); ?>">
+                                    <?php
+                                    $statuses = [
+                                        'sent'    => '📤 Отправлен',
+                                        'success' => '✅ Успешно',
+                                        'failed'  => '❌ Неверный код',
+                                        'expired' => '⏰ Истек',
+                                    ];
+                                    echo $statuses[$log['status'] ?? 'sent'] ?? $log['status'];
+                                    ?>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:center;">
+                    <p style="margin:0; color:#6b7280; font-size:13px;">
+                        Показано последних 100 записей из <?php echo count($otp_logs); ?>
+                    </p>
+                    <form method="post" style="display:inline;">
+                        <?php wp_nonce_field('mst_clear_otp_logs', 'mst_log_nonce'); ?>
+                        <button type="submit" name="mst_clear_logs" class="mst-btn mst-btn-danger"
+                                onclick="return confirm('Очистить все логи?')">🗑️ Очистить логи
+                        </button>
+                    </form>
+                </div>
             <?php endif; ?>
         </div>
     <?php endif; ?>

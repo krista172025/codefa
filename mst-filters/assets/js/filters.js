@@ -1,6 +1,6 @@
 /**
  * MST Filters - Smart Filtering for WooCommerce
- * v2.2.0 - With custom dropdown and smart price slider
+ * v2.3.0 - Support for shop-grid + accommodation-carousel cards
  */
 
 (function($) {
@@ -17,7 +17,7 @@
             return;
         }
         
-        console.log('MST Filters: инициализация v2.2');
+        console.log('MST Filters: инициализация v2.3');
         
         var targetSelector = $container.data('target') || '.mst-shop-grid';
         var $grid = $(targetSelector);
@@ -522,8 +522,28 @@
         });
     }
     
+    /**
+     * Filter grid by product IDs
+     * Supports both .mst-shop-grid-card and .mst-accommodation-card
+     */
     function filterGridByIds(ids, $grid) {
-        var $cards = $grid.find('.mst-shop-grid-card');
+        // Support multiple card class types
+        var cardSelectors = [
+            '.mst-shop-grid-card',
+            '.mst-accommodation-card',
+            '.mst-product-card',
+            '[data-product-id]'
+        ];
+        
+        var $cards = $();
+        cardSelectors.forEach(function(selector) {
+            $cards = $cards.add($grid.find(selector));
+        });
+        
+        // If no specific card classes found, try direct children
+        if ($cards.length === 0) {
+            $cards = $grid.children();
+        }
         
         console.log('MST Filters: фильтрация, IDs:', ids, ', карточек:', $cards.length);
         
@@ -548,8 +568,12 @@
         });
     }
     
+    /**
+     * Get product ID from card element
+     * Supports multiple widget types: shop-grid, accommodation-carousel, etc.
+     */
     function getProductId($card) {
-        // Try data attribute first
+        // Try data attribute first (used in accommodation-carousel and shop-grid)
         var id = $card.data('product-id');
         if (id) return parseInt(id);
         
@@ -560,21 +584,35 @@
             if (id) return parseInt(id);
         }
         
-        // Try wishlist button
-        var $wishlist = $card.find('.mst-wishlist-btn, .mst-shop-grid-wishlist');
+        // Try wishlist button (shop-grid and accommodation-carousel)
+        var wishlistSelectors = [
+            '.mst-wishlist-btn',
+            '.mst-shop-grid-wishlist',
+            '.mst-accommodation-wishlist'
+        ];
+        
+        var $wishlist = $card.find(wishlistSelectors.join(', '));
         if ($wishlist.length) {
             id = $wishlist.first().data('product-id');
             if (id) return parseInt(id);
         }
         
-        // Try class name pattern
+        // Try class name pattern (WooCommerce post-ID)
         var classes = $card.attr('class') || '';
         var match = classes.match(/post-(\d+)/);
         if (match) return parseInt(match[1]);
         
+        // Try ID attribute
+        var idAttr = $card.attr('id') || '';
+        var idMatch = idAttr.match(/product[-_]?(\d+)/i);
+        if (idMatch) return parseInt(idMatch[1]);
+        
         return 0;
     }
     
+    /**
+     * Reset all filters and show all cards
+     */
     function resetFilters($container, $grid) {
         // Uncheck all checkboxes and radios (chips and dropdowns)
         $container.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
@@ -599,8 +637,18 @@
         $maxInput.val($maxInput.data('default') || $maxInput.attr('max'));
         $minInput.trigger('input');
         
-        // Show all cards
-        $grid.find('.mst-shop-grid-card').removeClass('mst-hidden');
+        // Show all cards - support multiple card types
+        var cardSelectors = [
+            '.mst-shop-grid-card',
+            '.mst-accommodation-card',
+            '.mst-product-card',
+            '[data-product-id]'
+        ];
+        
+        cardSelectors.forEach(function(selector) {
+            $grid.find(selector).removeClass('mst-hidden');
+        });
+        
         $grid.find('.mst-no-results').remove();
     }
     

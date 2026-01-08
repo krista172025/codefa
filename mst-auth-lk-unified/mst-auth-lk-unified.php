@@ -2,7 +2,7 @@
 /**
  * Plugin Name: MySuperTour - Auth + LK Unified
  * Description: Объединённый Elementor виджет: Авторизация + Личный Кабинет + Система Гидов
- * Version: 4.0.2
+ * Version: 4.0.3
  * Author: Telegram @l1ghtsun
  * Author URI: https://t.me/l1ghtsun
  * Text Domain: mst-auth-lk
@@ -17,7 +17,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-define('MST_AUTH_LK_VERSION', '4.0.2');
+define('MST_AUTH_LK_VERSION', '4.0.3');
 define('MST_AUTH_LK_DIR', plugin_dir_path(__FILE__));
 define('MST_AUTH_LK_URL', plugin_dir_url(__FILE__));
 
@@ -195,6 +195,8 @@ class MST_Auth_LK_Unified {
         add_action('wp_ajax_mst_lk_toggle_otp', [$this, 'ajax_toggle_otp']);
         add_action('wp_ajax_mst_lk_clear_trusted_ips', [$this, 'ajax_clear_trusted_ips']);
         add_action('wp_ajax_mst_lk_get_pending_reviews', [$this, 'ajax_get_pending_reviews']);
+        add_action('wp_ajax_nopriv_mst_load_more_guide_reviews', [$this, 'ajax_load_more_guide_reviews']);
+        add_action('wp_ajax_mst_load_more_guide_reviews', [$this, 'ajax_load_more_guide_reviews']);
     }
     
     // --- AUTH AJAX ---

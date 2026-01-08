@@ -5181,8 +5181,9 @@ body,
   object-fit: cover;
 }
 
+/* No scale effect on hover - stay inside card */
 .mst-shop-grid-guide:hover {
-  transform: scale(1.1);
+  transform: none;
 }
 
 /* Guide Inside Button - responsive via CSS variables */
@@ -5221,9 +5222,22 @@ body,
   object-fit: cover;
 }
 
+/* No scale effect on hover - stay inside card */
 .mst-shop-grid-guide-inside:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  transform: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ========================================
+   GUIDE HOVER - NO SCALE EFFECT
+   ======================================== */
+/* Disable guide photo scaling on hover - stay inside card */
+.mst-guide-photo-hover:hover {
+  transform: none !important;
+}
+
+.mst-guide-photo-hover:hover .mst-guide-border-ring {
+  transform: none !important;
 }
 
 /* Pagination */
@@ -8897,7 +8911,7 @@ body,
     color: #999;
     transition: color 0.2s ease;
 }
- 
+
 /* Subtotal */
 .mst-sidebar-subtotal {
     display: flex;
@@ -8963,30 +8977,6 @@ body,
     background: rgba(0, 0, 0, 0.08);
 }
 
-/* Sidebar footer - Z-INDEX И ПОЗИЦИОНИРОВАНИЕ */
-.mst-sidebar {
-    z-index: 99999 !important;
-}
-.mst-sidebar-overlay {
-    z-index: 99998 !important;
-}
-
-.mst-sidebar-footer {
-    position: absolute !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 1 !important;
-    background: var(--sidebar-bg, rgba(255,255,255,0.95)) !important;
-    padding: 16px !important;
-    border-top: 1px solid rgba(0,0,0,0.05) !important;
-}
-
-.mst-sidebar-content {
-    padding-bottom: 120px !important;
-}
-
-
 /* Header Cart Count Badge */
 .mst-header-cart-count,
 .mst-header-wishlist-count {
@@ -9009,35 +8999,6 @@ body,
 .mst-header-wishlist-trigger {
     position: relative;
 }
-
-/* Скрыть dropdown-панели по умолчанию */
-.mst-favorites-dropdown,
-.mst-cart-dropdown {
-    display: none;
-    position: absolute;
-    top: 100%;
-    right: 0;
-    z-index: 1000;
-    background: #fff;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-    border-radius: 8px;
-    min-width: 300px;
-}
-
-/* Показывать при наведении или активации */
-.mst-favorites-wrapper:hover .mst-favorites-dropdown,
-.mst-cart-wrapper:hover .mst-cart-dropdown,
-.mst-favorites-dropdown.active,
-.mst-cart-dropdown.active {
-    display: block;
-}
-
-/* Wrapper должен быть relative */
-.mst-favorites-wrapper,
-.mst-cart-wrapper {
-    position: relative;
-}
-
 
 /* Mobile Sidebar */
 @media (max-width: 480px) {
@@ -9067,50 +9028,4 @@ body,
     position: relative;
     z-index: 1;
 }
-
-/* Header dropdown arrow */
-.mst-header.mst-header-show-arrows .menu-item-has-children > a {
-  display: inline-flex;
-  align-items: center;
-}
-
-.mst-header.mst-header-show-arrows .mst-menu-arrow {
-  width: 18px;
-  height: 18px;
-  margin-left: 8px;
-  flex: 0 0 18px;
-  display: inline-block;
-  vertical-align: middle;
-  opacity: 0.7;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.mst-header.mst-header-show-arrows .menu-item-has-children:hover > a > .mst-menu-arrow {
-  opacity: 1;
-  transform: rotate(180deg);
-}
-
-/* FIX: prevent theme rules from overriding our sidebars (often themes use [class*="sidebar"]) */
-.mst-sidebar,
-.mst-sidebar-overlay {
-  position: fixed !important;
-}
-
-.mst-sidebar-overlay {
-  inset: 0 !important;
-}
-
-.mst-sidebar {
-  top: 0 !important;
-  bottom: 0 !important;
-  left: auto !important;
-  right: -400px !important;
-  float: none !important;
-  margin: 0 !important;
-}
-
-.mst-sidebar.active {
-  right: 0 !important;
-}
-
 

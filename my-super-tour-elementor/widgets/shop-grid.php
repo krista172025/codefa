@@ -186,7 +186,7 @@ class Shop_Grid extends Widget_Base {
 
         $this->end_controls_section();
 
-    // Guide Photo
+    // Guide Photo Section
         $this->start_controls_section(
             'guide_section',
             [
@@ -219,6 +219,67 @@ class Shop_Grid extends Widget_Base {
                 'label' => __('Guide Profile Link', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::URL,
                 'condition' => ['show_guide' => 'yes'],
+            ]
+        );
+
+        // NEW: Hover effect settings
+        $this->add_control(
+            'guide_hover_heading',
+            [
+                'label' => __('Hover Effect', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+                'condition' => ['show_guide' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'guide_hover_gradient',
+            [
+                'label' => __('Enable Spinning Gradient Border', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'yes',
+                'condition' => ['show_guide' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'guide_gradient_color_1',
+            [
+                'label' => __('Gradient Color 1', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#9952E0',
+                'condition' => ['show_guide' => 'yes', 'guide_hover_gradient' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'guide_gradient_color_2',
+            [
+                'label' => __('Gradient Color 2', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#fbd603',
+                'condition' => ['show_guide' => 'yes', 'guide_hover_gradient' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'guide_show_info_badge',
+            [
+                'label' => __('Show Info Badge on Hover', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'yes',
+                'condition' => ['show_guide' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'guide_click_hint_text',
+            [
+                'label' => __('Click Hint Text', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'default' => 'Нажмите, чтобы увидеть гида',
+                'condition' => ['show_guide' => 'yes', 'guide_show_info_badge' => 'yes'],
             ]
         );
 
@@ -865,6 +926,16 @@ class Shop_Grid extends Widget_Base {
         $guide_right = $settings['guide_offset_right']['size'] ?? 0;
         $guide_bottom = $settings['guide_offset_bottom']['size'] ?? 0;
         $guide_border_color = $settings['guide_border_color'] ?? 'hsl(45, 98%, 50%)';
+        
+        // Guide hover settings (NEW)
+        $guide_hover_gradient = ($settings['guide_hover_gradient'] ?? 'yes') === 'yes';
+        $guide_gradient_1 = $settings['guide_gradient_color_1'] ?? '#9952E0';
+        $guide_gradient_2 = $settings['guide_gradient_color_2'] ?? '#fbd603';
+        $guide_show_info_badge = ($settings['guide_show_info_badge'] ?? 'yes') === 'yes';
+        $guide_click_hint = $settings['guide_click_hint_text'] ?? 'Нажмите, чтобы увидеть гида';
+        
+        // Generate unique ID for this widget instance
+        $widget_id = 'mst-shop-grid-' . $this->get_id();
 
         // Colors
         $title_color = $settings['title_color'] ?? '#1a1a1a';
@@ -889,7 +960,7 @@ class Shop_Grid extends Widget_Base {
         $container_class = 'mst-shop-grid';
         if ($cursor_glow) $container_class .= ' mst-cursor-glow-enabled';
         ?>
-        <div class="<?php echo esc_attr($container_class); ?>" style="display: grid; grid-template-columns: repeat(<?php echo $columns; ?>, 1fr); gap: <?php echo $gap; ?>px;">
+        <div id="<?php echo esc_attr($widget_id); ?>" class="<?php echo esc_attr($container_class); ?>" style="display: grid; grid-template-columns: repeat(<?php echo $columns; ?>, 1fr); gap: <?php echo $gap; ?>px;">
             <?php foreach ($products as $product):
                 $product_id = $product->get_id();
                 $image_url = wp_get_attachment_url($product->get_image_id());
@@ -1013,11 +1084,20 @@ class Shop_Grid extends Widget_Base {
                     }
                 }
                 
-                // Guide title
-                $guide_title = $guide_name ?: 'Гид';
-                if ($guide_rating_val) {
-                    $guide_title .= ' - ' . number_format((float)$guide_rating_val, 1) . ' ★';
-                    if ($guide_reviews) $guide_title .= ' (' . $guide_reviews . ')';
+                // Guide bio for info badge
+                $guide_bio = '';
+                $guide_bio_short = '';
+                if ($guide_user_id) {
+                    $guide_bio = get_user_meta($guide_user_id, 'mst_guide_bio', true);
+                    if (!$guide_bio) {
+                        $guide_bio = get_user_meta($guide_user_id, 'mst_guide_experience', true);
+                    }
+                    if ($guide_bio) {
+                        $guide_bio_short = mb_substr(strip_tags($guide_bio), 0, 80);
+                        if (mb_strlen(strip_tags($guide_bio)) > 80) {
+                            $guide_bio_short .= '...';
+                        }
+                    }
                 }
                 
                 $card_class = 'mst-shop-grid-card';
@@ -1144,12 +1224,51 @@ class Shop_Grid extends Widget_Base {
                             <?php echo esc_html($settings['button_text']); ?>
                         </a>
                         
-                        
-                        <?php if ($show_guide && ! empty($guide_photo_url)): ?>
-                        <div style="position: absolute; right: <?php echo 16 + $guide_right; ?>px; top: 50%; transform: translateY(calc(-50% + <?php echo $guide_bottom; ?>px)); width: <?php echo $guide_size; ?>px; height: <?php echo $guide_size; ?>px; border-radius: 50%; overflow: hidden; border: <?php echo intval($guide_border_width); ?>px solid <?php echo esc_attr($guide_border_color); ?>; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 5;">
-                            <a href="<?php echo esc_url($guide_profile_url); ?>">
-                                <img src="<?php echo esc_url($guide_photo_url); ?>" alt="Guide" style="width: 100%; height: 100%; object-fit: cover;">
+                        <?php if ($show_guide && !empty($guide_photo_url)): ?>
+                        <div class="mst-guide-hover-wrapper" style="position: absolute; right: <?php echo 16 + $guide_right; ?>px; top: 50%; transform: translateY(calc(-50% + <?php echo $guide_bottom; ?>px)); z-index: 10;">
+                            <a href="<?php echo esc_url($guide_profile_url); ?>" 
+                               class="mst-shop-grid-guide mst-guide-photo-hover" 
+                               data-gradient-enabled="<?php echo $guide_hover_gradient ? 'true' : 'false'; ?>"
+                               style="position: relative; display: block; width: <?php echo $guide_size; ?>px; height: <?php echo $guide_size; ?>px; border-radius: 50%; overflow: visible;">
+                                <!-- Gradient border wrapper -->
+                                <span class="mst-guide-border-ring" style="position: absolute; inset: -<?php echo intval($guide_border_width); ?>px; border-radius: 50%; background: <?php echo esc_attr($guide_border_color); ?>; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1;"></span>
+                                <!-- Photo container -->
+                                <span class="mst-guide-photo-inner" style="position: absolute; inset: 0; border-radius: 50%; overflow: hidden; z-index: 2; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                                    <img src="<?php echo esc_url($guide_photo_url); ?>" alt="<?php echo esc_attr($guide_name ?: 'Guide'); ?>" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                </span>
                             </a>
+                            
+                            <?php if ($guide_show_info_badge && !empty($guide_name)): ?>
+                            <!-- Liquid Glass Info Badge -->
+                            <div class="mst-guide-info-badge" style="position: absolute; bottom: calc(100% + 12px); right: 0; min-width: 200px; max-width: 280px; padding: 14px 16px; background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.5); box-shadow: 0 8px 32px rgba(0,0,0,0.12), inset 0 1px 2px rgba(255,255,255,0.8); opacity: 0; visibility: hidden; transform: translateY(8px); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; z-index: 100;">
+                                <!-- Name + Rating + Reviews count -->
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap;">
+                                    <span style="font-weight: 700; font-size: 15px; color: #1a1a1a;"><?php echo esc_html($guide_name); ?></span>
+                                    <?php if (!empty($guide_rating_val)): ?>
+                                    <span style="display: inline-flex; align-items: center; gap: 3px; background: linear-gradient(135deg, <?php echo esc_attr($guide_gradient_1); ?>, <?php echo esc_attr($guide_gradient_2); ?>); color: #fff; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                        <?php echo esc_html(number_format((float)$guide_rating_val, 1)); ?>
+                                    </span>
+                                    <?php endif; ?>
+                                    <?php if (!empty($guide_reviews)): ?>
+                                    <span style="font-size: 11px; color: #888; white-space: nowrap;"><?php echo esc_html($guide_reviews); ?> отзывов</span>
+                                    <?php endif; ?>
+                                </div>
+                                
+                                <?php if (!empty($guide_bio_short)): ?>
+                                <p style="margin: 0 0 8px 0; font-size: 13px; color: #666; line-height: 1.4;"><?php echo esc_html($guide_bio_short); ?></p>
+                                <?php endif; ?>
+                                
+                                <!-- Click hint -->
+                                <span style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: #9952E0; font-weight: 500;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                                    <?php echo esc_html($guide_click_hint); ?>
+                                </span>
+                                
+                                <!-- Arrow pointing down -->
+                                <span style="position: absolute; bottom: -6px; right: 24px; width: 12px; height: 12px; background: rgba(255,255,255,0.92); border-right: 1px solid rgba(255,255,255,0.5); border-bottom: 1px solid rgba(255,255,255,0.5); transform: rotate(45deg);"></span>
+                            </div>
+                            <?php endif; ?>
                         </div>
                         <?php endif; ?>
                     </div>
@@ -1157,6 +1276,44 @@ class Shop_Grid extends Widget_Base {
             </div>
             <?php endforeach; ?>
         </div>
+        
+        <style>
+            #<?php echo esc_attr($widget_id); ?> .mst-shop-grid-card.mst-liquid-glass {
+                box-shadow: 0 8px 32px rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.3);
+                border: 1px solid rgba(255,255,255,0.2);
+            }
+            #<?php echo esc_attr($widget_id); ?> .mst-shop-grid-card.mst-liquid-glass:hover {
+                box-shadow: 0 12px 40px rgba(153, 82, 224, 0.15), inset 0 1px 2px rgba(255,255,255,0.4);
+            }
+            #<?php echo esc_attr($widget_id); ?> .mst-woo-carousel-button:hover {
+                filter: brightness(1.1);
+            }
+            
+            /* Guide hover - spinning gradient border animation (NO SCALE) */
+            #<?php echo esc_attr($widget_id); ?> .mst-guide-hover-wrapper:hover .mst-guide-border-ring,
+            #<?php echo esc_attr($widget_id); ?> .mst-guide-photo-hover:hover .mst-guide-border-ring {
+                background: conic-gradient(from var(--rotation), <?php echo esc_attr($guide_gradient_1); ?>, <?php echo esc_attr($guide_gradient_2); ?>, <?php echo esc_attr($guide_gradient_1); ?>) !important;
+                animation: mstGuideGradientRotate<?php echo $this->get_id(); ?> 1.5s linear infinite !important;
+            }
+            
+            @property --rotation {
+                syntax: '<angle>';
+                initial-value: 0deg;
+                inherits: false;
+            }
+            
+            @keyframes mstGuideGradientRotate<?php echo $this->get_id(); ?> {
+                0% { --rotation: 0deg; }
+                100% { --rotation: 360deg; }
+            }
+            
+            /* Info badge show on hover */
+            #<?php echo esc_attr($widget_id); ?> .mst-guide-hover-wrapper:hover .mst-guide-info-badge {
+                opacity: 1 !important;
+                visibility: visible !important;
+                transform: translateY(0) !important;
+            }
+        </style>
         <?php
     }
     

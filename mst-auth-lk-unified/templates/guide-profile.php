@@ -209,7 +209,7 @@ $has_more_reviews = $total_with_fake > $reviews_per_page;
 ?>
 
 <style>
-/* Guide Profile Section - Enhanced v4.1 */
+/* Guide Profile Section */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 .mst-guide-profile-section { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; padding: 2rem 0; -webkit-font-smoothing: antialiased; }
@@ -238,6 +238,64 @@ $has_more_reviews = $total_with_fake > $reviews_per_page;
 .mst-guide-profile-rating { display: flex; align-items: center; gap: 0.35rem; margin-bottom: 0.75rem; justify-content: center; }
 .mst-guide-profile-rating-value { font-size: 1.125rem; font-weight: 600; color: #1a1a2e; }
 .mst-guide-profile-reviews-count { font-size: 0.875rem; color: #6b7280; }
+.mst-guide-profile-our-badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.4rem 0.8rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; background: <?php echo esc_attr($primary_color); ?>15; border: 1px solid <?php echo esc_attr($primary_color); ?>40; }
+.mst-guide-profile-our-badge span { color: <?php echo esc_attr($primary_color); ?>; }
+.mst-guide-profile-stats { width: 100%; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+.mst-guide-profile-stat { display: flex; justify-content: space-between; font-size: 0.875rem; }
+.mst-guide-profile-stat-label { color: #6b7280; }
+.mst-guide-profile-stat-value { font-weight: 600; color: #1a1a2e; }
+.mst-guide-profile-actions { width: 100%; }
+.mst-guide-profile-book-btn { display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; padding: 0.875rem 1.5rem; background: <?php echo esc_attr($primary_color); ?>; color: white; border: none; border-radius: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: box-shadow 0.3s ease; margin-bottom: 0.75rem; }
+.mst-guide-profile-book-btn:hover { box-shadow: 0 8px 24px -6px <?php echo esc_attr($primary_color); ?>80; color: white; }
+.mst-guide-profile-secondary-actions { display: flex; gap: 0.5rem; }
+.mst-guide-profile-icon-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem; background: rgba(255,255,255,0.7); border: 1.5px solid rgba(153, 82, 224, 0.15); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; text-decoration: none; color: #374151; font-size: 0.85rem; font-weight: 500; }
+.mst-guide-profile-icon-btn:hover { background: rgba(255,255,255,0.9); border-color: <?php echo esc_attr($primary_color); ?>40; color: <?php echo esc_attr($primary_color); ?>; }
+.mst-guide-profile-right { padding: 1rem; }
+.mst-guide-profile-info-block { margin-bottom: 1.5rem; }
+.mst-guide-profile-info-block h3 { font-size: 0.9rem; font-weight: 600; color: #1a1a2e; margin: 0 0 0.75rem 0; }
+.mst-guide-profile-info-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+.mst-guide-profile-info-header h3 { margin: 0; }
+.mst-guide-profile-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.mst-guide-profile-language { display: inline-flex; padding: 0.4rem 0.75rem; background: rgba(251, 214, 3, 0.12); border: 1.5px solid rgba(251, 214, 3, 0.3); border-radius: 9999px; font-size: 0.8rem; font-weight: 500; }
+.mst-guide-profile-specialty { display: inline-flex; padding: 0.4rem 0.75rem; background: rgba(22, 191, 255, 0.1); color: #0891b2; border: 1.5px solid rgba(22, 191, 255, 0.25); border-radius: 9999px; font-size: 0.8rem; font-weight: 500; }
+.mst-guide-profile-bio { color: #4b5563; line-height: 1.7; margin: 0; font-size: 0.9rem; }
+.mst-guide-profile-achievements { display: flex; flex-direction: column; gap: 0.5rem; }
+.mst-guide-profile-achievement { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem; border-radius: 12px; font-size: 0.875rem; background: rgba(251, 214, 3, 0.1); }
+.mst-guide-profile-tours-section, .mst-guide-profile-testimonials-section { max-width: 1200px; margin: 3rem auto; padding: 0 1rem; }
+.mst-guide-profile-section-title { font-size: 1.75rem; font-weight: 700; color: #1a1a2e; margin: 0 0 1.5rem 0; }
+.mst-guide-profile-tours-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+@media (max-width: 1024px) { .mst-guide-profile-tours-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .mst-guide-profile-tours-grid { grid-template-columns: 1fr; } }
+.mst-guide-tour-card { display: block; border-radius: 20px; overflow: hidden; background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.65)); backdrop-filter: blur(20px) saturate(180%); border: 1.5px solid rgba(255,255,255,0.4); box-shadow: 0 8px 32px -8px rgba(153, 82, 224, 0.15); text-decoration: none; transition: all 0.35s ease; }
+.mst-guide-tour-card:hover { border-color: rgba(255,255,255,0.5); box-shadow: 0 16px 48px -12px rgba(153, 82, 224, 0.25); transform: translateY(-4px); }
+.mst-guide-tour-image { height: 180px; overflow: hidden; }
+.mst-guide-tour-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.mst-guide-tour-card:hover .mst-guide-tour-image img { transform: scale(1.08); }
+.mst-guide-tour-content { padding: 1rem; }
+.mst-guide-tour-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.mst-guide-tour-title { font-size: 0.95rem; font-weight: 600; color: #1a1a2e; margin: 0; flex: 1; }
+.mst-guide-tour-rating { display: flex; align-items: center; gap: 0.25rem; font-size: 0.875rem; font-weight: 500; }
+.mst-guide-tour-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+.mst-guide-tour-duration { color: #6b7280; }
+.mst-guide-tour-price { font-weight: 600; color: #1a1a2e; }
+
+/* Testimonials - ENHANCED */
+.mst-guide-profile-testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+@media (max-width: 1024px) { .mst-guide-profile-testimonials-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .mst-guide-profile-testimonials-grid { grid-template-columns: 1fr; } }
+.mst-guide-testimonial-card { padding: 1.5rem; border-radius: 20px; background: linear-gradient(135deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4)); backdrop-filter: blur(16px) saturate(160%); border: 1px solid rgba(255,255,255,0.3); transition: all 0.35s ease; }
+.mst-guide-testimonial-card:hover { box-shadow: 0 12px 32px -8px rgba(251, 214, 3, 0.2); }
+.mst-guide-testimonial-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+.mst-guide-testimonial-author { display: flex; align-items: center; gap: 0.75rem; }
+.mst-guide-testimonial-avatar { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, <?php echo esc_attr($primary_color); ?>, <?php echo esc_attr($secondary_color); ?>); color: white; font-weight: 600; font-size: 1rem; flex-shrink: 0; }
+.mst-guide-testimonial-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.mst-guide-testimonial-author-info { display: flex; flex-direction: column; }
+.mst-guide-testimonial-name { font-weight: 600; color: #1a1a2e; font-size: 0.9rem; }
+.mst-guide-testimonial-date { font-size: 0.75rem; color: #6b7280; }
+.mst-guide-testimonial-meta { font-size: 0.75rem; color: #9952E0; margin-top: 2px; }
+.mst-guide-testimonial-rating { display: flex; gap: 0.125rem; }
+.mst-guide-testimonial-tour-title { font-weight: 600; color: #374151; font-size: 0.85rem; margin-bottom: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.mst-guide-testimonial-text { color: #4b5563; line-height: 1.6; font-size: 0.9rem; margin: 0 0 0.75rem 0; }
 
 /* Section titles */
 .mst-guide-profile-tours-section, .mst-guide-profile-testimonials-section { max-width: 1200px; margin: 3rem auto; padding: 0 1rem; }
@@ -684,60 +742,91 @@ $has_more_reviews = $total_with_fake > $reviews_per_page;
 
 <div class="mst-guide-profile-section">
     
-    <!-- Back Button -->
-    <div class="mst-guide-profile-hero-section">
-        <a href="<?php echo esc_url($referrer_url); ?>" class="mst-guide-back-btn">
-            ← <?php _e('Назад', 'mst-auth-lk'); ?>
-        </a>
-    </div>
-    
-    <!-- Hero Section -->
-    <div class="mst-guide-profile-hero-section">
+    <!-- HERO SECTION -->
+    <section class="mst-guide-profile-hero-section">
         <div class="mst-guide-profile-hero mst-liquid-glass">
             <div class="mst-guide-profile-grid">
+                
+                <!-- Left Column: Avatar & Quick Info -->
                 <div class="mst-guide-profile-left">
                     <div class="mst-guide-profile-avatar-wrap">
                         <div class="mst-guide-profile-avatar">
                             <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php echo esc_attr($guide->display_name); ?>">
                         </div>
-                    </div>
-                    
-                    <div class="mst-guide-profile-badges">
-                        <?php if ($is_verified): ?>
-                        <span class="mst-guide-profile-badge-verified">✓ <?php _e('Верифицирован', 'mst-auth-lk'); ?></span>
-                        <?php endif; ?>
-                        <?php if ($academic_title): ?>
-                        <span class="mst-guide-profile-badge-academic">🎓 <?php echo esc_html($academic_title); ?></span>
-                        <?php endif; ?>
+                        
+                        <div class="mst-guide-profile-badges">
+                            <?php if ($is_verified): ?>
+                            <span class="mst-guide-profile-badge-verified">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            </span>
+                            <?php endif; ?>
+                            
+                            <?php if (!empty($academic_title)): ?>
+                            <span class="mst-guide-profile-badge-academic">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                                <?php echo esc_html($academic_title); ?>
+                            </span>
+                            <?php endif; ?>
+                        </div>
                     </div>
                     
                     <h1 class="mst-guide-profile-name"><?php echo esc_html($guide->display_name); ?></h1>
                     
                     <?php if ($city): ?>
-                    <div class="mst-guide-profile-location">📍 <?php echo esc_html($city); ?></div>
+                    <div class="mst-guide-profile-location">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span><?php echo esc_html($city); ?></span>
+                    </div>
                     <?php endif; ?>
                     
                     <div class="mst-guide-profile-rating">
-                        <span style="color: <?php echo esc_attr($rating_color); ?>;">★</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="<?php echo esc_attr($rating_color); ?>" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         <span class="mst-guide-profile-rating-value"><?php echo esc_html($rating); ?></span>
                         <span class="mst-guide-profile-reviews-count">(<?php echo esc_html($reviews_count); ?> <?php _e('отзывов', 'mst-auth-lk'); ?>)</span>
                     </div>
+                    
+                    <div class="mst-guide-profile-our-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="<?php echo esc_attr($primary_color); ?>" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        <span>My Super Tour</span>
+                    </div>
+                    
+                    <div class="mst-guide-profile-stats">
+                        <div class="mst-guide-profile-stat">
+                            <span class="mst-guide-profile-stat-label"><?php _e('Опыт', 'mst-auth-lk'); ?></span>
+                            <span class="mst-guide-profile-stat-value"><?php echo esc_html($experience_years); ?> <?php _e('лет', 'mst-auth-lk'); ?></span>
+                        </div>
+                        <div class="mst-guide-profile-stat">
+                            <span class="mst-guide-profile-stat-label"><?php _e('Туров проведено', 'mst-auth-lk'); ?></span>
+                            <span class="mst-guide-profile-stat-value"><?php echo esc_html($tours_count); ?></span>
+                        </div>
+                    </div>
+                    
+                    <div class="mst-guide-profile-actions">
+                        <a href="<?php echo esc_url($referrer_url); ?>" class="mst-guide-profile-book-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                            <?php _e('Вернуться к турам', 'mst-auth-lk'); ?>
+                        </a>
+                        <div class="mst-guide-profile-secondary-actions">
+                            <a href="mailto:<?php echo esc_attr($guide->user_email); ?>?subject=<?php echo esc_attr(sprintf(__('Вопрос гиду %s', 'mst-auth-lk'), $guide->display_name)); ?>" class="mst-guide-profile-icon-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                <span><?php _e('Задать вопрос', 'mst-auth-lk'); ?></span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="mst-guide-profile-right" style="padding: 1rem;">
-                    <?php if ($bio): ?>
-                    <div class="mst-guide-profile-info-block">
-                        <h3><?php _e('О себе', 'mst-auth-lk'); ?></h3>
-                        <p class="mst-guide-profile-bio"><?php echo nl2br(esc_html($bio)); ?></p>
-                    </div>
-                    <?php endif; ?>
+                <!-- Right Column: Details -->
+                <div class="mst-guide-profile-right">
                     
                     <?php if ($languages): ?>
                     <div class="mst-guide-profile-info-block">
-                        <h3><?php _e('Языки', 'mst-auth-lk'); ?></h3>
+                        <div class="mst-guide-profile-info-header">
+                            <span>🗣️</span>
+                            <h3><?php _e('Языки', 'mst-auth-lk'); ?></h3>
+                        </div>
                         <div class="mst-guide-profile-tags">
                             <?php foreach (explode(',', $languages) as $lang): ?>
-                            <span class="mst-guide-profile-language"><?php echo esc_html(trim($lang)); ?></span>
+                                <span class="mst-guide-profile-language"><?php echo esc_html(trim($lang)); ?></span>
                             <?php endforeach; ?>
                         </div>
                     </div>
@@ -745,18 +834,50 @@ $has_more_reviews = $total_with_fake > $reviews_per_page;
                     
                     <?php if ($specialization): ?>
                     <div class="mst-guide-profile-info-block">
-                        <h3><?php _e('Специализация', 'mst-auth-lk'); ?></h3>
+                        <div class="mst-guide-profile-info-header">
+                            <span>🎯</span>
+                            <h3><?php _e('Специализация', 'mst-auth-lk'); ?></h3>
+                        </div>
                         <div class="mst-guide-profile-tags">
                             <?php foreach (explode(',', $specialization) as $spec): ?>
-                            <span class="mst-guide-profile-specialty"><?php echo esc_html(trim($spec)); ?></span>
+                                <span class="mst-guide-profile-specialty"><?php echo esc_html(trim($spec)); ?></span>
                             <?php endforeach; ?>
                         </div>
                     </div>
                     <?php endif; ?>
+                    
+                    <?php if ($bio): ?>
+                    <div class="mst-guide-profile-info-block">
+                        <div class="mst-guide-profile-info-header">
+                            <span>📖</span>
+                            <h3><?php _e('О гиде', 'mst-auth-lk'); ?></h3>
+                        </div>
+                        <p class="mst-guide-profile-bio"><?php echo nl2br(esc_html($bio)); ?></p>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if ($achievements): ?>
+                    <div class="mst-guide-profile-info-block">
+                        <div class="mst-guide-profile-info-header">
+                            <span>🏆</span>
+                            <h3><?php _e('Достижения', 'mst-auth-lk'); ?></h3>
+                        </div>
+                        <div class="mst-guide-profile-achievements">
+                            <?php foreach (explode("\n", $achievements) as $achievement): 
+                                if (trim($achievement)): ?>
+                            <div class="mst-guide-profile-achievement">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#fbd603" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <span><?php echo esc_html(trim($achievement)); ?></span>
+                            </div>
+                            <?php endif; endforeach; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    
                 </div>
             </div>
         </div>
-    </div>
+    </section>
     
     <!-- Popular Tours -->
     <?php if ($tours_query->have_posts()): ?>

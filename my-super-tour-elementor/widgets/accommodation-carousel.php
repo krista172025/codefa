@@ -6,6 +6,11 @@ use Elementor\Controls_Manager;
 
 if (!defined('ABSPATH')) exit;
 
+/**
+ * Accommodation Carousel Widget - v2.0
+ * For apartments category (no guide photos, no arrows by default)
+ * Updated: CSS alignment fix, clean card layout
+ */
 class Accommodation_Carousel extends Widget_Base {
 
     public function get_name() {
@@ -41,6 +46,7 @@ class Accommodation_Carousel extends Widget_Base {
                 'type' => Controls_Manager::SELECT,
                 'default' => 'category',
                 'options' => [
+                    'auto' => __('Auto (Current Category)', 'my-super-tour-elementor'),
                     'recent' => __('Recent Products', 'my-super-tour-elementor'),
                     'featured' => __('Featured Products', 'my-super-tour-elementor'),
                     'manual' => __('Manual Selection', 'my-super-tour-elementor'),
@@ -109,7 +115,7 @@ class Accommodation_Carousel extends Widget_Base {
 
         $this->end_controls_section();
 
-        // Badges Section (WooCommerce Attributes)
+        // Badges Section
         $this->start_controls_section(
             'badges_section',
             [
@@ -133,14 +139,13 @@ class Accommodation_Carousel extends Widget_Base {
                 'label' => __('Badge Attribute', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::TEXT,
                 'default' => 'pa_accommodation-type',
-                'description' => __('WooCommerce attribute slug (e.g., pa_accommodation-type)', 'my-super-tour-elementor'),
                 'condition' => ['show_badge' => 'yes'],
             ]
         );
 
         $this->end_controls_section();
 
-        // City Attribute Section
+        // City Section
         $this->start_controls_section(
             'city_section',
             [
@@ -164,14 +169,13 @@ class Accommodation_Carousel extends Widget_Base {
                 'label' => __('City Attribute', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::TEXT,
                 'default' => 'pa_city',
-                'description' => __('WooCommerce attribute slug for city', 'my-super-tour-elementor'),
                 'condition' => ['show_city' => 'yes'],
             ]
         );
 
         $this->end_controls_section();
 
-        // Amenities Section (WooCommerce Attributes)
+        // Amenities Section
         $this->start_controls_section(
             'amenities_section',
             [
@@ -195,7 +199,6 @@ class Accommodation_Carousel extends Widget_Base {
                 'label' => __('Amenities Attribute', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::TEXT,
                 'default' => 'pa_amenities',
-                'description' => __('WooCommerce attribute slug for amenities (comma-separated values)', 'my-super-tour-elementor'),
                 'condition' => ['show_amenities' => 'yes'],
             ]
         );
@@ -387,19 +390,19 @@ class Accommodation_Carousel extends Widget_Base {
 
         $this->end_controls_section();
 
-        // Carousel Settings
+        // Layout Settings - NO ARROWS BY DEFAULT
         $this->start_controls_section(
-            'carousel_section',
+            'layout_section',
             [
-                'label' => __('Carousel Settings', 'my-super-tour-elementor'),
+                'label' => __('Layout Settings', 'my-super-tour-elementor'),
                 'tab' => Controls_Manager::TAB_CONTENT,
             ]
         );
 
         $this->add_responsive_control(
-            'items_per_view',
+            'columns',
             [
-                'label' => __('Items Per View', 'my-super-tour-elementor'),
+                'label' => __('Columns', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::SELECT,
                 'default' => '3',
                 'tablet_default' => '2',
@@ -413,28 +416,17 @@ class Accommodation_Carousel extends Widget_Base {
             [
                 'label' => __('Show Arrows', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::SWITCHER,
-                'default' => 'yes',
+                'default' => '', // NO ARROWS BY DEFAULT for accommodation
             ]
         );
 
         $this->add_control(
-            'arrows_inside',
+            'enable_carousel',
             [
-                'label' => __('Arrows Inside', 'my-super-tour-elementor'),
+                'label' => __('Enable Carousel Mode', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::SWITCHER,
-                'default' => '',
-                'condition' => ['show_arrows' => 'yes'],
-            ]
-        );
-
-        $this->add_control(
-            'arrows_offset',
-            [
-                'label' => __('Arrows Offset', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::SLIDER,
-                'range' => ['px' => ['min' => 0, 'max' => 100]],
-                'default' => ['size' => 16, 'unit' => 'px'],
-                'condition' => ['show_arrows' => 'yes'],
+                'default' => '', // GRID BY DEFAULT
+                'description' => __('Off = Grid mode, On = Carousel mode', 'my-super-tour-elementor'),
             ]
         );
 
@@ -453,15 +445,6 @@ class Accommodation_Carousel extends Widget_Base {
             'enable_liquid_glass',
             [
                 'label' => __('Enable Liquid Glass', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::SWITCHER,
-                'default' => 'yes',
-            ]
-        );
-
-        $this->add_control(
-            'enable_cursor_glow',
-            [
-                'label' => __('Enable Cursor Glow', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::SWITCHER,
                 'default' => 'yes',
             ]
@@ -518,103 +501,6 @@ class Accommodation_Carousel extends Widget_Base {
 
         $this->end_controls_section();
 
-        // Badge Style
-        $this->start_controls_section(
-            'style_badge',
-            [
-                'label' => __('Badge Style', 'my-super-tour-elementor'),
-                'tab' => Controls_Manager::TAB_STYLE,
-            ]
-        );
-
-        $this->add_control(
-            'badge_liquid_glass',
-            [
-                'label' => __('Liquid Glass Effect', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::SWITCHER,
-                'default' => 'yes',
-            ]
-        );
-
-        $this->add_control(
-            'badge_bg_color',
-            [
-                'label' => __('Badge Background', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => 'rgba(255,255,255,0.15)',
-            ]
-        );
-
-        $this->add_control(
-            'badge_text_color',
-            [
-                'label' => __('Badge Text Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#ffffff',
-            ]
-        );
-
-        $this->add_responsive_control(
-            'badge_border_radius',
-            [
-                'label' => __('Badge Border Radius', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::SLIDER,
-                'range' => ['px' => ['min' => 0, 'max' => 30]],
-                'default' => ['size' => 20, 'unit' => 'px'],
-            ]
-        );
-
-        $this->end_controls_section();
-
-        // Amenities Style
-        $this->start_controls_section(
-            'style_amenities',
-            [
-                'label' => __('Amenities Style', 'my-super-tour-elementor'),
-                'tab' => Controls_Manager::TAB_STYLE,
-            ]
-        );
-
-        $this->add_control(
-            'amenities_liquid_glass',
-            [
-                'label' => __('Liquid Glass Effect', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::SWITCHER,
-                'default' => 'yes',
-            ]
-        );
-
-        $this->add_control(
-            'amenities_bg_color',
-            [
-                'label' => __('Amenity Background', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => 'rgba(153, 82, 224, 0.1)',
-            ]
-        );
-
-        $this->add_control(
-            'amenities_text_color',
-            [
-                'label' => __('Amenity Text Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => 'hsl(270, 70%, 50%)',
-            ]
-        );
-
-        $this->add_control(
-            'amenities_blur',
-            [
-                'label' => __('Blur Amount', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::SLIDER,
-                'range' => ['px' => ['min' => 0, 'max' => 20]],
-                'default' => ['size' => 8, 'unit' => 'px'],
-                'condition' => ['amenities_liquid_glass' => 'yes'],
-            ]
-        );
-
-        $this->end_controls_section();
-
         // Colors
         $this->start_controls_section(
             'style_colors',
@@ -660,6 +546,42 @@ class Accommodation_Carousel extends Widget_Base {
             ]
         );
 
+        $this->add_control(
+            'badge_bg_color',
+            [
+                'label' => __('Badge Background', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => 'rgba(255,255,255,0.15)',
+            ]
+        );
+
+        $this->add_control(
+            'badge_text_color',
+            [
+                'label' => __('Badge Text Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#ffffff',
+            ]
+        );
+
+        $this->add_control(
+            'amenities_bg_color',
+            [
+                'label' => __('Amenity Background', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => 'rgba(153, 82, 224, 0.1)',
+            ]
+        );
+
+        $this->add_control(
+            'amenities_text_color',
+            [
+                'label' => __('Amenity Text Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => 'hsl(270, 70%, 50%)',
+            ]
+        );
+
         $this->end_controls_section();
 
         // Button Style
@@ -700,62 +622,6 @@ class Accommodation_Carousel extends Widget_Base {
         );
 
         $this->end_controls_section();
-
-        // Arrow Style
-        $this->start_controls_section(
-            'style_arrows',
-            [
-                'label' => __('Arrow Style', 'my-super-tour-elementor'),
-                'tab' => Controls_Manager::TAB_STYLE,
-            ]
-        );
-
-        $this->add_control(
-            'arrow_liquid_glass',
-            [
-                'label' => __('Liquid Glass Arrows', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::SWITCHER,
-                'default' => 'yes',
-            ]
-        );
-
-        $this->add_control(
-            'arrow_bg_color',
-            [
-                'label' => __('Arrow Background', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => 'rgba(255,255,255,0.9)',
-            ]
-        );
-
-        $this->add_control(
-            'arrow_color',
-            [
-                'label' => __('Arrow Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#1a1a1a',
-            ]
-        );
-
-        $this->add_control(
-            'arrow_hover_bg',
-            [
-                'label' => __('Arrow Hover Background', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => 'hsl(270, 70%, 60%)',
-            ]
-        );
-
-        $this->add_control(
-            'arrow_hover_color',
-            [
-                'label' => __('Arrow Hover Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#ffffff',
-            ]
-        );
-
-        $this->end_controls_section();
     }
 
     private function get_products_list() {
@@ -780,6 +646,25 @@ class Accommodation_Carousel extends Widget_Base {
         return $options;
     }
 
+    private function get_current_category() {
+        if (is_product_category()) {
+            $term = get_queried_object();
+            if ($term && !is_wp_error($term)) {
+                return $term;
+            }
+        }
+        $current_url = $_SERVER['REQUEST_URI'];
+        $url_parts = explode('/', trim($current_url, '/'));
+        foreach ($url_parts as $slug) {
+            if (empty($slug)) continue;
+            $term = get_term_by('slug', $slug, 'product_cat');
+            if ($term && !is_wp_error($term)) {
+                return $term;
+            }
+        }
+        return null;
+    }
+
     private function get_products($settings) {
         if (!class_exists('WooCommerce')) return [];
 
@@ -788,12 +673,22 @@ class Accommodation_Carousel extends Widget_Base {
             'limit' => $settings['products_count'] ?: 6,
         ];
 
-        if ($settings['source'] === 'manual' && !empty($settings['manual_products'])) {
+        $source = $settings['source'];
+        
+        if ($source === 'auto') {
+            $current_cat = $this->get_current_category();
+            if ($current_cat) {
+                $args['category'] = [$current_cat->slug];
+            }
+        } elseif ($source === 'manual' && !empty($settings['manual_products'])) {
             $args['include'] = $settings['manual_products'];
-        } elseif ($settings['source'] === 'featured') {
+        } elseif ($source === 'featured') {
             $args['featured'] = true;
-        } elseif ($settings['source'] === 'category' && !empty($settings['category'])) {
-            $args['category'] = [get_term($settings['category'])->slug];
+        } elseif ($source === 'category' && !empty($settings['category'])) {
+            $term = get_term($settings['category'], 'product_cat');
+            if ($term && !is_wp_error($term)) {
+                $args['category'] = [$term->slug];
+            }
         }
 
         return wc_get_products($args);
@@ -809,13 +704,10 @@ class Accommodation_Carousel extends Widget_Base {
         }
 
         // Settings
-        $arrows_inside = $settings['arrows_inside'] === 'yes';
-        $show_arrows = $settings['show_arrows'] === 'yes';
-        $arrows_offset = isset($settings['arrows_offset']['size']) ? $settings['arrows_offset']['size'] : 16;
         $liquid_glass = $settings['enable_liquid_glass'] === 'yes';
-        $cursor_glow = ($settings['enable_cursor_glow'] ?? '') === 'yes';
-        $arrow_liquid_glass = $settings['arrow_liquid_glass'] === 'yes';
-        $items_per_view = $settings['items_per_view'] ?? 3;
+        $show_arrows = $settings['show_arrows'] === 'yes';
+        $enable_carousel = $settings['enable_carousel'] === 'yes';
+        $columns = intval($settings['columns'] ?? 3);
         
         // Card settings
         $card_bg = $settings['card_bg_color'] ?? '#ffffff';
@@ -827,10 +719,8 @@ class Accommodation_Carousel extends Widget_Base {
         // Badge settings
         $show_badge = ($settings['show_badge'] ?? '') === 'yes';
         $badge_attribute = $settings['badge_attribute'] ?? 'pa_accommodation-type';
-        $badge_liquid_glass = ($settings['badge_liquid_glass'] ?? '') === 'yes';
         $badge_bg = $settings['badge_bg_color'] ?? 'rgba(255,255,255,0.15)';
         $badge_text_color = $settings['badge_text_color'] ?? '#ffffff';
-        $badge_border_radius = isset($settings['badge_border_radius']['size']) ? $settings['badge_border_radius']['size'] : 20;
         
         // City settings
         $show_city = ($settings['show_city'] ?? '') === 'yes';
@@ -841,10 +731,8 @@ class Accommodation_Carousel extends Widget_Base {
         $show_amenities = ($settings['show_amenities'] ?? '') === 'yes';
         $amenities_attribute = $settings['amenities_attribute'] ?? 'pa_amenities';
         $max_amenities = intval($settings['max_amenities'] ?? 4);
-        $amenities_liquid_glass = ($settings['amenities_liquid_glass'] ?? '') === 'yes';
         $amenities_bg = $settings['amenities_bg_color'] ?? 'rgba(153, 82, 224, 0.1)';
         $amenities_text = $settings['amenities_text_color'] ?? 'hsl(270, 70%, 50%)';
-        $amenities_blur = isset($settings['amenities_blur']['size']) ? $settings['amenities_blur']['size'] : 8;
         
         // Wishlist settings
         $show_wishlist = ($settings['show_wishlist'] ?? '') === 'yes';
@@ -867,55 +755,35 @@ class Accommodation_Carousel extends Widget_Base {
         $button_text = $settings['button_text_color'] ?? '#ffffff';
         $button_radius = isset($settings['button_border_radius']['size']) ? $settings['button_border_radius']['size'] : 25;
         
-        // Arrow settings
-        $arrow_bg = $settings['arrow_bg_color'] ?? 'rgba(255,255,255,0.9)';
-        $arrow_color = $settings['arrow_color'] ?? '#1a1a1a';
-        $arrow_hover_bg = $settings['arrow_hover_bg'] ?? 'hsl(270, 70%, 60%)';
-        $arrow_hover_color = $settings['arrow_hover_color'] ?? '#ffffff';
-        
         // Rating settings
         $rating_source = $settings['rating_source'] ?? 'combined';
         $manual_boost = floatval($settings['manual_rating_boost'] ?? 0);
         $count_boost = intval($settings['manual_reviews_boost'] ?? 0);
 
-        $container_class = 'mst-accommodation-carousel-container mst-carousel-universal';
-        if (!$arrows_inside) $container_class .= ' mst-arrows-outside';
-        if ($cursor_glow) $container_class .= ' mst-cursor-glow-enabled';
-
-        // Arrow positioning
-        if ($arrows_inside) {
-            $arrow_left_style = 'left: ' . abs($arrows_offset) . 'px;';
-            $arrow_right_style = 'right: ' . abs($arrows_offset) . 'px;';
-        } else {
-            $arrow_left_style = 'left: -' . (abs($arrows_offset) + 48) . 'px;';
-            $arrow_right_style = 'right: -' . (abs($arrows_offset) + 48) . 'px;';
-        }
-
-        $arrow_base_style = 'position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; transition: all 0.3s ease; background: ' . $arrow_bg . '; color: ' . $arrow_color . ';';
-        if ($arrow_liquid_glass) {
-            $arrow_base_style .= ' backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 4px 16px rgba(0,0,0,0.1);';
-        }
-        
         $widget_id = $this->get_id();
+        $container_class = 'mst-accommodation-grid mst-accommodation-carousel';
         ?>
         <style>
-            /* Accommodation Carousel Styles */
-            .mst-accommodation-carousel-container {
-                position: relative;
-                overflow: hidden;
+            /* Accommodation Grid/Carousel Clean CSS v2.0 */
+            .mst-accommodation-grid {
+                display: grid;
+                grid-template-columns: repeat(<?php echo $columns; ?>, 1fr);
+                gap: <?php echo $gap; ?>px;
             }
-            .mst-accommodation-carousel-container.mst-arrows-outside {
-                overflow: visible;
-                padding: 0 60px;
+            @media (max-width: 1024px) {
+                .mst-accommodation-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
             }
-            .mst-accommodation-carousel-track {
-                display: flex;
-                transition: transform 0.4s ease;
+            @media (max-width: 767px) {
+                .mst-accommodation-grid {
+                    grid-template-columns: 1fr;
+                }
             }
             .mst-accommodation-card {
-                flex-shrink: 0;
                 display: flex;
                 flex-direction: column;
+                overflow: hidden;
                 transition: all 0.3s ease;
             }
             .mst-accommodation-card.mst-liquid-glass {
@@ -923,11 +791,15 @@ class Accommodation_Carousel extends Widget_Base {
                 border: 1px solid rgba(255,255,255,0.2);
             }
             .mst-accommodation-card.mst-liquid-glass:hover {
-                box-shadow: 0 12px 40px rgba(153, 82, 224, 0.15), inset 0 1px 2px rgba(255,255,255,0.4), 0 0 0 1px rgba(255,255,255,0.3);
+                box-shadow: 0 12px 40px rgba(153, 82, 224, 0.15), inset 0 1px 2px rgba(255,255,255,0.4);
+                transform: translateY(-4px);
             }
             .mst-accommodation-card .mst-card-image {
                 position: relative;
                 overflow: hidden;
+                margin: 8px;
+                border-radius: <?php echo $image_border_radius; ?>px;
+                height: <?php echo $image_height; ?>px;
                 flex-shrink: 0;
             }
             .mst-accommodation-card .mst-card-image img {
@@ -935,18 +807,27 @@ class Accommodation_Carousel extends Widget_Base {
                 height: 100%;
                 object-fit: cover;
                 transition: transform 0.4s ease;
+                display: block;
             }
             .mst-accommodation-card:hover .mst-card-image img {
                 transform: scale(1.05);
             }
             
-            /* Header Row: Title left, Price right */
+            /* Content */
+            .mst-accommodation-content {
+                padding: 12px 16px 16px;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            /* Header Row: Title left, Price right - FIXED ALIGNMENT */
             .mst-accommodation-header-row {
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-start;
                 gap: 12px;
-                margin-bottom: 4px;
+                margin-bottom: 8px;
             }
             .mst-accommodation-title {
                 margin: 0;
@@ -955,6 +836,7 @@ class Accommodation_Carousel extends Widget_Base {
                 line-height: 1.3;
                 flex: 1;
                 min-width: 0;
+                color: <?php echo esc_attr($title_color); ?>;
             }
             .mst-accommodation-title a {
                 color: inherit;
@@ -965,31 +847,40 @@ class Accommodation_Carousel extends Widget_Base {
                 font-size: 15px;
                 white-space: nowrap;
                 flex-shrink: 0;
+                color: <?php echo esc_attr($price_color); ?>;
+            }
+            .mst-accommodation-price-suffix {
+                font-size: 12px;
+                font-weight: 400;
+                color: #999;
             }
             
-            /* Sub Row: City left, Rating right */
+            /* Sub Row: City left, Rating right - FIXED ALIGNMENT */
             .mst-accommodation-sub-row {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 margin-bottom: 10px;
+                flex-wrap: nowrap;
             }
             .mst-accommodation-city {
                 display: flex;
                 align-items: center;
                 gap: 4px;
                 font-size: 13px;
+                color: <?php echo esc_attr($city_color); ?>;
             }
             .mst-accommodation-rating {
                 display: flex;
                 align-items: center;
                 gap: 4px;
+                margin-left: auto;
             }
             .mst-accommodation-rating span:first-child {
                 font-weight: 600;
             }
             
-            /* Amenities with Liquid Glass */
+            /* Amenities */
             .mst-accommodation-amenities {
                 display: flex;
                 flex-wrap: wrap;
@@ -1003,11 +894,9 @@ class Accommodation_Carousel extends Widget_Base {
                 padding: 4px 10px;
                 font-size: 11px;
                 border-radius: 12px;
+                background: <?php echo esc_attr($amenities_bg); ?>;
+                color: <?php echo esc_attr($amenities_text); ?>;
                 transition: all 0.2s ease;
-            }
-            .mst-amenity-tag.mst-liquid-glass {
-                border: 1px solid rgba(153, 82, 224, 0.2);
-                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             }
             
             /* Wishlist Button */
@@ -1048,347 +937,191 @@ class Accommodation_Carousel extends Widget_Base {
                 padding: 6px 12px;
                 font-size: 12px;
                 font-weight: 500;
-            }
-            .mst-accommodation-badge.mst-liquid-glass {
+                background: <?php echo esc_attr($badge_bg); ?>;
+                color: <?php echo esc_attr($badge_text_color); ?>;
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
                 border: 1px solid rgba(255,255,255,0.3);
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                border-radius: 20px;
             }
             
-            /* Button */
+            /* Button - FIXED ALIGNMENT */
             .mst-accommodation-button {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                width: 100%;
-                padding: 12px 20px;
+                width: calc(100% + 32px);
+                margin: auto -16px -16px -16px;
+                padding: 14px 20px;
+                background: <?php echo esc_attr($button_bg); ?>;
+                color: <?php echo esc_attr($button_text); ?>;
                 text-decoration: none;
                 font-weight: 600;
                 font-size: 14px;
+                border-radius: 0 0 <?php echo $border_radius; ?>px <?php echo $border_radius; ?>px;
                 transition: all 0.3s ease;
-                margin: 0 -16px -16px -16px;
-                width: calc(100% + 32px);
             }
             .mst-accommodation-button:hover {
                 filter: brightness(1.1);
             }
             
-            /* Carousel Arrows */
-            .mst-carousel-arrow {
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                z-index: 10;
-                width: 48px;
-                height: 48px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                border: none;
-                transition: all 0.3s ease;
-            }
-            .mst-carousel-arrow:hover {
-                background: <?php echo esc_attr($arrow_hover_bg); ?> !important;
-                color: <?php echo esc_attr($arrow_hover_color); ?> !important;
-            }
-            .mst-carousel-arrow svg {
-                width: 20px;
-                height: 20px;
-            }
-            
-            /* Cursor Glow Effect */
-            .mst-cursor-glow-enabled .mst-accommodation-card {
-                position: relative;
-            }
-            .mst-cursor-glow-enabled .mst-accommodation-card::before {
-                content: '';
-                position: absolute;
-                inset: 0;
-                border-radius: inherit;
-                pointer-events: none;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-                background: radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.1), transparent 40%);
-                z-index: 1;
-            }
-            .mst-cursor-glow-enabled .mst-accommodation-card:hover::before {
-                opacity: 1;
-            }
-            
-            /* Responsive */
-            @media (max-width: 768px) {
-                .mst-accommodation-carousel-container.mst-arrows-outside {
-                    padding: 0 50px;
-                }
-                .mst-accommodation-header-row {
-                    flex-direction: column;
-                    gap: 4px;
-                }
-                .mst-accommodation-price {
-                    order: -1;
-                }
+            /* Spacer */
+            .mst-accommodation-spacer {
+                flex: 1;
             }
         </style>
         
-        <div class="<?php echo esc_attr($container_class); ?>" data-items="<?php echo esc_attr($items_per_view); ?>" data-widget-id="<?php echo esc_attr($widget_id); ?>">
-            
-            <?php if ($show_arrows): ?>
-            <button type="button" class="mst-carousel-arrow mst-carousel-prev" style="<?php echo $arrow_base_style . $arrow_left_style; ?>">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            </button>
-            <button type="button" class="mst-carousel-arrow mst-carousel-next" style="<?php echo $arrow_base_style . $arrow_right_style; ?>">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </button>
-            <?php endif; ?>
-            
-            <div class="mst-accommodation-carousel-track" style="gap: <?php echo $gap; ?>px;">
-                <?php foreach ($products as $product):
-                    $product_id = $product->get_id();
-                    $image_url = wp_get_attachment_url($product->get_image_id());
-                    if (!$image_url && !empty($settings['fallback_image']['url'])) {
-                        $image_url = $settings['fallback_image']['url'];
-                    }
-                    if (!$image_url) $image_url = wc_placeholder_img_src();
-                    
-                    $price = $product->get_price_html();
-                    $price_suffix = $settings['price_suffix'] ?? 'за ночь';
-                    
-                    // Get badge from WooCommerce attribute
-                    $badge_text = $product->get_attribute($badge_attribute);
-                    
-                    // Get city from WooCommerce attribute
-                    $city = $product->get_attribute($city_attribute);
-                    if (empty($city)) {
-                        $terms = get_the_terms($product_id, 'product_cat');
-                        if ($terms && !is_wp_error($terms)) {
-                            foreach ($terms as $term) {
-                                if ($term->parent > 0) {
-                                    $city = $term->name;
-                                    break;
-                                }
+        <div class="<?php echo esc_attr($container_class); ?>" data-widget-id="<?php echo esc_attr($widget_id); ?>">
+            <?php foreach ($products as $product):
+                $product_id = $product->get_id();
+                $image_url = wp_get_attachment_url($product->get_image_id());
+                if (!$image_url && !empty($settings['fallback_image']['url'])) {
+                    $image_url = $settings['fallback_image']['url'];
+                }
+                if (!$image_url) $image_url = wc_placeholder_img_src();
+                
+                $price = $product->get_price_html();
+                $price_suffix = $settings['price_suffix'] ?? 'за ночь';
+                
+                // Get badge
+                $badge_text = $product->get_attribute($badge_attribute);
+                
+                // Get city
+                $city = $product->get_attribute($city_attribute);
+                if (empty($city)) {
+                    $terms = get_the_terms($product_id, 'product_cat');
+                    if ($terms && !is_wp_error($terms)) {
+                        foreach ($terms as $term) {
+                            if ($term->parent > 0) {
+                                $city = $term->name;
+                                break;
                             }
                         }
                     }
+                }
+                
+                // Get amenities
+                $amenities_raw = $product->get_attribute($amenities_attribute);
+                $amenities = [];
+                if (!empty($amenities_raw)) {
+                    $amenities = array_map('trim', explode(',', $amenities_raw));
+                    $amenities = array_slice($amenities, 0, $max_amenities);
+                }
+                
+                // Rating calculation
+                $real_rating = floatval($product->get_average_rating()) ?: 0;
+                $real_count = intval($product->get_review_count()) ?: 0;
+                
+                if ($rating_source === 'manual') {
+                    $rating = $manual_boost ?: 5;
+                    $review_count = $count_boost;
+                } elseif ($rating_source === 'combined') {
+                    $rating = $real_rating > 0 ? min(5, ($real_rating + $manual_boost) / 2) : ($manual_boost ?: 5);
+                    $review_count = $real_count + $count_boost;
+                } else {
+                    $rating = $real_rating ?: 5;
+                    $review_count = $real_count;
+                }
+                $rating = round($rating, 1);
+                
+                $card_class = 'mst-accommodation-card';
+                if ($liquid_glass) $card_class .= ' mst-liquid-glass';
+            ?>
+            <div class="<?php echo esc_attr($card_class); ?>" data-product-id="<?php echo esc_attr($product_id); ?>" style="background: <?php echo esc_attr($card_bg); ?>; border-radius: <?php echo $border_radius; ?>px;">
+                
+                <!-- Image -->
+                <div class="mst-card-image">
+                    <a href="<?php echo esc_url($product->get_permalink()); ?>">
+                        <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>">
+                    </a>
                     
-                    // Get amenities from WooCommerce attribute
-                    $amenities_raw = $product->get_attribute($amenities_attribute);
-                    $amenities = [];
-                    if (!empty($amenities_raw)) {
-                        $amenities = array_map('trim', explode(',', $amenities_raw));
-                        $amenities = array_slice($amenities, 0, $max_amenities);
-                    }
-                    
-                    // Rating calculation
-                    $real_rating = floatval($product->get_average_rating()) ?: 0;
-                    $real_count = intval($product->get_review_count()) ?: 0;
-                    
-                    if ($rating_source === 'manual') {
-                        $rating = $manual_boost ?: 5;
-                        $review_count = $count_boost;
-                    } elseif ($rating_source === 'combined') {
-                        $rating = $real_rating > 0 ? min(5, ($real_rating + $manual_boost) / 2) : ($manual_boost ?: 5);
-                        $review_count = $real_count + $count_boost;
-                    } else {
-                        $rating = $real_rating ?: 5;
-                        $review_count = $real_count;
-                    }
-                    $rating = round($rating, 1);
-                    
-                    $card_class = 'mst-accommodation-card';
-                    if ($liquid_glass) $card_class .= ' mst-liquid-glass';
-                    
-                    $card_width = 'calc((100% - ' . ($gap * (intval($items_per_view) - 1)) . 'px) / ' . intval($items_per_view) . ')';
-                ?>
-                <div class="<?php echo esc_attr($card_class); ?>" data-product-id="<?php echo esc_attr($product_id); ?>" style="background: <?php echo esc_attr($card_bg); ?>; border-radius: <?php echo $border_radius; ?>px; width: <?php echo $card_width; ?>;">
-                    
-                    <!-- Image Container -->
-                    <div class="mst-card-image" style="height: <?php echo $image_height; ?>px; margin: 8px; border-radius: <?php echo $image_border_radius; ?>px;">
-                        <a href="<?php echo esc_url($product->get_permalink()); ?>">
-                            <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>">
-                        </a>
-                        
-                        <?php if ($show_badge && !empty($badge_text)): 
-                            $badge_style = 'background: ' . $badge_bg . '; color: ' . $badge_text_color . '; border-radius: ' . $badge_border_radius . 'px;';
-                            if ($badge_liquid_glass) {
-                                $badge_style .= ' backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);';
-                            }
-                        ?>
-                        <span class="mst-accommodation-badge <?php echo $badge_liquid_glass ? 'mst-liquid-glass' : ''; ?>" style="<?php echo $badge_style; ?>">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                            <?php echo esc_html($badge_text); ?>
-                        </span>
-                        <?php endif; ?>
-                        
-                        <?php if ($show_wishlist): 
-                            $wishlist_style = 'width: ' . $wishlist_size . 'px; height: ' . $wishlist_size . 'px; background: ' . $wishlist_bg . ';';
-                            if ($wishlist_liquid) {
-                                $wishlist_style .= ' backdrop-filter: blur(' . $wishlist_blur . 'px); -webkit-backdrop-filter: blur(' . $wishlist_blur . 'px); box-shadow: 0 4px 12px rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.6);';
-                            }
-                        ?>
-                        <button type="button" 
-                            class="mst-accommodation-wishlist mst-wishlist-btn" 
-                            data-product-id="<?php echo esc_attr($product_id); ?>"
-                            data-active-bg="<?php echo esc_attr($wishlist_active_bg); ?>"
-                            data-active-fill="<?php echo esc_attr($wishlist_active_fill); ?>"
-                            data-active-stroke="<?php echo esc_attr($wishlist_active_stroke); ?>"
-                            data-default-bg="<?php echo esc_attr($wishlist_bg); ?>"
-                            data-default-fill="<?php echo esc_attr($wishlist_icon); ?>"
-                            data-default-stroke="<?php echo esc_attr($wishlist_stroke); ?>"
-                            style="<?php echo $wishlist_style; ?>"
-                            aria-label="Add to wishlist">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="<?php echo esc_attr($wishlist_icon_size); ?>" height="<?php echo esc_attr($wishlist_icon_size); ?>" viewBox="0 0 24 24" fill="<?php echo esc_attr($wishlist_icon); ?>" stroke="<?php echo esc_attr($wishlist_stroke); ?>" stroke-width="2" class="mst-heart-icon"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-                        </button>
-                        <?php endif; ?>
+                    <?php if ($show_badge && !empty($badge_text)): ?>
+                    <div class="mst-accommodation-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <?php echo esc_html($badge_text); ?>
                     </div>
+                    <?php endif; ?>
                     
-                    <!-- Content -->
-                    <div class="mst-accommodation-content" style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
-                        
-                        <!-- Header: Title + Price -->
-                        <div class="mst-accommodation-header-row">
-                            <h3 class="mst-accommodation-title" style="color: <?php echo esc_attr($title_color); ?>;">
-                                <a href="<?php echo esc_url($product->get_permalink()); ?>">
-                                    <?php echo esc_html($product->get_name()); ?>
-                                </a>
-                            </h3>
-                            <div class="mst-accommodation-price" style="color: <?php echo esc_attr($price_color); ?>;">
-                                <?php echo $price; ?>
-                                <?php if (!empty($price_suffix)): ?>
-                                <span style="font-size: 11px; font-weight: 400; opacity: 0.7;"><?php echo esc_html($price_suffix); ?></span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        
-                        <!-- Sub Row: City + Rating -->
-                        <div class="mst-accommodation-sub-row">
-                            <?php if ($show_city && !empty($city)): ?>
-                            <div class="mst-accommodation-city" style="color: <?php echo esc_attr($city_color); ?>;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="<?php echo esc_attr($star_color); ?>">
-                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                    <circle cx="12" cy="10" r="3" fill="#fff"></circle>
-                                </svg>
-                                <?php echo esc_html($city); ?>
-                            </div>
-                            <?php endif; ?>
-                            
-                            <div class="mst-accommodation-rating" style="margin-left: auto;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="<?php echo esc_attr($star_color); ?>">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <span><?php echo esc_html($rating); ?></span>
-                                <span style="color: #999; font-size: 12px;">(<?php echo esc_html($review_count); ?>)</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Amenities with Liquid Glass -->
-                        <?php if ($show_amenities && !empty($amenities)): ?>
-                        <div class="mst-accommodation-amenities">
-                            <?php foreach ($amenities as $amenity): 
-                                $amenity_style = 'background: ' . $amenities_bg . '; color: ' . $amenities_text . ';';
-                                if ($amenities_liquid_glass) {
-                                    $amenity_style .= ' backdrop-filter: blur(' . $amenities_blur . 'px); -webkit-backdrop-filter: blur(' . $amenities_blur . 'px);';
-                                }
-                            ?>
-                            <span class="mst-amenity-tag <?php echo $amenities_liquid_glass ? 'mst-liquid-glass' : ''; ?>" style="<?php echo $amenity_style; ?>">
-                                <?php echo esc_html($amenity); ?>
-                            </span>
-                            <?php endforeach; ?>
-                        </div>
-                        <?php endif; ?>
-                        
-                        <!-- Spacer -->
-                        <div style="flex: 1;"></div>
-                        
-                        <!-- Button -->
-                        <a href="<?php echo esc_url($product->get_permalink()); ?>" class="mst-accommodation-button" style="background: <?php echo esc_attr($button_bg); ?>; color: <?php echo esc_attr($button_text); ?>; border-radius: 0 0 <?php echo $border_radius; ?>px <?php echo $border_radius; ?>px;">
-                            <?php echo esc_html($settings['button_text'] ?? 'Подробнее'); ?>
-                        </a>
-                    </div>
+                    <?php if ($show_wishlist): 
+                        $wishlist_style = 'width: ' . $wishlist_size . 'px; height: ' . $wishlist_size . 'px; background: ' . $wishlist_bg . ';';
+                        if ($wishlist_liquid) {
+                            $wishlist_style .= ' backdrop-filter: blur(' . $wishlist_blur . 'px); -webkit-backdrop-filter: blur(' . $wishlist_blur . 'px); box-shadow: 0 4px 12px rgba(0,0,0,0.08);';
+                        }
+                    ?>
+                    <button type="button"
+                        class="mst-accommodation-wishlist mst-wishlist-btn"
+                        data-product-id="<?php echo esc_attr($product_id); ?>"
+                        data-active-bg="<?php echo esc_attr($wishlist_active_bg); ?>"
+                        data-active-fill="<?php echo esc_attr($wishlist_active_fill); ?>"
+                        data-active-stroke="<?php echo esc_attr($wishlist_active_stroke); ?>"
+                        data-default-bg="<?php echo esc_attr($wishlist_bg); ?>"
+                        data-default-fill="<?php echo esc_attr($wishlist_icon); ?>"
+                        data-default-stroke="<?php echo esc_attr($wishlist_stroke); ?>"
+                        style="<?php echo $wishlist_style; ?>"
+                        aria-label="Add to wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="<?php echo $wishlist_icon_size; ?>" height="<?php echo $wishlist_icon_size; ?>" viewBox="0 0 24 24" fill="<?php echo esc_attr($wishlist_icon); ?>" stroke="<?php echo esc_attr($wishlist_stroke); ?>" stroke-width="2" class="mst-heart-icon"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                    </button>
+                    <?php endif; ?>
                 </div>
-                <?php endforeach; ?>
+                
+                <!-- Content -->
+                <div class="mst-accommodation-content">
+                    <!-- Row 1: Title + Price -->
+                    <div class="mst-accommodation-header-row">
+                        <h3 class="mst-accommodation-title">
+                            <a href="<?php echo esc_url($product->get_permalink()); ?>">
+                                <?php echo esc_html($product->get_name()); ?>
+                            </a>
+                        </h3>
+                        <div class="mst-accommodation-price">
+                            <?php echo $price; ?>
+                            <?php if (!empty($price_suffix)): ?>
+                            <span class="mst-accommodation-price-suffix"><?php echo esc_html($price_suffix); ?></span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    
+                    <!-- Row 2: City + Rating -->
+                    <div class="mst-accommodation-sub-row">
+                        <?php if ($show_city && !empty($city)): ?>
+                        <div class="mst-accommodation-city">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="hsl(45, 98%, 50%)">
+                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                                <circle cx="12" cy="10" r="3" fill="#fff"></circle>
+                            </svg>
+                            <?php echo esc_html($city); ?>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <div class="mst-accommodation-rating">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="<?php echo esc_attr($star_color); ?>">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <span style="font-weight: 600;"><?php echo esc_html($rating); ?></span>
+                            <span style="color: #999; font-size: 12px;">(<?php echo esc_html($review_count); ?>)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Amenities -->
+                    <?php if ($show_amenities && !empty($amenities)): ?>
+                    <div class="mst-accommodation-amenities">
+                        <?php foreach ($amenities as $amenity): ?>
+                        <span class="mst-amenity-tag"><?php echo esc_html($amenity); ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <!-- Spacer -->
+                    <div class="mst-accommodation-spacer"></div>
+                    
+                    <!-- Button (NO GUIDE PHOTO - this is for accommodation) -->
+                    <a href="<?php echo esc_url($product->get_permalink()); ?>" class="mst-accommodation-button">
+                        <?php echo esc_html($settings['button_text'] ?? 'Подробнее'); ?>
+                    </a>
+                </div>
             </div>
+            <?php endforeach; ?>
         </div>
-        
-        <script>
-        (function() {
-            const container = document.querySelector('[data-widget-id="<?php echo esc_js($widget_id); ?>"]');
-            if (!container) return;
-            
-            const track = container.querySelector('.mst-accommodation-carousel-track');
-            const cards = container.querySelectorAll('.mst-accommodation-card');
-            const prevBtn = container.querySelector('.mst-carousel-prev');
-            const nextBtn = container.querySelector('.mst-carousel-next');
-            
-            let currentIndex = 0;
-            const itemsPerView = parseInt(container.dataset.items) || 3;
-            const gap = <?php echo $gap; ?>;
-            const totalItems = cards.length;
-            const maxIndex = Math.max(0, totalItems - itemsPerView);
-            
-            function updateCarousel() {
-                const cardWidth = cards[0]?.offsetWidth || 0;
-                const offset = currentIndex * (cardWidth + gap);
-                track.style.transform = `translateX(-${offset}px)`;
-            }
-            
-            if (prevBtn) {
-                prevBtn.addEventListener('click', () => {
-                    if (currentIndex > 0) {
-                        currentIndex--;
-                        updateCarousel();
-                    }
-                });
-            }
-            
-            if (nextBtn) {
-                nextBtn.addEventListener('click', () => {
-                    if (currentIndex < maxIndex) {
-                        currentIndex++;
-                        updateCarousel();
-                    }
-                });
-            }
-            
-            // Cursor glow effect
-            if (container.classList.contains('mst-cursor-glow-enabled')) {
-                cards.forEach(card => {
-                    card.addEventListener('mousemove', (e) => {
-                        const rect = card.getBoundingClientRect();
-                        const x = e.clientX - rect.left;
-                        const y = e.clientY - rect.top;
-                        card.style.setProperty('--mx', x + 'px');
-                        card.style.setProperty('--my', y + 'px');
-                    });
-                });
-            }
-            
-            // Wishlist toggle
-            const wishlistBtns = container.querySelectorAll('.mst-wishlist-btn');
-            wishlistBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    const isActive = btn.classList.toggle('active');
-                    const heart = btn.querySelector('.mst-heart-icon');
-                    
-                    if (isActive) {
-                        btn.style.background = btn.dataset.activeBg;
-                        heart.setAttribute('fill', btn.dataset.activeFill);
-                        heart.setAttribute('stroke', btn.dataset.activeStroke);
-                    } else {
-                        btn.style.background = btn.dataset.defaultBg;
-                        heart.setAttribute('fill', btn.dataset.defaultFill);
-                        heart.setAttribute('stroke', btn.dataset.defaultStroke);
-                    }
-                });
-            });
-            
-            // Responsive handling
-            window.addEventListener('resize', updateCarousel);
-        })();
-        </script>
         <?php
     }
 }

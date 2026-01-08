@@ -110,6 +110,10 @@ function mst_elementor_register_widgets($widgets_manager) {
     require_once MST_ELEMENTOR_PATH . 'widgets/booking-confirmation-page.php';
     require_once MST_ELEMENTOR_PATH . 'widgets/mst-cart-widget.php';
     require_once MST_ELEMENTOR_PATH . 'widgets/mst-checkout-widget.php';
+    require_once MST_ELEMENTOR_PATH . 'widgets/help-section.php';
+    require_once MST_ELEMENTOR_PATH . 'widgets/single-product-blog.php';
+    require_once MST_ELEMENTOR_PATH . 'widgets/single-blog-article.php';
+    require_once MST_ELEMENTOR_PATH . 'widgets/single-product-toast.php';
     
 
     // Register widgets
@@ -160,6 +164,10 @@ function mst_elementor_register_widgets($widgets_manager) {
     $widgets_manager->register(new \MST_Elementor\Widgets\Booking_Confirmation_Page());
     $widgets_manager->register(new \MST_Elementor\Widgets\Mst_Cart_Widget());
     $widgets_manager->register(new \MST_Elementor\Widgets\Mst_Checkout_Widget());
+    $widgets_manager->register(new \MySuperTour\Widgets\Help_Section());
+    $widgets_manager->register(new \MST_Elementor\Widgets\Single_Product_Blog());
+    $widgets_manager->register(new \MST_Elementor\Widgets\Single_Blog_Article());
+    $widgets_manager->register(new \MST_Elementor\Widgets\Single_Product_Toast());
 }
 
 // Enqueue frontend styles and scripts

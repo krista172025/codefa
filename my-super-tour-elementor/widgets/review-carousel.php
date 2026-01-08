@@ -27,12 +27,71 @@ class Review_Carousel extends Widget_Base {
     }
 
     protected function register_controls() {
-        // Reviews Section
+        // Reviews Source Section
+        $this->start_controls_section(
+            'source_section',
+            [
+                'label' => __('Reviews Source', 'my-super-tour-elementor'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $this->add_control(
+            'review_source',
+            [
+                'label' => __('Reviews Source', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'fake',
+                'options' => [
+                    'fake' => __('Fake Reviews (Manual)', 'my-super-tour-elementor'),
+                    'live' => __('Real Reviews (API)', 'my-super-tour-elementor'),
+                    'mixed' => __('Mixed (Real + Fake)', 'my-super-tour-elementor'),
+                ],
+                'description' => __('Choose where reviews come from', 'my-super-tour-elementor'),
+            ]
+        );
+
+        $this->add_control(
+            'reviews_count',
+            [
+                'label' => __('Reviews Count', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 10,
+                'min' => 1,
+                'max' => 50,
+                'condition' => ['review_source!' => 'fake'],
+            ]
+        );
+
+        $this->add_control(
+            'guide_id',
+            [
+                'label' => __('Guide ID', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'description' => __('Leave empty for all reviews, or enter guide user ID', 'my-super-tour-elementor'),
+                'condition' => ['review_source!' => 'fake'],
+            ]
+        );
+
+        $this->add_control(
+            'product_id',
+            [
+                'label' => __('Product ID', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'description' => __('Leave empty for all reviews, or enter product ID', 'my-super-tour-elementor'),
+                'condition' => ['review_source!' => 'fake'],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // Manual Reviews Section
         $this->start_controls_section(
             'content_section',
             [
-                'label' => __('Reviews', 'my-super-tour-elementor'),
+                'label' => __('Manual Reviews', 'my-super-tour-elementor'),
                 'tab' => Controls_Manager::TAB_CONTENT,
+                'condition' => ['review_source' => ['fake', 'mixed']],
             ]
         );
 
@@ -108,7 +167,6 @@ class Review_Carousel extends Widget_Base {
             [
                 'label' => __('Photo 1', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::MEDIA,
-                'description' => __('First review photo', 'my-super-tour-elementor'),
             ]
         );
 
@@ -117,7 +175,6 @@ class Review_Carousel extends Widget_Base {
             [
                 'label' => __('Photo 2', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::MEDIA,
-                'description' => __('Second review photo', 'my-super-tour-elementor'),
             ]
         );
 
@@ -129,7 +186,6 @@ class Review_Carousel extends Widget_Base {
                 'default' => 0,
                 'min' => 0,
                 'max' => 99,
-                'description' => __('If more than 2, will show "+X" counter', 'my-super-tour-elementor'),
             ]
         );
 
@@ -145,48 +201,6 @@ class Review_Carousel extends Widget_Base {
                     ['guest_name' => 'Елена П.', 'guest_initials' => 'ЕП', 'city' => 'Шамони', 'tour_title' => 'Горный треккинг с гидом', 'total_photos' => 7],
                 ],
                 'title_field' => '{{{ guest_name }}}',
-            ]
-        );
-
-        $this->add_control(
-            'use_live_reviews',
-            [
-                'label' => __('Use Live Reviews', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::SWITCHER,
-                'default' => '',
-                'description' => __('Display real reviews from WooCommerce', 'my-super-tour-elementor'),
-            ]
-        );
-
-        $this->add_control(
-            'reviews_count',
-            [
-                'label' => __('Reviews Count', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::NUMBER,
-                'default' => 10,
-                'min' => 1,
-                'max' => 50,
-                'condition' => ['use_live_reviews' => 'yes'],
-            ]
-        );
-
-        $this->add_control(
-            'guide_id',
-            [
-                'label' => __('Guide ID', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::TEXT,
-                'description' => __('Leave empty for all reviews, or enter guide user ID', 'my-super-tour-elementor'),
-                'condition' => ['use_live_reviews' => 'yes'],
-            ]
-        );
-
-        $this->add_control(
-            'product_id',
-            [
-                'label' => __('Product ID', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::TEXT,
-                'description' => __('Leave empty for all reviews, or enter product ID', 'my-super-tour-elementor'),
-                'condition' => ['use_live_reviews' => 'yes'],
             ]
         );
 
@@ -360,95 +374,16 @@ class Review_Carousel extends Widget_Base {
             ]
         );
 
-        $this->add_control(
-            'avatar_bg_color',
-            [
-                'label' => __('Avatar Background', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => 'hsl(270, 70%, 60%)',
-            ]
-        );
-
-        $this->add_control(
-            'avatar_text_color',
-            [
-                'label' => __('Avatar Text Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#ffffff',
-            ]
-        );
-
-        $this->add_control(
-            'name_color',
-            [
-                'label' => __('Name Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#1a1a1a',
-            ]
-        );
-
-        $this->add_control(
-            'date_color',
-            [
-                'label' => __('Date Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#808080',
-            ]
-        );
-
-        $this->add_control(
-            'star_color',
-            [
-                'label' => __('Star Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => 'hsl(45, 98%, 50%)',
-            ]
-        );
-
-        $this->add_control(
-            'city_color',
-            [
-                'label' => __('City Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => 'hsl(270, 70%, 60%)',
-            ]
-        );
-
-        $this->add_control(
-            'tour_color',
-            [
-                'label' => __('Tour Title Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#1a1a1a',
-            ]
-        );
-
-        $this->add_control(
-            'text_color',
-            [
-                'label' => __('Review Text Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#4d4d4d',
-            ]
-        );
-
-        $this->add_control(
-            'photo_counter_bg',
-            [
-                'label' => __('Photo Counter Background', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => 'rgba(0, 0, 0, 0.6)',
-            ]
-        );
-
-        $this->add_control(
-            'photo_counter_color',
-            [
-                'label' => __('Photo Counter Text', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#ffffff',
-            ]
-        );
+        $this->add_control('avatar_bg_color', ['label' => __('Avatar Background', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => 'hsl(270, 70%, 60%)']);
+        $this->add_control('avatar_text_color', ['label' => __('Avatar Text Color', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '#ffffff']);
+        $this->add_control('name_color', ['label' => __('Name Color', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '#1a1a1a']);
+        $this->add_control('date_color', ['label' => __('Date Color', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '#808080']);
+        $this->add_control('star_color', ['label' => __('Star Color', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => 'hsl(45, 98%, 50%)']);
+        $this->add_control('city_color', ['label' => __('City Color', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => 'hsl(270, 70%, 60%)']);
+        $this->add_control('tour_color', ['label' => __('Tour Title Color', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '#1a1a1a']);
+        $this->add_control('text_color', ['label' => __('Review Text Color', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '#4d4d4d']);
+        $this->add_control('photo_counter_bg', ['label' => __('Photo Counter Background', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => 'rgba(0, 0, 0, 0.6)']);
+        $this->add_control('photo_counter_color', ['label' => __('Photo Counter Text', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '#ffffff']);
 
         $this->end_controls_section();
 
@@ -461,41 +396,10 @@ class Review_Carousel extends Widget_Base {
             ]
         );
 
-        $this->add_control(
-            'button_bg_color',
-            [
-                'label' => __('Button Background', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#ffffff',
-            ]
-        );
-
-        $this->add_control(
-            'button_text_color',
-            [
-                'label' => __('Button Text Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#1a1a1a',
-            ]
-        );
-
-        $this->add_control(
-            'button_border_color',
-            [
-                'label' => __('Button Border Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#e0e0e0',
-            ]
-        );
-
-        $this->add_control(
-            'button_icon_color',
-            [
-                'label' => __('Button Icon Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => 'hsl(270, 70%, 60%)',
-            ]
-        );
+        $this->add_control('button_bg_color', ['label' => __('Button Background', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '#ffffff']);
+        $this->add_control('button_text_color', ['label' => __('Button Text Color', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '#1a1a1a']);
+        $this->add_control('button_border_color', ['label' => __('Button Border Color', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '#e0e0e0']);
+        $this->add_control('button_icon_color', ['label' => __('Button Icon Color', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => 'hsl(270, 70%, 60%)']);
 
         $this->end_controls_section();
 
@@ -508,109 +412,97 @@ class Review_Carousel extends Widget_Base {
             ]
         );
 
-        $this->add_control(
-            'arrow_liquid_glass',
-            [
-                'label' => __('Liquid Glass Arrows', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::SWITCHER,
-                'default' => 'yes',
-            ]
-        );
-
-        $this->add_control(
-            'arrow_bg_color',
-            [
-                'label' => __('Arrow Background', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => 'rgba(255,255,255,0.9)',
-            ]
-        );
-
-        $this->add_control(
-            'arrow_color',
-            [
-                'label' => __('Arrow Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#1a1a1a',
-            ]
-        );
-
-        $this->add_control(
-            'arrow_hover_bg',
-            [
-                'label' => __('Arrow Hover Background', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => 'hsl(270, 70%, 60%)',
-            ]
-        );
-
-        $this->add_control(
-            'arrow_hover_color',
-            [
-                'label' => __('Arrow Hover Color', 'my-super-tour-elementor'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#ffffff',
-            ]
-        );
+        $this->add_control('arrow_liquid_glass', ['label' => __('Liquid Glass Arrows', 'my-super-tour-elementor'), 'type' => Controls_Manager::SWITCHER, 'default' => 'yes']);
+        $this->add_control('arrow_bg_color', ['label' => __('Arrow Background', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => 'rgba(255,255,255,0.9)']);
+        $this->add_control('arrow_color', ['label' => __('Arrow Color', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '#1a1a1a']);
+        $this->add_control('arrow_hover_bg', ['label' => __('Arrow Hover Background', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => 'hsl(270, 70%, 60%)']);
+        $this->add_control('arrow_hover_color', ['label' => __('Arrow Hover Color', 'my-super-tour-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '#ffffff']);
 
         $this->end_controls_section();
     }
 
     /**
-     * Get live reviews from WooCommerce
+     * Get live reviews from WooCommerce via API-like method
      */
     private function get_live_reviews($settings) {
-        $args = [
-            'type' => 'review',
-            'status' => 'approve',
-            'number' => isset($settings['reviews_count']) ? intval($settings['reviews_count']) : 10,
-            'orderby' => 'comment_date',
-            'order' => 'DESC',
-        ];
+        global $wpdb;
         
-        // Filter by guide
-        if (!empty($settings['guide_id'])) {
-            $args['meta_query'] = [
-                ['key' => 'mst_guide_id', 'value' => intval($settings['guide_id'])]
-            ];
+        $limit = isset($settings['reviews_count']) ? intval($settings['reviews_count']) : 10;
+        $guide_id = !empty($settings['guide_id']) ? intval($settings['guide_id']) : 0;
+        $product_id = !empty($settings['product_id']) ? intval($settings['product_id']) : 0;
+        
+        $where_clauses = ["c.comment_approved = 1", "c.comment_type = 'review'"];
+        $join_clauses = "JOIN {$wpdb->commentmeta} cm ON c.comment_ID = cm.comment_id AND cm.meta_key = 'rating'";
+        
+        if ($guide_id) {
+            $join_clauses .= $wpdb->prepare(
+                " JOIN {$wpdb->commentmeta} cm_guide ON c.comment_ID = cm_guide.comment_id AND cm_guide.meta_key = 'mst_guide_id' AND cm_guide.meta_value = %d",
+                $guide_id
+            );
         }
         
-        // Filter by product
-        if (!empty($settings['product_id'])) {
-            $args['post_id'] = intval($settings['product_id']);
+        if ($product_id) {
+            $where_clauses[] = $wpdb->prepare("c.comment_post_ID = %d", $product_id);
         }
         
-        $comments = get_comments($args);
+        $where = implode(' AND ', $where_clauses);
+        
+        $sql = "SELECT c.*, 
+                       cm.meta_value as rating,
+                       cm2.meta_value as user_city,
+                       cm3.meta_value as review_photos
+                FROM {$wpdb->comments} c
+                {$join_clauses}
+                LEFT JOIN {$wpdb->commentmeta} cm2 ON c.comment_ID = cm2.comment_id AND cm2.meta_key = 'mst_user_city'
+                LEFT JOIN {$wpdb->commentmeta} cm3 ON c.comment_ID = cm3.comment_id AND cm3.meta_key = 'mst_review_photos'
+                WHERE {$where}
+                ORDER BY c.comment_date DESC
+                LIMIT %d";
+        
+        $comments = $wpdb->get_results($wpdb->prepare($sql, $limit));
         $reviews = [];
         
         foreach ($comments as $c) {
-            $user = get_user_by('email', $c->comment_author_email);
             $initials = '';
-            if ($user) {
-                $first = get_user_meta($user->ID, 'first_name', true);
-                $last = get_user_meta($user->ID, 'last_name', true);
-                if ($first && $last) {
-                    $initials = mb_substr($first, 0, 1) . mb_substr($last, 0, 1);
-                }
+            $name_parts = explode(' ', $c->comment_author);
+            $initials = mb_substr($name_parts[0], 0, 1) . (isset($name_parts[1]) ? mb_substr($name_parts[1], 0, 1) : '');
+            
+            $rating = intval($c->rating);
+            $product = wc_get_product($c->comment_post_ID);
+            $tour_title = $product ? $product->get_name() : '';
+            
+            // Get city from product attribute or user meta
+            $city = '';
+            if ($product) {
+                $city = $product->get_attribute('pa_city');
             }
-            if (empty($initials)) {
-                $name_parts = explode(' ', $c->comment_author);
-                $initials = mb_substr($name_parts[0], 0, 1) . (isset($name_parts[1]) ? mb_substr($name_parts[1], 0, 1) : '');
+            if (empty($city) && !empty($c->user_city)) {
+                $city = $c->user_city;
             }
             
-            $rating = intval(get_comment_meta($c->comment_ID, 'rating', true));
+            // Get photos
+            $photos = !empty($c->review_photos) ? maybe_unserialize($c->review_photos) : [];
+            $photo_1_url = '';
+            $photo_2_url = '';
+            
+            if (!empty($photos[0])) {
+                $photo_1_url = is_numeric($photos[0]) ? wp_get_attachment_image_url($photos[0], 'medium') : $photos[0];
+            }
+            if (!empty($photos[1])) {
+                $photo_2_url = is_numeric($photos[1]) ? wp_get_attachment_image_url($photos[1], 'medium') : $photos[1];
+            }
             
             $reviews[] = [
                 'guest_initials' => mb_strtoupper($initials),
                 'guest_name' => $c->comment_author,
                 'date' => human_time_diff(strtotime($c->comment_date)) . ' ' . __('назад', 'my-super-tour-elementor'),
                 'rating' => $rating ?: 5,
-                'city' => '', // Could be extracted from user meta if available
-                'tour_title' => get_the_title($c->comment_post_ID),
+                'city' => $city,
+                'tour_title' => $tour_title,
                 'review_text' => $c->comment_content,
-                'photo_1' => '',
-                'photo_2' => '',
-                'total_photos' => 0,
+                'photo_1' => $photo_1_url ? ['url' => $photo_1_url] : [],
+                'photo_2' => $photo_2_url ? ['url' => $photo_2_url] : [],
+                'total_photos' => count($photos),
             ];
         }
         
@@ -620,9 +512,19 @@ class Review_Carousel extends Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         
-        // Check if using live reviews
-        $use_live = isset($settings['use_live_reviews']) && $settings['use_live_reviews'] === 'yes';
-        $reviews_data = $use_live ? $this->get_live_reviews($settings) : $settings['reviews'];
+        // Get reviews based on source
+        $review_source = $settings['review_source'] ?? 'fake';
+        $reviews_data = [];
+        
+        if ($review_source === 'live') {
+            $reviews_data = $this->get_live_reviews($settings);
+        } elseif ($review_source === 'mixed') {
+            $live_reviews = $this->get_live_reviews($settings);
+            $fake_reviews = isset($settings['reviews']) ? $settings['reviews'] : [];
+            $reviews_data = array_merge($live_reviews, $fake_reviews);
+        } else {
+            $reviews_data = isset($settings['reviews']) ? $settings['reviews'] : [];
+        }
         
         if (empty($reviews_data)) {
             echo '<div class="mst-no-reviews">' . __('Отзывов пока нет', 'my-super-tour-elementor') . '</div>';
@@ -646,16 +548,8 @@ class Review_Carousel extends Widget_Base {
         $arrow_base_class = 'mst-carousel-arrow-universal';
         if ($arrow_liquid_glass) $arrow_base_class .= ' mst-arrow-liquid-glass';
         
-        // Calculate arrow position - when outside, place arrows outside the container
-        $arrow_left_style = '';
-        $arrow_right_style = '';
-        if ($arrows_inside) {
-            $arrow_left_style = 'left: ' . abs($arrows_offset) . 'px;';
-            $arrow_right_style = 'right: ' . abs($arrows_offset) . 'px;';
-        } else {
-            $arrow_left_style = 'left: -' . (abs($arrows_offset) + 48) . 'px;';
-            $arrow_right_style = 'right: -' . (abs($arrows_offset) + 48) . 'px;';
-        }
+        $arrow_left_style = $arrows_inside ? 'left: ' . abs($arrows_offset) . 'px;' : 'left: -' . (abs($arrows_offset) + 48) . 'px;';
+        $arrow_right_style = $arrows_inside ? 'right: ' . abs($arrows_offset) . 'px;' : 'right: -' . (abs($arrows_offset) + 48) . 'px;';
         
         $arrow_style = 'position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; transition: all 0.3s ease;';
         if ($arrow_liquid_glass) {
@@ -681,7 +575,6 @@ class Review_Carousel extends Widget_Base {
                     ?>
                     <div class="<?php echo esc_attr($card_class); ?>" style="<?php echo esc_attr($card_style); ?> flex: 0 0 calc(<?php echo 100 / $items_per_view; ?>% - <?php echo $gap * ($items_per_view - 1) / $items_per_view; ?>px); min-width: 0;">
                         
-                        <!-- User row with avatar -->
                         <div class="mst-review-carousel-user" style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
                             <div class="mst-review-carousel-avatar" style="width: 48px; height: 48px; border-radius: 50%; background: <?php echo esc_attr($settings['avatar_bg_color']); ?>; color: <?php echo esc_attr($settings['avatar_text_color']); ?>; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; flex-shrink: 0;">
                                 <?php echo esc_html($review['guest_initials']); ?>
@@ -701,48 +594,39 @@ class Review_Carousel extends Widget_Base {
                             </div>
                         </div>
                         
-                        <!-- City -->
                         <div class="mst-review-carousel-city" style="color: <?php echo esc_attr($settings['city_color']); ?>; font-size: 13px; margin-bottom: 4px;">
                             <?php echo esc_html($review['city']); ?>
                         </div>
                         
-                        <!-- Tour title -->
                         <div class="mst-review-carousel-tour" style="color: <?php echo esc_attr($settings['tour_color']); ?>; font-weight: 600; font-size: 15px; margin-bottom: 8px; line-height: 1.3;">
                             <?php echo esc_html($review['tour_title']); ?>
                         </div>
                         
-                        <!-- Review text -->
                         <div class="mst-review-carousel-text" style="color: <?php echo esc_attr($settings['text_color']); ?>; font-size: 14px; line-height: 1.5; margin-bottom: 16px;">
                             <?php echo esc_html($review['review_text']); ?>
                         </div>
                         
-                        <!-- Photos row (below avatar section) -->
-                        <?php if (!empty($review['photo_1']['url']) || !empty($review['photo_2']['url'])): 
+                        <?php 
+                        $photo_1_url = !empty($review['photo_1']['url']) ? $review['photo_1']['url'] : '';
+                        $photo_2_url = !empty($review['photo_2']['url']) ? $review['photo_2']['url'] : '';
+                        if ($photo_1_url || $photo_2_url): 
                             $reviews_link = !empty($settings['more_button_link']['url']) ? $settings['more_button_link']['url'] : '/reviews';
                         ?>
                         <div class="mst-review-carousel-photos" style="display: flex; gap: 8px; margin-top: auto;">
-                            <?php if (!empty($review['photo_1']['url'])): ?>
-                            <a href="<?php echo esc_url($review['photo_1']['url']); ?>" 
-                               class="mst-review-photo mst-lightbox-trigger" 
-                               data-lightbox="review-<?php echo esc_attr($review['guest_name']); ?>"
-                               style="width: <?php echo esc_attr($photo_size); ?>px; height: <?php echo esc_attr($photo_size); ?>px; border-radius: <?php echo esc_attr($photo_border_radius); ?>px; overflow: hidden; flex-shrink: 0; display: block; cursor: zoom-in; transition: transform 0.3s ease;">
-                                <img src="<?php echo esc_url($review['photo_1']['url']); ?>" alt="Review photo 1" style="width: 100%; height: 100%; object-fit: cover;">
+                            <?php if ($photo_1_url): ?>
+                            <a href="<?php echo esc_url($photo_1_url); ?>" class="mst-review-photo mst-lightbox-trigger" style="width: <?php echo esc_attr($photo_size); ?>px; height: <?php echo esc_attr($photo_size); ?>px; border-radius: <?php echo esc_attr($photo_border_radius); ?>px; overflow: hidden; flex-shrink: 0; display: block; cursor: zoom-in;">
+                                <img src="<?php echo esc_url($photo_1_url); ?>" alt="Review photo 1" style="width: 100%; height: 100%; object-fit: cover;">
                             </a>
                             <?php endif; ?>
                             
-                            <?php if (!empty($review['photo_2']['url'])): ?>
-                            <a href="<?php echo esc_url($review['photo_2']['url']); ?>" 
-                               class="mst-review-photo mst-lightbox-trigger" 
-                               data-lightbox="review-<?php echo esc_attr($review['guest_name']); ?>"
-                               style="width: <?php echo esc_attr($photo_size); ?>px; height: <?php echo esc_attr($photo_size); ?>px; border-radius: <?php echo esc_attr($photo_border_radius); ?>px; overflow: hidden; flex-shrink: 0; position: relative; display: block; cursor: zoom-in; transition: transform 0.3s ease;">
-                                <img src="<?php echo esc_url($review['photo_2']['url']); ?>" alt="Review photo 2" style="width: 100%; height: 100%; object-fit: cover;">
+                            <?php if ($photo_2_url): ?>
+                            <a href="<?php echo esc_url($photo_2_url); ?>" class="mst-review-photo mst-lightbox-trigger" style="width: <?php echo esc_attr($photo_size); ?>px; height: <?php echo esc_attr($photo_size); ?>px; border-radius: <?php echo esc_attr($photo_border_radius); ?>px; overflow: hidden; flex-shrink: 0; display: block; cursor: zoom-in;">
+                                <img src="<?php echo esc_url($photo_2_url); ?>" alt="Review photo 2" style="width: 100%; height: 100%; object-fit: cover;">
                             </a>
                             <?php endif; ?>
                             
                             <?php if ($extra_photos > 0): ?>
-                            <a href="<?php echo esc_url($reviews_link); ?>" 
-                               class="mst-review-photo-counter" 
-                               style="width: <?php echo esc_attr($photo_size); ?>px; height: <?php echo esc_attr($photo_size); ?>px; border-radius: <?php echo esc_attr($photo_border_radius); ?>px; background: <?php echo esc_attr($settings['photo_counter_bg']); ?>; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-decoration: none; cursor: pointer; transition: all 0.3s ease;">
+                            <a href="<?php echo esc_url($reviews_link); ?>" class="mst-review-photo-counter" style="width: <?php echo esc_attr($photo_size); ?>px; height: <?php echo esc_attr($photo_size); ?>px; border-radius: <?php echo esc_attr($photo_border_radius); ?>px; background: <?php echo esc_attr($settings['photo_counter_bg']); ?>; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-decoration: none;">
                                 <span style="color: <?php echo esc_attr($settings['photo_counter_color']); ?>; font-weight: 600; font-size: 16px;">+<?php echo esc_html($extra_photos); ?></span>
                             </a>
                             <?php endif; ?>
@@ -753,10 +637,10 @@ class Review_Carousel extends Widget_Base {
                 </div>
                 
                 <?php if ($show_arrows): ?>
-                <button class="<?php echo esc_attr($arrow_base_class); ?> mst-arrow-prev" style="<?php echo esc_attr($arrow_style); ?> <?php echo esc_attr($arrow_left_style); ?> background: <?php echo esc_attr($settings['arrow_bg_color']); ?>; color: <?php echo esc_attr($settings['arrow_color']); ?>;" data-hover-bg="<?php echo esc_attr($settings['arrow_hover_bg']); ?>" data-hover-color="<?php echo esc_attr($settings['arrow_hover_color']); ?>">
+                <button class="<?php echo esc_attr($arrow_base_class); ?> mst-arrow-prev" style="<?php echo esc_attr($arrow_style); ?> <?php echo esc_attr($arrow_left_style); ?> background: <?php echo esc_attr($settings['arrow_bg_color']); ?>; color: <?php echo esc_attr($settings['arrow_color']); ?>;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
                 </button>
-                <button class="<?php echo esc_attr($arrow_base_class); ?> mst-arrow-next" style="<?php echo esc_attr($arrow_style); ?> <?php echo esc_attr($arrow_right_style); ?> background: <?php echo esc_attr($settings['arrow_bg_color']); ?>; color: <?php echo esc_attr($settings['arrow_color']); ?>;" data-hover-bg="<?php echo esc_attr($settings['arrow_hover_bg']); ?>" data-hover-color="<?php echo esc_attr($settings['arrow_hover_color']); ?>">
+                <button class="<?php echo esc_attr($arrow_base_class); ?> mst-arrow-next" style="<?php echo esc_attr($arrow_style); ?> <?php echo esc_attr($arrow_right_style); ?> background: <?php echo esc_attr($settings['arrow_bg_color']); ?>; color: <?php echo esc_attr($settings['arrow_color']); ?>;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
                 </button>
                 <?php endif; ?>
@@ -766,7 +650,7 @@ class Review_Carousel extends Widget_Base {
                 $button_url = !empty($settings['more_button_link']['url']) ? $settings['more_button_link']['url'] : '#';
             ?>
             <div class="mst-review-carousel-more" style="text-align: center; margin-top: 32px;">
-                <a href="<?php echo esc_url($button_url); ?>" class="mst-review-carousel-more-btn" style="display: inline-flex; align-items: center; gap: 10px; background: <?php echo esc_attr($settings['button_bg_color']); ?>; color: <?php echo esc_attr($settings['button_text_color']); ?>; border: 1px solid <?php echo esc_attr($settings['button_border_color']); ?>; padding: 14px 28px; border-radius: 50px; font-weight: 600; font-size: 15px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
+                <a href="<?php echo esc_url($button_url); ?>" class="mst-review-carousel-more-btn" style="display: inline-flex; align-items: center; gap: 10px; background: <?php echo esc_attr($settings['button_bg_color']); ?>; color: <?php echo esc_attr($settings['button_text_color']); ?>; border: 1px solid <?php echo esc_attr($settings['button_border_color']); ?>; padding: 14px 28px; border-radius: 50px; font-weight: 600; font-size: 15px; text-decoration: none; box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="<?php echo esc_attr($settings['button_icon_color']); ?>" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     <?php echo esc_html($settings['more_button_text']); ?>
                 </a>
