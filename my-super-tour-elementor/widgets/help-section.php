@@ -348,7 +348,7 @@ class Help_Section extends Widget_Base {
             [
                 'label' => __('Primary Color', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::COLOR,
-                'default' => 'hsl(270, 70%, 60%)',
+                'default' => '#9952E0',
             ]
         );
 
@@ -357,7 +357,7 @@ class Help_Section extends Widget_Base {
             [
                 'label' => __('Secondary Color', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::COLOR,
-                'default' => 'hsl(45, 98%, 50%)',
+                'default' => '#fbd603',
             ]
         );
 
@@ -405,6 +405,72 @@ class Help_Section extends Widget_Base {
                 'type' => Controls_Manager::SLIDER,
                 'range' => ['px' => ['min' => 20, 'max' => 100]],
                 'default' => ['size' => 48, 'unit' => 'px'],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // =============================================
+        // CONTACT BLOCK STYLE SECTION
+        // =============================================
+        $this->start_controls_section(
+            'contact_style_section',
+            [
+                'label' => __('Contact Block Style', 'my-super-tour-elementor'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'contact_primary_color',
+            [
+                'label' => __('Contact Primary Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#9952E0',
+            ]
+        );
+
+        $this->add_control(
+            'contact_secondary_color',
+            [
+                'label' => __('Contact Secondary Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#fbd603',
+            ]
+        );
+
+        $this->add_control(
+            'contact_enable_shimmer',
+            [
+                'label' => __('Enable Shimmer Effect', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'yes',
+            ]
+        );
+
+        $this->add_control(
+            'contact_shimmer_speed',
+            [
+                'label' => __('Shimmer Speed (seconds)', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => 2, 'max' => 10, 'step' => 0.5]],
+                'default' => ['size' => 4],
+                'condition' => ['contact_enable_shimmer' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'contact_gradient_direction',
+            [
+                'label' => __('Gradient Direction', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SELECT,
+                'default' => '135deg',
+                'options' => [
+                    '90deg' => __('Horizontal', 'my-super-tour-elementor'),
+                    '135deg' => __('Diagonal', 'my-super-tour-elementor'),
+                    '180deg' => __('Vertical', 'my-super-tour-elementor'),
+                    '45deg' => __('Diagonal Reverse', 'my-super-tour-elementor'),
+                ],
             ]
         );
 
@@ -471,18 +537,28 @@ class Help_Section extends Widget_Base {
         $liquid_glass = ($settings['enable_liquid_glass'] ?? '') === 'yes';
         $show_contact = ($settings['show_contact'] ?? '') === 'yes';
         
-        $primary_color = $settings['primary_color'] ?? 'hsl(270, 70%, 60%)';
-        $secondary_color = $settings['secondary_color'] ?? 'hsl(45, 98%, 50%)';
+        $primary_color = $settings['primary_color'] ?? '#9952E0';
+        $secondary_color = $settings['secondary_color'] ?? '#fbd603';
         $card_bg = $settings['card_bg_color'] ?? '#ffffff';
         $text_color = $settings['text_color'] ?? '#1a1a1a';
         $muted_color = $settings['muted_color'] ?? '#666666';
         $border_radius = $settings['card_border_radius']['size'] ?? 20;
         $section_gap = $settings['section_gap']['size'] ?? 48;
         
+        // Contact block colors
+        $contact_primary = $settings['contact_primary_color'] ?? '#9952E0';
+        $contact_secondary = $settings['contact_secondary_color'] ?? '#fbd603';
+        $contact_shimmer = ($settings['contact_enable_shimmer'] ?? 'yes') === 'yes';
+        $contact_shimmer_speed = $settings['contact_shimmer_speed']['size'] ?? 4;
+        $contact_gradient_dir = $settings['contact_gradient_direction'] ?? '135deg';
+        
         $card_class = 'mst-help-card';
         if ($liquid_glass) $card_class .= ' mst-liquid-glass';
+        
+        $unique_id = 'mst-help-' . $this->get_id();
         ?>
-        <div class="mst-help-section" style="display: flex; flex-direction: column; gap: <?php echo esc_attr($section_gap); ?>px;">
+        <div id="<?php echo esc_attr($unique_id); ?>" class="mst-help-section-wrapper <?php echo $liquid_glass ? 'mst-liquid-glass-bg' : ''; ?>">
+            <div class="mst-help-section" style="display: flex; flex-direction: column; gap: <?php echo esc_attr($section_gap); ?>px;">
             
             <!-- Header -->
             <div class="mst-help-header" style="text-align: center; margin-bottom: 16px;">
@@ -555,21 +631,26 @@ class Help_Section extends Widget_Base {
             </div>
             <?php endif; ?>
             
-            <!-- Contact Block -->
+            <!-- Contact Block with Gradient + Shimmer -->
             <?php if ($show_contact): ?>
-            <div class="mst-help-contact <?php echo esc_attr($card_class); ?>" style="background: linear-gradient(135deg, <?php echo esc_attr($primary_color); ?>, <?php echo esc_attr($secondary_color); ?>); border-radius: <?php echo esc_attr($border_radius); ?>px; padding: 40px; text-align: center; <?php if ($liquid_glass): ?>box-shadow: 0 8px 32px rgba(153, 82, 224, 0.25);<?php endif; ?>">
+            <div class="mst-help-contact <?php echo esc_attr($card_class); ?><?php echo $contact_shimmer ? ' mst-contact-shimmer' : ''; ?>" style="border-radius: <?php echo esc_attr($border_radius); ?>px; padding: 40px; text-align: center; position: relative; overflow: hidden;">
+                <?php if ($contact_shimmer): ?>
+                <!-- Shimmer and grain overlays as real elements (not pseudo) to avoid conflicts with liquid-glass -->
+                <div class="mst-shimmer-overlay"></div>
+                <div class="mst-grain-overlay"></div>
+                <?php endif; ?>
                 <?php if (!empty($settings['contact_title'])): ?>
-                <h3 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0 0 12px 0;">
+                <h3 class="mst-contact-title" style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0 0 12px 0; position: relative; z-index: 2;">
                     <?php echo esc_html($settings['contact_title']); ?>
                 </h3>
                 <?php endif; ?>
                 <?php if (!empty($settings['contact_text'])): ?>
-                <p style="color: rgba(255,255,255,0.9); font-size: 16px; margin: 0 0 24px 0;">
+                <p class="mst-contact-text" style="color: rgba(255,255,255,0.9); font-size: 16px; margin: 0 0 24px 0; position: relative; z-index: 2;">
                     <?php echo esc_html($settings['contact_text']); ?>
                 </p>
                 <?php endif; ?>
                 
-                <div class="mst-help-contact-buttons" style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+                <div class="mst-help-contact-buttons" style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; position: relative; z-index: 2;">
                     <?php if (!empty($settings['contact_email'])): ?>
                     <a href="mailto:<?php echo esc_attr($settings['contact_email']); ?>" style="display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); border-radius: 25px; padding: 12px 24px; color: #ffffff; text-decoration: none; font-weight: 500; transition: all 0.3s ease;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -601,18 +682,208 @@ class Help_Section extends Widget_Base {
             </div>
             <?php endif; ?>
         </div>
+        </div><!-- .mst-help-section-wrapper -->
         
         <style>
+        /* ===============================================
+           CONTACT BLOCK SHIMMER ANIMATION
+           =============================================== */
+        @keyframes mst-contact-shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        @keyframes mst-contact-gradient-shift {
+            0%, 100% { 
+                background-position: 0% 50%;
+            }
+            50% { 
+                background-position: 100% 50%;
+            }
+        }
+        
+        /* Contact block base gradient */
+        #<?php echo esc_attr($unique_id); ?> .mst-help-contact {
+            background: linear-gradient(
+                <?php echo esc_attr($contact_gradient_dir); ?>,
+                <?php echo esc_attr($contact_primary); ?>,
+                <?php echo esc_attr($contact_secondary); ?>,
+                <?php echo esc_attr($contact_primary); ?>
+            );
+            background-size: 200% 200%;
+            animation: mst-contact-gradient-shift <?php echo esc_attr($contact_shimmer_speed * 2); ?>s ease infinite;
+            box-shadow: 0 8px 32px rgba(153, 82, 224, 0.25);
+        }
+        
+        /* Shimmer overlay effect - используем data-атрибут вместо ::before чтобы не конфликтовать с liquid-glass */
+        <?php if ($contact_shimmer): ?>
+        #<?php echo esc_attr($unique_id); ?> .mst-help-contact.mst-contact-shimmer {
+            position: relative;
+        }
+        
+        /* Shimmer - always use dedicated element, not ::before (conflicts with liquid-glass grain) */
+        #<?php echo esc_attr($unique_id); ?> .mst-help-contact.mst-contact-shimmer .mst-shimmer-overlay {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.1) 20%,
+                rgba(255, 255, 255, 0.3) 40%,
+                rgba(255, 255, 255, 0.4) 50%,
+                rgba(255, 255, 255, 0.3) 60%,
+                rgba(255, 255, 255, 0.1) 80%,
+                transparent 100%
+            );
+            background-size: 200% 100%;
+            animation: mst-contact-shimmer <?php echo esc_attr($contact_shimmer_speed); ?>s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+            border-radius: inherit;
+        }
+        
+        /* Grain texture for contact block */
+        #<?php echo esc_attr($unique_id); ?> .mst-help-contact.mst-contact-shimmer .mst-grain-overlay {
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.06;
+            pointer-events: none;
+            mix-blend-mode: soft-light;
+            z-index: 1;
+            border-radius: inherit;
+        }
+        <?php endif; ?>
+        
+        /* ===============================================
+           SECTION BACKGROUND - LIQUID GLASS WRAPPER
+           =============================================== */
+        #<?php echo esc_attr($unique_id); ?>.mst-liquid-glass-bg {
+            background: linear-gradient(
+                160deg,
+                rgba(255, 255, 255, 0.85),
+                rgba(245, 240, 255, 0.6) 40%,
+                rgba(255, 252, 235, 0.5) 70%,
+                rgba(255, 255, 255, 0.7) 100%
+            );
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: <?php echo esc_attr($border_radius + 8); ?>px;
+            padding: 40px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 
+                0 12px 48px -12px rgba(0, 0, 0, 0.1),
+                0 8px 32px -8px rgba(153, 82, 224, 0.08),
+                inset 0 1px 1px rgba(255, 255, 255, 0.9);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Grain texture for background wrapper */
+        #<?php echo esc_attr($unique_id); ?>.mst-liquid-glass-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.025;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            border-radius: inherit;
+        }
+        
+        #<?php echo esc_attr($unique_id); ?>.mst-liquid-glass-bg > .mst-help-section {
+            position: relative;
+            z-index: 1;
+        }
+        
+        @media (max-width: 768px) {
+            #<?php echo esc_attr($unique_id); ?>.mst-liquid-glass-bg {
+                padding: 24px 16px;
+                border-radius: <?php echo esc_attr($border_radius); ?>px;
+            }
+        }
+            /* Liquid Glass Core Styles */
+            .mst-help-card.mst-liquid-glass {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.95),
+                    rgba(255, 255, 255, 0.7)
+                ) !important;
+                backdrop-filter: blur(16px) saturate(180%);
+                -webkit-backdrop-filter: blur(16px) saturate(180%);
+                border: 1px solid rgba(255, 255, 255, 0.5) !important;
+                box-shadow: 
+                    0 8px 32px -8px rgba(0, 0, 0, 0.08),
+                    0 4px 16px -4px rgba(153, 82, 224, 0.06),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            /* Grain texture overlay */
+            .mst-help-card.mst-liquid-glass::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+                opacity: 0.03;
+                pointer-events: none;
+                mix-blend-mode: overlay;
+                border-radius: inherit;
+            }
+            
+            .mst-help-card.mst-liquid-glass > * {
+                position: relative;
+                z-index: 1;
+            }
+            
             .mst-help-card:hover {
                 transform: translateY(-4px);
-                box-shadow: 0 12px 40px rgba(153, 82, 224, 0.15), inset 0 1px 2px rgba(255,255,255,0.4) !important;
+                box-shadow: 
+                    0 16px 48px -8px rgba(0, 0, 0, 0.12),
+                    0 8px 24px -4px rgba(153, 82, 224, 0.15),
+                    inset 0 1px 2px rgba(255,255,255,0.5) !important;
             }
+            
+            .mst-help-faq-item.mst-liquid-glass {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.92),
+                    rgba(255, 255, 255, 0.75)
+                ) !important;
+                backdrop-filter: blur(12px) saturate(180%);
+                -webkit-backdrop-filter: blur(12px) saturate(180%);
+            }
+            
             .mst-help-faq-item.active .mst-help-faq-chevron {
                 transform: rotate(180deg);
             }
             .mst-help-faq-item.active .mst-help-faq-answer {
                 max-height: 500px !important;
             }
+            
+            /* Contact block liquid glass override - keep gradient visible and animated */
+            #<?php echo esc_attr($unique_id); ?> .mst-help-contact.mst-liquid-glass {
+                background: linear-gradient(
+                    <?php echo esc_attr($contact_gradient_dir); ?>,
+                    <?php echo esc_attr($contact_primary); ?>,
+                    <?php echo esc_attr($contact_secondary); ?>,
+                    <?php echo esc_attr($contact_primary); ?>
+                ) !important;
+                background-size: 200% 200% !important;
+                animation: mst-contact-gradient-shift <?php echo esc_attr($contact_shimmer_speed * 2); ?>s ease infinite !important;
+                border: none !important;
+            }
+            
+            /* Disable liquid-glass grain ::before on contact block - we use dedicated overlays */
+            #<?php echo esc_attr($unique_id); ?> .mst-help-contact.mst-liquid-glass::before {
+                display: none !important;
+            }
+            
             .mst-help-contact-buttons a:hover {
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(0,0,0,0.2);

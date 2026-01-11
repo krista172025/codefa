@@ -729,3 +729,106 @@
     background: linear-gradient(135deg, #9b59b6, #8e44ad) !important;
     color: #fff !important;
 }
+
+/* ========================================
+   ICON TYPE SWITCHER (Emoji/Image)
+   ======================================== */
+.mst-icon-type-switcher {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.mst-icon-type-switcher label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #666;
+    cursor: pointer;
+}
+
+.mst-icon-type-switcher input[type="radio"] {
+    margin: 0;
+}
+
+.mst-icon-emoji-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mst-icon-image-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.mst-image-preview {
+    width: 48px;
+    height: 48px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #f9f9f9;
+}
+
+.mst-image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mst-no-image {
+    font-size: 10px;
+    color: #999;
+    text-align: center;
+    padding: 5px;
+}
+
+.mst-upload-image-btn,
+.mst-remove-image-btn {
+    font-size: 12px !important;
+    padding: 4px 10px !important;
+    height: auto !important;
+}
+
+.mst-remove-image-btn {
+    color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+.mst-remove-image-btn:hover {
+    background: #dc3545 !important;
+    color: #fff !important;
+}
+
+/* Icon item updates */
+.mst-icon-item {
+    background: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    padding: 15px;
+    transition: all 0.2s ease;
+}
+
+.mst-icon-item:hover {
+    border-color: #9b59b6;
+    background: #fff;
+}
+
+.mst-icon-item label > strong {
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.mst-icon-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

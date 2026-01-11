@@ -2,7 +2,7 @@
 /**
  * Plugin Name: My Super Tour Elementor Widgets
  * Description: Custom Elementor widgets with liquid glass design, animations, and warm purple/yellow palette
- * Version: 1.1.01
+ * Version: 1.1.3
  * Author: Telegram @l1ghtsun
  * Author URI: https://t.me/l1ghtsun
  * Text Domain: Widgets for elementor
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-define('MST_ELEMENTOR_VERSION', '1.1.1');
+define('MST_ELEMENTOR_VERSION', '1.1.3');
 define('MST_ELEMENTOR_PATH', plugin_dir_path(__FILE__));
 define('MST_ELEMENTOR_URL', plugin_dir_url(__FILE__));
 
@@ -114,6 +114,7 @@ function mst_elementor_register_widgets($widgets_manager) {
     require_once MST_ELEMENTOR_PATH . 'widgets/single-product-blog.php';
     require_once MST_ELEMENTOR_PATH . 'widgets/single-blog-article.php';
     require_once MST_ELEMENTOR_PATH . 'widgets/single-product-toast.php';
+    require_once MST_ELEMENTOR_PATH . 'widgets/checklist-widget.php';
     
 
     // Register widgets
@@ -168,6 +169,7 @@ function mst_elementor_register_widgets($widgets_manager) {
     $widgets_manager->register(new \MST_Elementor\Widgets\Single_Product_Blog());
     $widgets_manager->register(new \MST_Elementor\Widgets\Single_Blog_Article());
     $widgets_manager->register(new \MST_Elementor\Widgets\Single_Product_Toast());
+    $widgets_manager->register(new \MST_Elementor\Widgets\Checklist_Widget());
 }
 
 // Enqueue frontend styles and scripts

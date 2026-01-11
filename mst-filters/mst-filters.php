@@ -246,6 +246,9 @@ class MST_Filters_Plugin {
             return;
         }
         
+        // Enqueue WordPress Media Library
+        wp_enqueue_media();
+        
         wp_enqueue_style('mst-filters-admin', MST_FILTERS_URL . 'assets/css/admin.css', [], MST_FILTERS_VERSION);
         wp_enqueue_script('mst-filters-admin', MST_FILTERS_URL . 'assets/js/admin.js', ['jquery'], MST_FILTERS_VERSION, true);
     }

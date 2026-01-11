@@ -415,6 +415,69 @@ class Woo_Tour_Carousel extends Widget_Base {
 
         $this->end_controls_section();
 
+        // Info Tours Attribute Section
+        $this->start_controls_section(
+            'infotours_section',
+            [
+                'label' => __('Info Tours Attribute', 'my-super-tour-elementor'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $this->add_control(
+            'show_infotours',
+            [
+                'label' => __('Show Info Tours', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'no',
+            ]
+        );
+
+        $this->add_control(
+            'infotours_attribute',
+            [
+                'label' => __('Attribute Slug', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'default' => 'pa_infotours',
+                'condition' => ['show_infotours' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'infotours_text_color',
+            [
+                'label' => __('Text Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#666666',
+                'condition' => ['show_infotours' => 'yes'],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'infotours_font_size',
+            [
+                'label' => __('Font Size', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => 10, 'max' => 18]],
+                'default' => ['size' => 12, 'unit' => 'px'],
+                'condition' => ['show_infotours' => 'yes'],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'infotours_max_width',
+            [
+                'label' => __('Max Width (%)', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['%' => ['min' => 30, 'max' => 100]],
+                'default' => ['size' => 60, 'unit' => '%'],
+                'description' => __('Limits text width to prevent overlap with guide photo', 'my-super-tour-elementor'),
+                'condition' => ['show_infotours' => 'yes'],
+            ]
+        );
+
+        $this->end_controls_section();
+
         // Wishlist Section
         $this->start_controls_section(
             'wishlist_section',
@@ -622,6 +685,17 @@ class Woo_Tour_Carousel extends Widget_Base {
                 'type' => Controls_Manager::SLIDER,
                 'range' => ['px' => ['min' => 0, 'max' => 50]],
                 'default' => ['size' => 24, 'unit' => 'px'],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'card_height',
+            [
+                'label' => __('Card Height', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => 300, 'max' => 700]],
+                'default' => ['size' => 0, 'unit' => 'px'],
+                'description' => __('Set 0 for auto height', 'my-super-tour-elementor'),
             ]
         );
 
@@ -978,6 +1052,7 @@ class Woo_Tour_Carousel extends Widget_Base {
         $arrow_liquid_glass = $settings['arrow_liquid_glass'] === 'yes';
         $items_per_view = isset($settings['items_per_view']) ? $settings['items_per_view'] : 3;
         $border_radius = isset($settings['card_border_radius']['size']) ? $settings['card_border_radius']['size'] : 24;
+        $card_height = isset($settings['card_height']['size']) ? $settings['card_height']['size'] : 0;
         $image_height = isset($settings['image_height']['size']) ? $settings['image_height']['size'] : 200;
         $image_border_radius = isset($settings['image_border_radius']['size']) ? $settings['image_border_radius']['size'] : 20;
         $image_container_mode = $settings['image_container_mode'] ?? 'inside';
@@ -1076,9 +1151,15 @@ class Woo_Tour_Carousel extends Widget_Base {
                             $rating = $manual_boost ?: $default_rating;
                             $review_count = $count_boost;
                         } elseif ($rating_source === 'combined') {
-                            $rating = $real_rating > 0 ? min(5, ($real_rating + $manual_boost) / 2) : ($manual_boost ?: $default_rating);
+                            // Combined: use real rating + boost, not averaging
+                            if ($real_rating > 0) {
+                                $rating = min(5, $real_rating + $manual_boost);
+                            } else {
+                                $rating = $manual_boost ?: $default_rating;
+                            }
                             $review_count = $real_count + $count_boost;
                         } else {
+                            // WooCommerce only
                             $rating = $real_rating ?: $default_rating;
                             $review_count = $real_count;
                         }
@@ -1108,31 +1189,36 @@ class Woo_Tour_Carousel extends Widget_Base {
                             $image_container_style = "height: {$image_height}px; width: calc(100% - 16px); box-sizing: border-box; border-radius: {$image_border_radius}px; margin: 8px; overflow: hidden; position: relative; flex-shrink: 0;";
                         }
                     ?>
-                    <div class="<?php echo esc_attr($card_class); ?>" data-product-id="<?php echo esc_attr($product_id); ?>" style="background: <?php echo esc_attr($card_bg); ?>; border-radius: <?php echo esc_attr($border_radius); ?>px; display: flex; flex-direction: column; overflow: hidden; flex: 0 0 calc(<?php echo 100 / $items_per_view; ?>% - <?php echo $gap * ($items_per_view - 1) / $items_per_view; ?>px);">
+                    <?php 
+                        $card_height_style = $card_height > 0 ? "height: {$card_height}px;" : "";
+                    ?>
+                    <div class="<?php echo esc_attr($card_class); ?>" data-product-id="<?php echo esc_attr($product_id); ?>" style="background: <?php echo esc_attr($card_bg); ?>; border-radius: <?php echo esc_attr($border_radius); ?>px; display: flex; flex-direction: column; overflow: hidden; flex: 0 0 calc(<?php echo 100 / $items_per_view; ?>% - <?php echo $gap * ($items_per_view - 1) / $items_per_view; ?>px); <?php echo $card_height_style; ?>">
                         
                         <!-- Image -->
                         <div class="mst-woo-carousel-image" style="<?php echo esc_attr($image_container_style); ?>">
-                            <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                            <a href="<?php echo esc_url($product->get_permalink()); ?>" style="display: block; width: 100%; height: 100%;">
+                                <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                            </a>
                             
                             <?php if ($show_badges): ?>
-                            <div class="mst-woo-carousel-badges" style="position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
+                            <div class="mst-woo-carousel-badges" style="position: absolute; top: 12px; left: 16px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; max-width: calc(100% - 60px);">
                                 <?php if (!empty($badge_1)): ?>
-                                <span class="mst-woo-badge" style="background: <?php echo esc_attr($settings['badge_bg_color']); ?>; color: <?php echo esc_attr($settings['badge_text_color']); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: <?php echo esc_attr($badge_border_radius); ?>px; border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                                <span class="mst-woo-badge mst-follow-glow" style="background: <?php echo esc_attr($settings['badge_bg_color']); ?>; color: <?php echo esc_attr($settings['badge_text_color']); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: <?php echo esc_attr($badge_border_radius); ?>px; border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                                     <?php echo esc_html($badge_1); ?>
                                 </span>
                                 <?php endif; ?>
                                 
                                 <?php if (!empty($badge_2)): ?>
-                                <span class="mst-woo-badge" style="background: <?php echo esc_attr($settings['badge_bg_color']); ?>; color: <?php echo esc_attr($settings['badge_text_color']); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: <?php echo esc_attr($badge_border_radius); ?>px; border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                                <span class="mst-woo-badge mst-follow-glow" style="background: <?php echo esc_attr($settings['badge_bg_color']); ?>; color: <?php echo esc_attr($settings['badge_text_color']); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: <?php echo esc_attr($badge_border_radius); ?>px; border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                     <?php echo esc_html($badge_2); ?>
                                 </span>
                                 <?php endif; ?>
                                 
                                 <?php if (!empty($badge_3)): ?>
-                                <span class="mst-woo-badge" style="background: <?php echo esc_attr($settings['badge_bg_color']); ?>; color: <?php echo esc_attr($settings['badge_text_color']); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: <?php echo esc_attr($badge_border_radius); ?>px; border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                                <span class="mst-woo-badge mst-follow-glow" style="background: <?php echo esc_attr($settings['badge_bg_color']); ?>; color: <?php echo esc_attr($settings['badge_text_color']); ?>; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: <?php echo esc_attr($badge_border_radius); ?>px; border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"/><path d="M16 8h5l3 5v5h-3"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
                                     <?php echo esc_html($badge_3); ?>
                                 </span>
                                 <?php endif; ?>
@@ -1192,6 +1278,42 @@ class Woo_Tour_Carousel extends Widget_Base {
                                     <span style="color: #999; font-size: 12px;">(<?php echo esc_html($review_count); ?>)</span>
                                 </div>
                             </div>
+                            
+                            <?php 
+                            // Info Tours Attribute
+                            $show_infotours = ($settings['show_infotours'] ?? '') === 'yes';
+                            if ($show_infotours):
+                                $infotours_attr = $settings['infotours_attribute'] ?? 'pa_infotours';
+                                $infotours_value = $product->get_attribute($infotours_attr);
+                                if (!empty($infotours_value)):
+                                    $infotours_color = $settings['infotours_text_color'] ?? '#666666';
+                                    $infotours_size = $settings['infotours_font_size']['size'] ?? 12;
+                                    $infotours_max_width = $settings['infotours_max_width']['size'] ?? 60;
+                            ?>
+                            <!-- Info Tours Row -->
+                            <div class="mst-woo-carousel-infotours" style="margin-bottom: 8px; max-width: <?php echo esc_attr($infotours_max_width); ?>%; line-height: 1.4;">
+                                <?php 
+                                // Получаем термины атрибута напрямую - каждый терм = новая строка
+                                $infotours_terms = wc_get_product_terms($product_id, $infotours_attr, ['fields' => 'names']);
+                                if (!empty($infotours_terms) && !is_wp_error($infotours_terms)) {
+                                    foreach ($infotours_terms as $term_name) {
+                                        $term_name = trim($term_name);
+                                        if ($term_name === '') {
+                                            continue;
+                                        }
+                                ?>
+                                <span style="color: <?php echo esc_attr($infotours_color); ?>; font-size: <?php echo esc_attr($infotours_size); ?>px; display: block; word-wrap: break-word;">
+                                    <?php echo esc_html($term_name); ?>
+                                </span>
+                                <?php 
+                                    }
+                                }
+                                ?>
+                            </div>
+                            <?php 
+                                endif;
+                            endif; 
+                            ?>
                             
                             <!-- Spacer -->
                             <div style="flex: 1;"></div>

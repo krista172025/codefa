@@ -226,13 +226,15 @@ $has_more_reviews = $total_with_fake > $reviews_per_page;
 @media (max-width: 768px) { .mst-guide-profile-grid { grid-template-columns: 1fr; } }
 .mst-guide-profile-left { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 1.5rem; border-right: 1px solid rgba(153, 82, 224, 0.1); }
 @media (max-width: 768px) { .mst-guide-profile-left { border-right: none; border-bottom: 1px solid rgba(153, 82, 224, 0.1); padding-bottom: 2rem; } }
-.mst-guide-profile-avatar-wrap { position: relative; margin-bottom: 1rem; }
-.mst-guide-profile-avatar { width: 128px; height: 128px; border-radius: 50%; overflow: hidden; border: 4px solid rgba(153, 82, 224, 0.2); box-shadow: 0 8px 24px -8px rgba(153, 82, 224, 0.25); }
-.mst-guide-profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.mst-guide-profile-badges { display: flex; gap: 0.5rem; margin-top: 0.75rem; justify-content: center; }
+.mst-guide-profile-avatar-wrap { position: relative; margin-bottom: 1rem; display: flex; justify-content: center; align-items: center; width: 100%; }
+.mst-guide-profile-avatar { width: 128px; height: 128px; min-width: 128px; min-height: 128px; flex-shrink: 0; border-radius: 50%; overflow: hidden; border: 4px solid rgba(153, 82, 224, 0.2); box-shadow: 0 8px 24px -8px rgba(153, 82, 224, 0.25); margin: 0 auto; }
+.mst-guide-profile-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mst-guide-profile-badges { display: flex; gap: 0.5rem; margin-top: 0.75rem; justify-content: center; width: 100%; }
 .mst-guide-profile-badge-verified, .mst-guide-profile-badge-academic { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.35rem 0.65rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
 .mst-guide-profile-badge-verified { background: <?php echo esc_attr($verified_color); ?>20; color: <?php echo esc_attr($verified_color); ?>; }
-.mst-guide-profile-badge-academic { background: <?php echo esc_attr($secondary_color); ?>30; }
+.mst-guide-profile-badge-academic { background: <?php echo esc_attr($secondary_color); ?>30; color: #7a6500; }
+.mst-guide-profile-academic-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; justify-content: center; max-width: 280px; width: 100%; }
+.mst-guide-profile-academic-badges .mst-guide-profile-badge-academic { font-size: 0.7rem; padding: 0.3rem 0.55rem; }
 .mst-guide-profile-name { font-size: 1.5rem; font-weight: 700; margin: 0.5rem 0; color: #1a1a2e; }
 .mst-guide-profile-location { display: flex; align-items: center; gap: 0.35rem; color: #6b7280; font-size: 0.875rem; margin-bottom: 0.75rem; justify-content: center; }
 .mst-guide-profile-rating { display: flex; align-items: center; gap: 0.35rem; margin-bottom: 0.75rem; justify-content: center; }
@@ -753,22 +755,28 @@ $has_more_reviews = $total_with_fake > $reviews_per_page;
                         <div class="mst-guide-profile-avatar">
                             <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php echo esc_attr($guide->display_name); ?>">
                         </div>
-                        
-                        <div class="mst-guide-profile-badges">
-                            <?php if ($is_verified): ?>
-                            <span class="mst-guide-profile-badge-verified">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                            </span>
-                            <?php endif; ?>
-                            
-                            <?php if (!empty($academic_title)): ?>
-                            <span class="mst-guide-profile-badge-academic">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                                <?php echo esc_html($academic_title); ?>
-                            </span>
-                            <?php endif; ?>
-                        </div>
                     </div>
+                    
+                    <?php if ($is_verified): ?>
+                    <div class="mst-guide-profile-badges">
+                        <span class="mst-guide-profile-badge-verified">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </span>
+                    </div>
+                    <?php endif; ?>
+                        
+                    <?php if (!empty($academic_title)): 
+                        $academic_titles = array_map('trim', explode(',', $academic_title));
+                    ?>
+                    <div class="mst-guide-profile-academic-badges">
+                        <?php foreach ($academic_titles as $title): ?>
+                        <span class="mst-guide-profile-badge-academic">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                            <?php echo esc_html($title); ?>
+                        </span>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
                     
                     <h1 class="mst-guide-profile-name"><?php echo esc_html($guide->display_name); ?></h1>
                     

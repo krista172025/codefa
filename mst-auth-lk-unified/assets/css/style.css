@@ -584,9 +584,42 @@
     flex: 1;
 }
 
+/* Button "Удалить" hidden - only heart icon remains */
 .mst-wishlist-btn-delete {
-    flex-shrink: 0;
-    display: none;
+    display: none !important;
+}
+
+/* Remove any delete overlay/hover text on wishlist cards */
+.mst-wishlist-card-image::after,
+.mst-wishlist-card .mst-delete-overlay,
+.mst-wishlist-card-image .mst-delete-text {
+    display: none !important;
+}
+
+/* Hide global "Удалить" button in top right corner (from XStore/WooCommerce) */
+.et_b_header-wishlist .remove-item,
+.header-wishlist .wishlist-remove,
+.xstore-wishlist-remove,
+.wishlist-page .product-remove,
+body:not(.woocommerce-wishlist) .remove-from-wishlist-label,
+.et-wishlist-widget .remove-item,
+.mst-lk-full-wrapper ~ .remove-item,
+a.remove-item-wishlist[data-action="remove"],
+.wishlist-dropdown .remove,
+.widget_wishlist .remove {
+    display: none !important;
+}
+
+/* Hide hover "Удалить" text on wishlist cards completely */
+.mst-wishlist-card-image::before {
+    display: none !important;
+    content: none !important;
+}
+
+.mst-wishlist-card .mst-wishlist-card-image .delete-label,
+.mst-wishlist-card-image span.delete-text,
+.mst-wishlist-card-image .remove-text {
+    display: none !important;
 }
 
 /* =====================================

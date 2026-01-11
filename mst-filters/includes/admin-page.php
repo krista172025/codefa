@@ -607,7 +607,7 @@ settings_errors('mst_filters');
         <div class="mst-tab-content" data-tab="icons">
             <div class="mst-admin-card">
                 <h2>🎨 Настройка иконок для атрибутов</h2>
-                <p class="description">Выберите иконки для отображения в фильтрах. Иконки будут видны в выпадающих списках и чипах.</p>
+                <p class="description">Выберите эмодзи или загрузите изображение через медиатеку WordPress/Elementor.</p>
                 
                 <!-- Способы передвижения -->
                 <h3>🚗 Способы передвижения</h3>
@@ -615,17 +615,48 @@ settings_errors('mst_filters');
                     <?php if (!empty($transport_terms) && !is_wp_error($transport_terms)): ?>
                         <?php foreach ($transport_terms as $term): 
                             $current_icon = $attribute_icons['transport'][$term->slug] ?? '🚗';
+                            $current_image = $attribute_icons['transport_images'][$term->slug] ?? '';
+                            $icon_type = !empty($current_image) ? 'image' : 'emoji';
                         ?>
-                        <div class="mst-icon-item">
+                        <div class="mst-icon-item" data-term="<?php echo esc_attr($term->slug); ?>" data-type="transport">
                             <label>
                                 <strong><?php echo esc_html($term->name); ?></strong>
                                 <div class="mst-icon-selector">
-                                    <span class="mst-current-icon"><?php echo $current_icon; ?></span>
-                                    <select name="attribute_icons[transport][<?php echo esc_attr($term->slug); ?>]" class="mst-icon-select">
-                                        <?php foreach ($available_icons as $icon => $label): ?>
-                                            <option value="<?php echo esc_attr($icon); ?>" <?php selected($current_icon, $icon); ?>><?php echo $icon; ?> <?php echo esc_html($label); ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
+                                    <!-- Тип иконки -->
+                                    <div class="mst-icon-type-switcher">
+                                        <label>
+                                            <input type="radio" name="icon_type_transport_<?php echo esc_attr($term->slug); ?>" value="emoji" <?php checked($icon_type, 'emoji'); ?> class="mst-icon-type-radio">
+                                            Эмодзи
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="icon_type_transport_<?php echo esc_attr($term->slug); ?>" value="image" <?php checked($icon_type, 'image'); ?> class="mst-icon-type-radio">
+                                            Изображение
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- Эмодзи выбор -->
+                                    <div class="mst-icon-emoji-wrap" style="<?php echo $icon_type === 'image' ? 'display:none;' : ''; ?>">
+                                        <span class="mst-current-icon"><?php echo $current_icon; ?></span>
+                                        <select name="attribute_icons[transport][<?php echo esc_attr($term->slug); ?>]" class="mst-icon-select">
+                                            <?php foreach ($available_icons as $icon => $label): ?>
+                                                <option value="<?php echo esc_attr($icon); ?>" <?php selected($current_icon, $icon); ?>><?php echo $icon; ?> <?php echo esc_html($label); ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Изображение выбор -->
+                                    <div class="mst-icon-image-wrap" style="<?php echo $icon_type === 'emoji' ? 'display:none;' : ''; ?>">
+                                        <div class="mst-image-preview">
+                                            <?php if ($current_image): ?>
+                                                <img src="<?php echo esc_url($current_image); ?>" alt="">
+                                            <?php else: ?>
+                                                <span class="mst-no-image">Нет изображения</span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <input type="hidden" name="attribute_icons[transport_images][<?php echo esc_attr($term->slug); ?>]" value="<?php echo esc_url($current_image); ?>" class="mst-image-url-input">
+                                        <button type="button" class="button mst-upload-image-btn">📁 Выбрать</button>
+                                        <button type="button" class="button mst-remove-image-btn" style="<?php echo empty($current_image) ? 'display:none;' : ''; ?>">✕</button>
+                                    </div>
                                 </div>
                             </label>
                         </div>
@@ -641,17 +672,45 @@ settings_errors('mst_filters');
                     <?php if (!empty($tour_type_terms) && !is_wp_error($tour_type_terms)): ?>
                         <?php foreach ($tour_type_terms as $term): 
                             $current_icon = $attribute_icons['tour_type'][$term->slug] ?? '👥';
+                            $current_image = $attribute_icons['tour_type_images'][$term->slug] ?? '';
+                            $icon_type = !empty($current_image) ? 'image' : 'emoji';
                         ?>
-                        <div class="mst-icon-item">
+                        <div class="mst-icon-item" data-term="<?php echo esc_attr($term->slug); ?>" data-type="tour_type">
                             <label>
                                 <strong><?php echo esc_html($term->name); ?></strong>
                                 <div class="mst-icon-selector">
-                                    <span class="mst-current-icon"><?php echo $current_icon; ?></span>
-                                    <select name="attribute_icons[tour_type][<?php echo esc_attr($term->slug); ?>]" class="mst-icon-select">
-                                        <?php foreach ($available_icons as $icon => $label): ?>
-                                            <option value="<?php echo esc_attr($icon); ?>" <?php selected($current_icon, $icon); ?>><?php echo $icon; ?> <?php echo esc_html($label); ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
+                                    <div class="mst-icon-type-switcher">
+                                        <label>
+                                            <input type="radio" name="icon_type_tour_type_<?php echo esc_attr($term->slug); ?>" value="emoji" <?php checked($icon_type, 'emoji'); ?> class="mst-icon-type-radio">
+                                            Эмодзи
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="icon_type_tour_type_<?php echo esc_attr($term->slug); ?>" value="image" <?php checked($icon_type, 'image'); ?> class="mst-icon-type-radio">
+                                            Изображение
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="mst-icon-emoji-wrap" style="<?php echo $icon_type === 'image' ? 'display:none;' : ''; ?>">
+                                        <span class="mst-current-icon"><?php echo $current_icon; ?></span>
+                                        <select name="attribute_icons[tour_type][<?php echo esc_attr($term->slug); ?>]" class="mst-icon-select">
+                                            <?php foreach ($available_icons as $icon => $label): ?>
+                                                <option value="<?php echo esc_attr($icon); ?>" <?php selected($current_icon, $icon); ?>><?php echo $icon; ?> <?php echo esc_html($label); ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mst-icon-image-wrap" style="<?php echo $icon_type === 'emoji' ? 'display:none;' : ''; ?>">
+                                        <div class="mst-image-preview">
+                                            <?php if ($current_image): ?>
+                                                <img src="<?php echo esc_url($current_image); ?>" alt="">
+                                            <?php else: ?>
+                                                <span class="mst-no-image">Нет изображения</span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <input type="hidden" name="attribute_icons[tour_type_images][<?php echo esc_attr($term->slug); ?>]" value="<?php echo esc_url($current_image); ?>" class="mst-image-url-input">
+                                        <button type="button" class="button mst-upload-image-btn">📁 Выбрать</button>
+                                        <button type="button" class="button mst-remove-image-btn" style="<?php echo empty($current_image) ? 'display:none;' : ''; ?>">✕</button>
+                                    </div>
                                 </div>
                             </label>
                         </div>
@@ -667,17 +726,45 @@ settings_errors('mst_filters');
                     <?php if (!empty($tags) && !is_wp_error($tags)): ?>
                         <?php foreach ($tags as $tag): 
                             $current_icon = $attribute_icons['tags'][$tag->slug] ?? '🏷️';
+                            $current_image = $attribute_icons['tags_images'][$tag->slug] ?? '';
+                            $icon_type = !empty($current_image) ? 'image' : 'emoji';
                         ?>
-                        <div class="mst-icon-item">
+                        <div class="mst-icon-item" data-term="<?php echo esc_attr($tag->slug); ?>" data-type="tags">
                             <label>
                                 <strong><?php echo esc_html($tag->name); ?></strong>
                                 <div class="mst-icon-selector">
-                                    <span class="mst-current-icon"><?php echo $current_icon; ?></span>
-                                    <select name="attribute_icons[tags][<?php echo esc_attr($tag->slug); ?>]" class="mst-icon-select">
-                                        <?php foreach ($available_icons as $icon => $label): ?>
-                                            <option value="<?php echo esc_attr($icon); ?>" <?php selected($current_icon, $icon); ?>><?php echo $icon; ?> <?php echo esc_html($label); ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
+                                    <div class="mst-icon-type-switcher">
+                                        <label>
+                                            <input type="radio" name="icon_type_tags_<?php echo esc_attr($tag->slug); ?>" value="emoji" <?php checked($icon_type, 'emoji'); ?> class="mst-icon-type-radio">
+                                            Эмодзи
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="icon_type_tags_<?php echo esc_attr($tag->slug); ?>" value="image" <?php checked($icon_type, 'image'); ?> class="mst-icon-type-radio">
+                                            Изображение
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="mst-icon-emoji-wrap" style="<?php echo $icon_type === 'image' ? 'display:none;' : ''; ?>">
+                                        <span class="mst-current-icon"><?php echo $current_icon; ?></span>
+                                        <select name="attribute_icons[tags][<?php echo esc_attr($tag->slug); ?>]" class="mst-icon-select">
+                                            <?php foreach ($available_icons as $icon => $label): ?>
+                                                <option value="<?php echo esc_attr($icon); ?>" <?php selected($current_icon, $icon); ?>><?php echo $icon; ?> <?php echo esc_html($label); ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mst-icon-image-wrap" style="<?php echo $icon_type === 'emoji' ? 'display:none;' : ''; ?>">
+                                        <div class="mst-image-preview">
+                                            <?php if ($current_image): ?>
+                                                <img src="<?php echo esc_url($current_image); ?>" alt="">
+                                            <?php else: ?>
+                                                <span class="mst-no-image">Нет изображения</span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <input type="hidden" name="attribute_icons[tags_images][<?php echo esc_attr($tag->slug); ?>]" value="<?php echo esc_url($current_image); ?>" class="mst-image-url-input">
+                                        <button type="button" class="button mst-upload-image-btn">📁 Выбрать</button>
+                                        <button type="button" class="button mst-remove-image-btn" style="<?php echo empty($current_image) ? 'display:none;' : ''; ?>">✕</button>
+                                    </div>
                                 </div>
                             </label>
                         </div>

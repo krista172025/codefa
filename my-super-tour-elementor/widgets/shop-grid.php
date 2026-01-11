@@ -24,6 +24,25 @@ class Shop_Grid extends Widget_Base {
         return ['my-super-tour'];
     }
 
+    public function get_script_depends() {
+        // Register and localize script if not already done
+        if (!wp_script_is('mst-shop-grid', 'registered')) {
+            $plugin_url = plugin_dir_url(dirname(__FILE__));
+            wp_register_script('mst-shop-grid', $plugin_url . 'assets/js/shop-grid.js', ['jquery'], '1.0.0', true);
+        }
+        
+        // Localize script with wishlist data
+        wp_localize_script('mst-shop-grid', 'mstShopGrid', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'restUrl' => rest_url(),
+            'nonce' => wp_create_nonce('mst_shop_grid_nonce'),
+            'userId' => is_user_logged_in() ? get_current_user_id() : 0,
+            'isLoggedIn' => is_user_logged_in(),
+        ]);
+        
+        return ['mst-shop-grid'];
+    }
+
     protected function register_controls() {
         $this->start_controls_section(
             'content_section',
@@ -186,7 +205,70 @@ class Shop_Grid extends Widget_Base {
 
         $this->end_controls_section();
 
-    // Guide Photo Section
+        // Info Tours Attribute Section
+        $this->start_controls_section(
+            'infotours_section',
+            [
+                'label' => __('Info Tours Attribute', 'my-super-tour-elementor'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $this->add_control(
+            'show_infotours',
+            [
+                'label' => __('Show Info Tours', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'no',
+            ]
+        );
+
+        $this->add_control(
+            'infotours_attribute',
+            [
+                'label' => __('Attribute Slug', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'default' => 'pa_infotours',
+                'condition' => ['show_infotours' => 'yes'],
+            ]
+        );
+
+        $this->add_control(
+            'infotours_text_color',
+            [
+                'label' => __('Text Color', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#666666',
+                'condition' => ['show_infotours' => 'yes'],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'infotours_font_size',
+            [
+                'label' => __('Font Size', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['px' => ['min' => 10, 'max' => 18]],
+                'default' => ['size' => 12, 'unit' => 'px'],
+                'condition' => ['show_infotours' => 'yes'],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'infotours_max_width',
+            [
+                'label' => __('Max Width (%)', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => ['%' => ['min' => 30, 'max' => 100]],
+                'default' => ['size' => 60, 'unit' => '%'],
+                'description' => __('Limits text width to prevent overlap with guide photo', 'my-super-tour-elementor'),
+                'condition' => ['show_infotours' => 'yes'],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // Guide Photo Section
         $this->start_controls_section(
             'guide_section',
             [
@@ -209,6 +291,7 @@ class Shop_Grid extends Widget_Base {
             [
                 'label' => __('Default Guide Photo', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::MEDIA,
+                'description' => __('Used when product has no linked guide', 'my-super-tour-elementor'),
                 'condition' => ['show_guide' => 'yes'],
             ]
         );
@@ -216,13 +299,14 @@ class Shop_Grid extends Widget_Base {
         $this->add_control(
             'guide_link',
             [
-                'label' => __('Guide Profile Link', 'my-super-tour-elementor'),
+                'label' => __('Default Guide Profile Link', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::URL,
+                'description' => __('Used when product has no linked guide', 'my-super-tour-elementor'),
                 'condition' => ['show_guide' => 'yes'],
             ]
         );
 
-        // NEW: Hover effect settings
+        // Hover effect settings
         $this->add_control(
             'guide_hover_heading',
             [
@@ -236,7 +320,7 @@ class Shop_Grid extends Widget_Base {
         $this->add_control(
             'guide_hover_gradient',
             [
-                'label' => __('Enable Spinning Gradient Border', 'my-super-tour-elementor'),
+                'label' => __('Enable Gradient Border on Hover', 'my-super-tour-elementor'),
                 'type' => Controls_Manager::SWITCHER,
                 'default' => 'yes',
                 'condition' => ['show_guide' => 'yes'],
@@ -840,7 +924,103 @@ class Shop_Grid extends Widget_Base {
             }
         }
         return null;
-    }   
+    }
+
+    /**
+     * Get guide data for a product
+     */
+    private function get_guide_data($product_id, $settings) {
+        $guide_photo_url = '';
+        $guide_name = '';
+        $guide_rating_val = '';
+        $guide_reviews = '';
+        $guide_profile_url = '#';
+        $guide_user_id = null;
+        $guide_bio = '';
+
+        // 1. PRIORITY: Try _mst_guide_id from product meta
+        $guide_user_id = get_post_meta($product_id, '_mst_guide_id', true);
+        
+        // 2. Fallback: Try legacy meta keys
+        if (!$guide_user_id) {
+            $guide_user_id = get_post_meta($product_id, '_guide_user_id', true);
+        }
+        if (!$guide_user_id) {
+            $guide_user_id = get_post_meta($product_id, 'guide_id', true);
+        }
+        
+        // 3. Fallback: check product author if has guide role
+        if (!$guide_user_id) {
+            $post_author = get_post_field('post_author', $product_id);
+            if ($post_author) {
+                $author_status = get_user_meta($post_author, 'mst_user_status', true);
+                if (in_array($author_status, ['guide', 'gold', 'silver', 'bronze'])) {
+                    $guide_user_id = $post_author;
+                }
+                if (!$guide_user_id) {
+                    $author_data = get_userdata($post_author);
+                    if ($author_data) {
+                        $roles = (array) $author_data->roles;
+                        if (array_intersect($roles, ['guide', 'gid', 'administrator'])) {
+                            $guide_user_id = $post_author;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if ($guide_user_id) {
+            // Photo from mst_lk
+            $mst_lk_avatar_id = get_user_meta($guide_user_id, 'mst_lk_avatar', true);
+            if ($mst_lk_avatar_id) {
+                $guide_photo_url = wp_get_attachment_url($mst_lk_avatar_id);
+            }
+            if (!$guide_photo_url) {
+                $guide_photo_id = get_user_meta($guide_user_id, 'mst_guide_photo_id', true);
+                if ($guide_photo_id) {
+                    $guide_photo_url = wp_get_attachment_url($guide_photo_id);
+                }
+            }
+            if (!$guide_photo_url) {
+                $guide_photo_url = get_user_meta($guide_user_id, 'guide_photo', true);
+            }
+            if (!$guide_photo_url) {
+                $guide_photo_url = get_avatar_url($guide_user_id, ['size' => 128]);
+            }
+            
+            // Guide data
+            $user = get_userdata($guide_user_id);
+            if ($user) {
+                $guide_name = $user->display_name;
+                $guide_profile_url = add_query_arg('guide_id', $guide_user_id, home_url('/guide/'));
+            }
+            
+            $guide_rating_val = get_user_meta($guide_user_id, 'mst_guide_rating', true);
+            $guide_reviews = get_user_meta($guide_user_id, 'mst_guide_reviews_count', true);
+            $guide_bio = get_user_meta($guide_user_id, 'mst_guide_bio', true);
+            if (!$guide_bio) {
+                $guide_bio = get_user_meta($guide_user_id, 'mst_guide_experience', true);
+            }
+        }
+        
+        // Fallback to widget default
+        if (!$guide_photo_url && !empty($settings['guide_photo']['url'])) {
+            $guide_photo_url = $settings['guide_photo']['url'];
+        }
+        if ($guide_profile_url === '#' && !empty($settings['guide_link']['url'])) {
+            $guide_profile_url = $settings['guide_link']['url'];
+        }
+
+        return [
+            'photo_url' => $guide_photo_url,
+            'name' => $guide_name,
+            'rating' => $guide_rating_val,
+            'reviews' => $guide_reviews,
+            'profile_url' => $guide_profile_url,
+            'user_id' => $guide_user_id,
+            'bio' => $guide_bio,
+        ];
+    }
 
     protected function render() {
         $settings = $this->get_settings_for_display();
@@ -927,15 +1107,12 @@ class Shop_Grid extends Widget_Base {
         $guide_bottom = $settings['guide_offset_bottom']['size'] ?? 0;
         $guide_border_color = $settings['guide_border_color'] ?? 'hsl(45, 98%, 50%)';
         
-        // Guide hover settings (NEW)
+        // Guide hover settings
         $guide_hover_gradient = ($settings['guide_hover_gradient'] ?? 'yes') === 'yes';
         $guide_gradient_1 = $settings['guide_gradient_color_1'] ?? '#9952E0';
         $guide_gradient_2 = $settings['guide_gradient_color_2'] ?? '#fbd603';
         $guide_show_info_badge = ($settings['guide_show_info_badge'] ?? 'yes') === 'yes';
         $guide_click_hint = $settings['guide_click_hint_text'] ?? 'Нажмите, чтобы увидеть гида';
-        
-        // Generate unique ID for this widget instance
-        $widget_id = 'mst-shop-grid-' . $this->get_id();
 
         // Colors
         $title_color = $settings['title_color'] ?? '#1a1a1a';
@@ -946,16 +1123,9 @@ class Shop_Grid extends Widget_Base {
         $button_bg = $settings['button_bg_color'] ?? 'hsl(270, 70%, 60%)';
         $button_text = $settings['button_text_color'] ?? '#ffffff';
         $button_radius = $settings['button_border_radius']['size'] ?? 25;
-
-        // Colors from settings
-        $title_color = $settings['title_color'] ?? '#1a1a1a';
-        $price_color = $settings['price_color'] ?? '#1a1a1a';
-        $location_icon_color = $settings['location_icon_color'] ?? 'hsl(45, 98%, 50%)';
-        $location_text_color = $settings['location_text_color'] ??  '#666666';
-        $star_color = $settings['star_color'] ?? 'hsl(45, 98%, 50%)';
-        $button_bg = $settings['button_bg_color'] ?? 'hsl(270, 70%, 60%)';
-        $button_text_color = $settings['button_text_color'] ??  '#ffffff';
-        $guide_border_color = $settings['guide_border_color'] ?? 'hsl(45, 98%, 50%)';
+        
+        // Generate unique ID for this widget instance
+        $widget_id = 'mst-shop-grid-' . $this->get_id();
 
         $container_class = 'mst-shop-grid';
         if ($cursor_glow) $container_class .= ' mst-cursor-glow-enabled';
@@ -964,7 +1134,7 @@ class Shop_Grid extends Widget_Base {
             <?php foreach ($products as $product):
                 $product_id = $product->get_id();
                 $image_url = wp_get_attachment_url($product->get_image_id());
-                if (! $image_url) $image_url = wc_placeholder_img_src();
+                if (!$image_url) $image_url = wc_placeholder_img_src();
                 
                 // Получаем город из атрибута pa_city
                 $location = $product->get_attribute('pa_city');
@@ -982,28 +1152,35 @@ class Shop_Grid extends Widget_Base {
                     }
                 }
                 
-                // Rating with boost
+                // Rating: показываем рейтинг только если у КОНКРЕТНОГО товара есть реальные отзывы
                 $rating_source = $settings['rating_source'] ?? 'combined';
                 $real_rating = floatval($product->get_average_rating()) ?: 0;
                 $real_count = intval($product->get_review_count()) ?: 0;
                 $manual_boost = floatval($settings['manual_rating_boost'] ?? 0);
-                $count_boost = intval($settings['manual_reviews_boost'] ??  0);
+                $count_boost = intval($settings['manual_reviews_boost'] ?? 0);
+
+                $has_rating = false;
+                $rating = 0;
+                $review_count = 0;
 
                 if ($rating_source === 'manual') {
-                    $rating = $manual_boost ?: 5;
-                    $review_count = $count_boost;
-                } elseif ($rating_source === 'combined') {
-                    $rating = $real_rating > 0 ? min(5, ($real_rating + $manual_boost) / 2) : ($manual_boost ?: 5);
-                    $review_count = $real_count + $count_boost;
+                    // Manual: показываем только если действительно задано
+                    if ($manual_boost > 0 || $count_boost > 0) {
+                        $has_rating = true;
+                        $rating = $manual_boost;
+                        $review_count = $count_boost;
+                    }
                 } else {
-                    $rating = $real_rating ?: 5;
-                    $review_count = $real_count;
+                    // WooCommerce / Combined: строго реальная оценка и реальное кол-во отзывов по товару
+                    if ($real_count > 0) {
+                        $has_rating = true;
+                        $rating = $real_rating;
+                        $review_count = $real_count;
+                    }
                 }
 
-                $rating = round($rating, 1);
-
-                $rating = $product->get_average_rating() ?: 5;
-                $review_count = $product->get_review_count() ?: 0;
+                $rating = $has_rating ? round($rating, 1) : 0;
+                
                 $price = $product->get_price_html();
                 
                 // Badges
@@ -1011,92 +1188,15 @@ class Shop_Grid extends Widget_Base {
                 $badge_2 = $product->get_attribute($settings['badge_attr_2'] ?? 'pa_duration');
                 $badge_3 = $product->get_attribute($settings['badge_attr_3'] ?? 'pa_transport');
                 
-                // === GUIDE FROM MST_LK ===
-                $guide_photo_url = '';
-                $guide_name = '';
-                $guide_rating_val = '';
-                $guide_reviews = '';
-                $guide_profile_url = '#';
-
-                if ($show_guide) {
-                    // 1. PRIORITY: Try _mst_guide_id from product meta (set via WooCommerce metabox)
-                    $guide_user_id = get_post_meta($product_id, '_mst_guide_id', true);
-                    
-                    // 2. Fallback: Try legacy meta keys
-                    if (!$guide_user_id) {
-                        $guide_user_id = get_post_meta($product_id, '_guide_user_id', true);
-                    }
-                    if (!$guide_user_id) {
-                        $guide_user_id = get_post_meta($product_id, 'guide_id', true);
-                    }
-                    
-                    // 3. Fallback: check product author if has guide role
-                    if (!$guide_user_id) {
-                        $post_author = get_post_field('post_author', $product_id);
-                        if ($post_author) {
-                            $author_status = get_user_meta($post_author, 'mst_user_status', true);
-                            if ($author_status === 'guide' || $author_status === 'gold' || $author_status === 'silver' || $author_status === 'bronze') {
-                                $guide_user_id = $post_author;
-                            }
-                        }
-                    }
-                    
-                    if ($guide_user_id) {
-                        // Photo from mst_lk - priority: mst_lk_avatar (from LK)
-                        $mst_lk_avatar_id = get_user_meta($guide_user_id, 'mst_lk_avatar', true);
-                        if ($mst_lk_avatar_id) {
-                            $guide_photo_url = wp_get_attachment_url($mst_lk_avatar_id);
-                        }
-                        // Fallback to mst_guide_photo_id
-                        if (!$guide_photo_url) {
-                            $guide_photo_id = get_user_meta($guide_user_id, 'mst_guide_photo_id', true);
-                            if ($guide_photo_id) {
-                                $guide_photo_url = wp_get_attachment_url($guide_photo_id);
-                            }
-                        }
-                        if (!$guide_photo_url) {
-                            $guide_photo_url = get_user_meta($guide_user_id, 'guide_photo', true);
-                        }
-                        if (!$guide_photo_url) {
-                            $guide_photo_url = get_user_meta($guide_user_id, 'profile_photo', true);
-                        }
-                        if (!$guide_photo_url) {
-                            $guide_photo_url = get_avatar_url($guide_user_id, ['size' => 128]);
-                        }
-                        
-                        // Guide data
-                        $user = get_userdata($guide_user_id);
-                        if ($user) {
-                            $guide_name = $user->display_name;
-                            $guide_profile_url = add_query_arg('guide_id', $guide_user_id, home_url('/guide/'));
-                        }
-                        
-                        $guide_rating_val = get_user_meta($guide_user_id, 'mst_guide_rating', true);
-                        $guide_reviews = get_user_meta($guide_user_id, 'mst_guide_reviews_count', true);
-                    }
-                    
-                    // Fallback to widget default
-                    if (!$guide_photo_url && ! empty($settings['guide_photo']['url'])) {
-                        $guide_photo_url = $settings['guide_photo']['url'];
-                    }
-                    if ($guide_profile_url === '#' && !empty($settings['guide_link']['url'])) {
-                        $guide_profile_url = $settings['guide_link']['url'];
-                    }
-                }
+                // GUIDE DATA - use helper function
+                $guide_data = $show_guide ? $this->get_guide_data($product_id, $settings) : null;
                 
-                // Guide bio for info badge
-                $guide_bio = '';
+                // Limit bio to 80 characters
                 $guide_bio_short = '';
-                if ($guide_user_id) {
-                    $guide_bio = get_user_meta($guide_user_id, 'mst_guide_bio', true);
-                    if (!$guide_bio) {
-                        $guide_bio = get_user_meta($guide_user_id, 'mst_guide_experience', true);
-                    }
-                    if ($guide_bio) {
-                        $guide_bio_short = mb_substr(strip_tags($guide_bio), 0, 80);
-                        if (mb_strlen(strip_tags($guide_bio)) > 80) {
-                            $guide_bio_short .= '...';
-                        }
+                if ($guide_data && !empty($guide_data['bio'])) {
+                    $guide_bio_short = mb_substr(strip_tags($guide_data['bio']), 0, 80);
+                    if (mb_strlen(strip_tags($guide_data['bio'])) > 80) {
+                        $guide_bio_short .= '...';
                     }
                 }
                 
@@ -1215,43 +1315,82 @@ class Shop_Grid extends Widget_Base {
                         </div>
                     </div>
                     
+                    <?php 
+                    // Info Tours Attribute
+                    $show_infotours = ($settings['show_infotours'] ?? '') === 'yes';
+                    if ($show_infotours):
+                        $infotours_attr = $settings['infotours_attribute'] ?? 'pa_infotours';
+                        $infotours_value = $product->get_attribute($infotours_attr);
+                        if (!empty($infotours_value)):
+                            $infotours_color = $settings['infotours_text_color'] ?? '#666666';
+                            $infotours_size = $settings['infotours_font_size']['size'] ?? 12;
+                            $infotours_max_width = $settings['infotours_max_width']['size'] ?? 60;
+                    ?>
+                    <!-- Info Tours Row -->
+                    <div class="mst-shop-grid-infotours" style="margin-bottom: 8px; max-width: <?php echo esc_attr($infotours_max_width); ?>%; line-height: 1.4;">
+                        <?php 
+                        // Получаем термины атрибута напрямую - каждый терм = новая строка
+                        $infotours_terms = wc_get_product_terms($product_id, $infotours_attr, ['fields' => 'names']);
+                        if (!empty($infotours_terms) && !is_wp_error($infotours_terms)) {
+                            foreach ($infotours_terms as $term_name) {
+                                $term_name = trim($term_name);
+                                if ($term_name === '') {
+                                    continue;
+                                }
+                        ?>
+                        <span style="color: <?php echo esc_attr($infotours_color); ?>; font-size: <?php echo esc_attr($infotours_size); ?>px; display: block; word-wrap: break-word;">
+                            <?php echo esc_html($term_name); ?>
+                        </span>
+                        <?php 
+                            }
+                        }
+                        ?>
+                    </div>
+                    <?php 
+                        endif;
+                    endif; 
+                    ?>
+                    
                     <!-- Spacer -->
                     <div style="flex: 1;"></div>
                     
                     <!-- Button with Guide Photo -->
-                    <div class="mst-woo-carousel-button-wrapper" style="position: relative; margin: 0 -16px -16px -16px;">
-                        <a href="<?php echo esc_url($product->get_permalink()); ?>" class="mst-woo-carousel-button mst-follow-glow" style="display: flex; align-items: center; justify-content: center; width: 100%; background: <?php echo esc_attr($button_bg); ?>; color: <?php echo esc_attr($button_text); ?>; padding: 14px 20px; border-radius: 0 0 <?php echo $card_radius; ?>px <?php echo $card_radius; ?>px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                    <div class="mst-shop-grid-button-wrapper" style="position: relative; margin: 0 -16px -16px -16px;">
+                        <a href="<?php echo esc_url($product->get_permalink()); ?>" class="mst-shop-grid-button mst-follow-glow" style="display: flex; align-items: center; justify-content: center; width: 100%; background: <?php echo esc_attr($button_bg); ?>; color: <?php echo esc_attr($button_text); ?>; padding: 14px 20px; border-radius: 0 0 <?php echo $card_radius; ?>px <?php echo $card_radius; ?>px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">
                             <?php echo esc_html($settings['button_text']); ?>
                         </a>
                         
-                        <?php if ($show_guide && !empty($guide_photo_url)): ?>
+                        <?php if ($show_guide && $guide_data && !empty($guide_data['photo_url'])): ?>
                         <div class="mst-guide-hover-wrapper" style="position: absolute; right: <?php echo 16 + $guide_right; ?>px; top: 50%; transform: translateY(calc(-50% + <?php echo $guide_bottom; ?>px)); z-index: 10;">
-                            <a href="<?php echo esc_url($guide_profile_url); ?>" 
+                            <a href="<?php echo esc_url($guide_data['profile_url']); ?>" 
                                class="mst-shop-grid-guide mst-guide-photo-hover" 
                                data-gradient-enabled="<?php echo $guide_hover_gradient ? 'true' : 'false'; ?>"
+                               data-gradient-1="<?php echo esc_attr($guide_gradient_1); ?>"
+                               data-gradient-2="<?php echo esc_attr($guide_gradient_2); ?>"
+                               data-show-badge="<?php echo $guide_show_info_badge ? 'true' : 'false'; ?>"
                                style="position: relative; display: block; width: <?php echo $guide_size; ?>px; height: <?php echo $guide_size; ?>px; border-radius: 50%; overflow: visible;">
                                 <!-- Gradient border wrapper -->
                                 <span class="mst-guide-border-ring" style="position: absolute; inset: -<?php echo intval($guide_border_width); ?>px; border-radius: 50%; background: <?php echo esc_attr($guide_border_color); ?>; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1;"></span>
                                 <!-- Photo container -->
                                 <span class="mst-guide-photo-inner" style="position: absolute; inset: 0; border-radius: 50%; overflow: hidden; z-index: 2; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                                    <img src="<?php echo esc_url($guide_photo_url); ?>" alt="<?php echo esc_attr($guide_name ?: 'Guide'); ?>" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                    <img src="<?php echo esc_url($guide_data['photo_url']); ?>" alt="<?php echo esc_attr($guide_data['name'] ?: 'Guide'); ?>" style="width: 100%; height: 100%; object-fit: cover; display: block;">
                                 </span>
                             </a>
                             
-                            <?php if ($guide_show_info_badge && !empty($guide_name)): ?>
+                            <?php if ($guide_show_info_badge && !empty($guide_data['name'])): ?>
                             <!-- Liquid Glass Info Badge -->
                             <div class="mst-guide-info-badge" style="position: absolute; bottom: calc(100% + 12px); right: 0; min-width: 200px; max-width: 280px; padding: 14px 16px; background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.5); box-shadow: 0 8px 32px rgba(0,0,0,0.12), inset 0 1px 2px rgba(255,255,255,0.8); opacity: 0; visibility: hidden; transform: translateY(8px); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; z-index: 100;">
                                 <!-- Name + Rating + Reviews count -->
                                 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap;">
-                                    <span style="font-weight: 700; font-size: 15px; color: #1a1a1a;"><?php echo esc_html($guide_name); ?></span>
-                                    <?php if (!empty($guide_rating_val)): ?>
+                                    <span style="font-weight: 700; font-size: 15px; color: #1a1a1a;"><?php echo esc_html($guide_data['name']); ?></span>
+                                    <?php if (!empty($guide_data['rating'])): ?>
                                     <span style="display: inline-flex; align-items: center; gap: 3px; background: linear-gradient(135deg, <?php echo esc_attr($guide_gradient_1); ?>, <?php echo esc_attr($guide_gradient_2); ?>); color: #fff; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                        <?php echo esc_html(number_format((float)$guide_rating_val, 1)); ?>
+                                        <?php echo esc_html(number_format((float)$guide_data['rating'], 1)); ?>
                                     </span>
                                     <?php endif; ?>
-                                    <?php if (!empty($guide_reviews)): ?>
-                                    <span style="font-size: 11px; color: #888; white-space: nowrap;"><?php echo esc_html($guide_reviews); ?> отзывов</span>
+                                    <?php if (!empty($guide_data['reviews'])): ?>
+                                    <span style="font-size: 11px; color: #888; white-space: nowrap;"><?php echo esc_html($guide_data['reviews']); ?> отзывов</span>
                                     <?php endif; ?>
                                 </div>
                                 
@@ -1285,15 +1424,18 @@ class Shop_Grid extends Widget_Base {
             #<?php echo esc_attr($widget_id); ?> .mst-shop-grid-card.mst-liquid-glass:hover {
                 box-shadow: 0 12px 40px rgba(153, 82, 224, 0.15), inset 0 1px 2px rgba(255,255,255,0.4);
             }
-            #<?php echo esc_attr($widget_id); ?> .mst-woo-carousel-button:hover {
+            #<?php echo esc_attr($widget_id); ?> .mst-shop-grid-button:hover {
                 filter: brightness(1.1);
+            }
+            #<?php echo esc_attr($widget_id); ?> .mst-wishlist-btn:hover {
+                transform: scale(1.1);
             }
             
             /* Guide hover - spinning gradient border animation (NO SCALE) */
             #<?php echo esc_attr($widget_id); ?> .mst-guide-hover-wrapper:hover .mst-guide-border-ring,
             #<?php echo esc_attr($widget_id); ?> .mst-guide-photo-hover:hover .mst-guide-border-ring {
                 background: conic-gradient(from var(--rotation), <?php echo esc_attr($guide_gradient_1); ?>, <?php echo esc_attr($guide_gradient_2); ?>, <?php echo esc_attr($guide_gradient_1); ?>) !important;
-                animation: mstGuideGradientRotate<?php echo $this->get_id(); ?> 1.5s linear infinite !important;
+                animation: mstGuideGradientRotate 1.5s linear infinite !important;
             }
             
             @property --rotation {
@@ -1302,7 +1444,7 @@ class Shop_Grid extends Widget_Base {
                 inherits: false;
             }
             
-            @keyframes mstGuideGradientRotate<?php echo $this->get_id(); ?> {
+            @keyframes mstGuideGradientRotate {
                 0% { --rotation: 0deg; }
                 100% { --rotation: 360deg; }
             }

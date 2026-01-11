@@ -324,14 +324,11 @@ $tabs = $tabs ?? $settings['tabs'] ?? [
                                         </div>
                                     </div>
                                     
-                                    <!-- Buttons -->
+                                    <!-- Button - only "Подробнее" -->
                                     <div class="mst-wishlist-card-actions">
-                                        <a href="<?php echo get_permalink($product_id); ?>" class="mst-lk-btn mst-lk-btn-primary mst-wishlist-btn-details">
+                                        <a href="<?php echo get_permalink($product_id); ?>" class="mst-lk-btn mst-lk-btn-primary mst-wishlist-btn-details" style="width: 100%;">
                                             <?php _e('Подробнее', 'mst-auth-lk'); ?>
                                         </a>
-                                        <button type="button" class="mst-lk-btn mst-lk-btn-outline mst-remove-from-wishlist mst-wishlist-btn-delete" data-product-id="<?php echo $product_id; ?>">
-                                            🗑️ <?php _e('Удалить', 'mst-auth-lk'); ?>
-                                        </button>
                                     </div>
                                 </div>
                             </div>

@@ -1449,13 +1449,14 @@ body,
 }
 
 /* Dropdown Arrow Icon */
-.mst-dropdown-arrow {
+.mst-menu-arrow {
   width: 14px;
   height: 14px;
   flex-shrink: 0;
   transition: transform 0.3s ease;
   opacity: 0.6;
 }
+
 
 .mst-header-nav .mst-header-menu li:hover > a .mst-dropdown-arrow {
   transform: rotate(180deg);
@@ -6435,21 +6436,54 @@ body,
   font-weight: 500;
 }
 
+/* White shimmer animation keyframes */
+@keyframes mst-badge-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
 .mst-review-city-badge {
   font-size: 14px;
   font-weight: 600;
   color: #8B5CF6;
-  background: rgba(139, 92, 246, 0.1);
+  background: linear-gradient(
+    110deg,
+    rgba(139, 92, 246, 0.1) 0%,
+    rgba(139, 92, 246, 0.1) 40%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(139, 92, 246, 0.1) 60%,
+    rgba(139, 92, 246, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: mst-badge-shimmer 3s ease-in-out infinite;
   padding: 4px 12px;
   border-radius: 8px;
+  position: relative;
+  overflow: hidden;
 }
 
 .mst-review-tour-badge {
   font-size: 13px;
   color: #555555;
-  background: rgba(0, 0, 0, 0.05);
+  background: linear-gradient(
+    110deg,
+    rgba(0, 0, 0, 0.05) 0%,
+    rgba(0, 0, 0, 0.05) 40%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(0, 0, 0, 0.05) 60%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+  background-size: 200% 100%;
+  animation: mst-badge-shimmer 3.5s ease-in-out infinite;
+  animation-delay: 0.5s;
   padding: 5px 12px;
   border-radius: 8px;
+  position: relative;
+  overflow: hidden;
 }
 
 .mst-review-text {

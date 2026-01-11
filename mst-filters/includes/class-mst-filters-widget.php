@@ -229,6 +229,14 @@ class MST_Filters_Widget extends Widget_Base {
             'condition' => ['show_tags' => 'yes'],
         ]);
         
+        $this->add_control('tags_multiple', [
+            'label' => 'Множественный выбор',
+            'type' => Controls_Manager::SWITCHER,
+            'default' => 'yes',
+            'description' => 'Разрешить выбор нескольких рубрик (чекбоксы)',
+            'condition' => ['show_tags' => 'yes'],
+        ]);
+        
         $this->add_control('tags_full_width', [
             'label' => 'На всю ширину',
             'type' => Controls_Manager::SWITCHER,
@@ -831,6 +839,7 @@ class MST_Filters_Widget extends Widget_Base {
                 'order' => intval($settings['tags_order']),
                 'label' => $settings['tags_label'],
                 'style' => $settings['tags_style'],
+                'multiple' => $settings['tags_multiple'] === 'yes',
                 'full_width' => $settings['tags_full_width'] === 'yes',
                 'terms' => $tags,
                 'name' => 'tags',
@@ -876,6 +885,7 @@ class MST_Filters_Widget extends Widget_Base {
         
         $full_width_class = !empty($filter['full_width']) ? 'mst-filter-full' : '';
         $icon_type = $filter['icon_type'] ?? '';
+        $image_key = $icon_type . '_images';
         $default_icon = $filter['default_icon'] ?? '📌';
         ?>
         <div class="mst-filter-group <?php echo $full_width_class; ?>">
@@ -883,7 +893,7 @@ class MST_Filters_Widget extends Widget_Base {
             
             <?php if ($filter['style'] === 'dropdown'): ?>
                 <!-- Custom dropdown wrapper with icons -->
-                <div class="mst-dropdown-wrapper" data-multiple="<?php echo $filter['multiple'] ? 'true' : 'false'; ?>">
+                <div class="mst-dropdown-wrapper" data-multiple="<?php echo !empty($filter['multiple']) ? 'true' : 'false'; ?>">
                     <button type="button" class="mst-dropdown-trigger">
                         <span class="mst-dropdown-text">Выберите</span>
                         <span class="mst-dropdown-arrow">▼</span>
@@ -891,20 +901,25 @@ class MST_Filters_Widget extends Widget_Base {
                     <div class="mst-dropdown-menu">
                         <?php foreach ($filter['terms'] as $term): 
                             $icon = $attribute_icons[$icon_type][$term->slug] ?? $default_icon;
+                            $image = $attribute_icons[$image_key][$term->slug] ?? '';
                         ?>
                         <label class="mst-dropdown-item">
-                            <input type="<?php echo $filter['multiple'] ? 'checkbox' : 'radio'; ?>" 
+                            <input type="<?php echo !empty($filter['multiple']) ? 'checkbox' : 'radio'; ?>" 
                                    name="<?php echo $filter['name']; ?>[]" 
                                    value="<?php echo esc_attr($term->slug); ?>">
-                            <span class="mst-dropdown-icon"><?php echo $icon; ?></span>
+                            <?php if (!empty($image)): ?>
+                                <img src="<?php echo esc_url($image); ?>" alt="" class="mst-dropdown-icon-img">
+                            <?php else: ?>
+                                <span class="mst-dropdown-icon"><?php echo $icon; ?></span>
+                            <?php endif; ?>
                             <span class="mst-dropdown-label"><?php echo esc_html($term->name); ?></span>
                         </label>
                         <?php endforeach; ?>
                     </div>
                     <!-- Hidden select for form submission compatibility -->
-                    <select name="<?php echo $filter['name']; ?><?php echo $filter['multiple'] ? '[]' : ''; ?>" 
+                    <select name="<?php echo $filter['name']; ?><?php echo !empty($filter['multiple']) ? '[]' : ''; ?>" 
                             class="mst-select-hidden" 
-                            <?php echo $filter['multiple'] ? 'multiple' : ''; ?> 
+                            <?php echo !empty($filter['multiple']) ? 'multiple' : ''; ?> 
                             style="display:none;">
                         <option value="">Выберите</option>
                         <?php foreach ($filter['terms'] as $term): ?>
@@ -916,12 +931,17 @@ class MST_Filters_Widget extends Widget_Base {
                 <div class="mst-filter-chips">
                     <?php foreach ($filter['terms'] as $term): 
                         $icon = $attribute_icons[$icon_type][$term->slug] ?? $default_icon;
-                        $input_type = $filter['multiple'] ? 'checkbox' : 'radio';
+                        $image = $attribute_icons[$image_key][$term->slug] ?? '';
+                        $input_type = !empty($filter['multiple']) ? 'checkbox' : 'radio';
                     ?>
                     <label class="mst-chip">
                         <input type="<?php echo $input_type; ?>" name="<?php echo $filter['name']; ?>[]" value="<?php echo esc_attr($term->slug); ?>">
                         <span class="mst-chip-inner">
-                            <span class="mst-chip-icon"><?php echo $icon; ?></span>
+                            <?php if (!empty($image)): ?>
+                                <img src="<?php echo esc_url($image); ?>" alt="" class="mst-chip-icon-img">
+                            <?php else: ?>
+                                <span class="mst-chip-icon"><?php echo $icon; ?></span>
+                            <?php endif; ?>
                             <?php echo esc_html($term->name); ?>
                         </span>
                     </label>

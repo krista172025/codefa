@@ -127,6 +127,30 @@ class Header extends Widget_Base {
             ]
         );
 
+        // Mobile Menu Collapsible Submenus
+        $this->add_control(
+            'mobile_collapse_submenus',
+            [
+                'label' => __('Collapse Submenus (Mobile)', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'yes',
+                'description' => __('Initially hide submenus on mobile, user clicks to expand', 'my-super-tour-elementor'),
+            ]
+        );
+
+        $this->add_control(
+            'mobile_collapse_items',
+            [
+                'label' => __('Items to Collapse', 'my-super-tour-elementor'),
+                'type' => Controls_Manager::TEXT,
+                'default' => 'Выбор города',
+                'description' => __('Comma-separated list of menu item titles to initially collapse (e.g., "Выбор города,Экскурсии")', 'my-super-tour-elementor'),
+                'condition' => [
+                    'mobile_collapse_submenus' => 'yes',
+                ],
+            ]
+        );
+
         $this->end_controls_section();
 
         // Shortcode Section
@@ -755,15 +779,36 @@ class Header extends Widget_Base {
                     <?php endif; ?>
                     
                     <!-- Mobile Toggle -->
-                    <button class="mst-header-icon-btn mst-header-mobile-toggle" onclick="this.closest('.mst-header').classList.toggle('mst-menu-open')">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <button type="button" class="mst-header-icon-btn mst-header-mobile-toggle" aria-label="<?php esc_attr_e('Toggle menu', 'my-super-tour-elementor'); ?>">
+                        <svg class="mst-icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="3" y1="12" x2="21" y2="12"></line>
                             <line x1="3" y1="6" x2="21" y2="6"></line>
                             <line x1="3" y1="18" x2="21" y2="18"></line>
                         </svg>
+                        <svg class="mst-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
                     </button>
                 </div>
             </div>
+            
+            <!-- Mobile Navigation Menu -->
+            <nav class="mst-header-mobile-menu" data-collapse-items="<?php echo esc_attr($settings['mobile_collapse_items'] ?? 'Выбор города'); ?>">
+                <?php 
+                $collapse_enabled = ($settings['mobile_collapse_submenus'] ?? 'yes') === 'yes';
+                if (!empty($wp_menu)) {
+                    wp_nav_menu([
+                        'menu' => $wp_menu,
+                        'container' => false,
+                        'menu_class' => 'mst-mobile-menu-list' . ($collapse_enabled ? ' mst-collapse-enabled' : ''),
+                        'fallback_cb' => false,
+                        'depth' => 3,
+                        'walker' => new MST_Walker_Nav_Menu_Mobile($collapse_enabled, $settings['mobile_collapse_items'] ?? 'Выбор города'),
+                    ]);
+                }
+                ?>
+            </nav>
         </header>
 
         <?php if ($settings['show_wishlist'] === 'yes' && $enable_wishlist_sidebar === 'yes'): ?>
@@ -927,4 +972,108 @@ class Header extends Widget_Base {
         <?php endif; ?>
         <?php
     }
+}
+
+/**
+ * Mobile Menu Walker - supports collapsible submenus
+ */
+class MST_Walker_Nav_Menu_Mobile extends \Walker_Nav_Menu {
+    private $collapse_enabled;
+    private $collapse_items;
+    
+    public function __construct($collapse_enabled = true, $collapse_items = '') {
+        $this->collapse_enabled = $collapse_enabled;
+        $this->collapse_items = array_map('trim', explode(',', $collapse_items));
+    }
+    
+    public function start_lvl(&$output, $depth = 0, $args = null) {
+        $indent = str_repeat("\t", $depth);
+        $classes = ['sub-menu'];
+        if ($depth === 0 && $this->collapse_enabled) {
+            $classes[] = 'mst-mobile-submenu-collapsible';
+        }
+        $class_names = implode(' ', $classes);
+        $output .= "\n{$indent}<ul class=\"{$class_names}\">\n";
+    }
+    
+    public function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
+        $indent = ($depth) ? str_repeat("\t", $depth) : '';
+        
+        $classes = empty($item->classes) ? [] : (array) $item->classes;
+        $classes[] = 'menu-item-' . $item->ID;
+        
+        $has_children = in_array('menu-item-has-children', $classes);
+        $should_collapse = $this->collapse_enabled && $depth === 0 && in_array($item->title, $this->collapse_items);
+        
+        if ($should_collapse) {
+            $classes[] = 'mst-mobile-item-collapsed';
+        }
+        
+        $class_names = implode(' ', array_filter($classes));
+        
+        $output .= $indent . '<li class="' . esc_attr($class_names) . '">';
+        
+        $atts = [];
+        $atts['title']  = !empty($item->attr_title) ? $item->attr_title : '';
+        $atts['target'] = !empty($item->target) ? $item->target : '';
+        $atts['rel']    = !empty($item->xfn) ? $item->xfn : '';
+        $atts['href']   = !empty($item->url) ? $item->url : '';
+        
+        $attributes = '';
+        foreach ($atts as $attr => $value) {
+            if (!empty($value)) {
+                $attributes .= ' ' . $attr . '="' . esc_attr($value) . '"';
+            }
+        }
+        
+        $item_output = '';
+        
+        if ($has_children && $this->collapse_enabled && $depth === 0) {
+            // Wrap in container for toggle
+            $item_output .= '<div class="mst-mobile-menu-item-wrap">';
+            $item_output .= '<a' . $attributes . '>' . esc_html($item->title) . '</a>';
+            $item_output .= '<button type="button" class="mst-mobile-submenu-toggle" aria-expanded="' . ($should_collapse ? 'false' : 'true') . '">';
+            $item_output .= '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+            $item_output .= '</button>';
+            $item_output .= '</div>';
+        } else {
+            $item_output .= '<a' . $attributes . '>';
+            $item_output .= esc_html($item->title);
+            if ($has_children && $depth > 0) {
+                $item_output .= ' <svg class="mst-submenu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+            }
+            $item_output .= '</a>';
+        }
+        
+        $output .= $item_output;
+    }
+}
+
+// AJAX handler for cart count
+add_action('wp_ajax_mst_get_cart_count', 'mst_ajax_get_cart_count');
+add_action('wp_ajax_nopriv_mst_get_cart_count', 'mst_ajax_get_cart_count');
+function mst_ajax_get_cart_count() {
+    $count = 0;
+    $subtotal = '';
+    
+    if (function_exists('WC') && WC()->cart) {
+        $count = WC()->cart->get_cart_contents_count();
+        $subtotal = WC()->cart->get_cart_subtotal();
+    }
+    
+    wp_send_json_success([
+        'count' => $count,
+        'subtotal' => $subtotal,
+    ]);
+}
+
+// Auto-update cart fragments
+add_filter('woocommerce_add_to_cart_fragments', 'mst_cart_count_fragment');
+function mst_cart_count_fragment($fragments) {
+    if (function_exists('WC') && WC()->cart) {
+        $count = WC()->cart->get_cart_contents_count();
+        $display = $count > 0 ? '' : 'display: none;';
+        $fragments['.mst-header-cart-count'] = '<span class="mst-header-cart-count" style="' . $display . '">' . $count . '</span>';
+    }
+    return $fragments;
 }

@@ -577,13 +577,8 @@ class Single_Product_Toast extends Widget_Base {
             
             var closeBtn = toast.querySelector('.mst-toast-close');
             var shown = false;
-            var sessionKey = 'mst_toast_dismissed_<?php echo esc_js($this->get_id()); ?>';
             
-            // Check if already dismissed this session
-            if (sessionStorage.getItem(sessionKey)) {
-                return;
-            }
-            
+            // NO sessionStorage/localStorage - toast ALWAYS shows on every page load
             // Show toast after delay
             setTimeout(function() {
                 toast.classList.add('show');
@@ -599,7 +594,7 @@ class Single_Product_Toast extends Widget_Base {
             
             function hideToast() {
                 toast.classList.remove('show');
-                sessionStorage.setItem(sessionKey, '1');
+                // Do NOT save to storage - let it show again on next page load
             }
             
             closeBtn.addEventListener('click', hideToast);

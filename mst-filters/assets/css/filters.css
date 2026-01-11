@@ -49,12 +49,32 @@
     margin-bottom: 24px;
     align-items: flex-start;
     position: relative;
-    z-index: 1;
+    z-index: 10;
+}
+
+/* First row should have higher z-index than second row */
+.mst-filters-row:first-of-type {
+    z-index: 20;
+}
+
+.mst-filters-row:nth-of-type(2) {
+    z-index: 10;
+}
+
+.mst-filters-row:last-of-type {
+    z-index: 5;
 }
 
 .mst-filter-group {
     flex: 1;
     min-width: 200px;
+    position: relative;
+}
+
+/* Price slider needs higher z-index than other filters */
+.mst-filter-group .mst-price-slider-container {
+    position: relative;
+    z-index: 5;
 }
 
 .mst-filter-full {
@@ -148,7 +168,12 @@
 }
 
 .mst-dropdown-wrapper.open {
-    z-index: 100;
+    z-index: 1000;
+}
+
+/* Ensure dropdowns in first row stay above second row */
+.mst-filters-row:first-of-type .mst-dropdown-wrapper.open {
+    z-index: 1001;
 }
 
 .mst-dropdown-trigger {
@@ -856,4 +881,21 @@
     clip: rect(0, 0, 0, 0) !important;
     white-space: nowrap !important;
     border: 0 !important;
+}
+
+/* ========================================
+   ICON IMAGES (uploaded via Media Library)
+   ======================================== */
+.mst-chip-icon-img,
+.mst-dropdown-icon-img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    flex-shrink: 0;
+    border-radius: 3px;
+}
+
+.mst-dropdown-icon-img {
+    width: 20px;
+    height: 20px;
 }

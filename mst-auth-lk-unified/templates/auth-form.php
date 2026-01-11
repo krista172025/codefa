@@ -555,6 +555,21 @@ $oauth_enabled = get_option('mst_oauth_enabled', [
                         btn.disabled = false;
                         btn.textContent = action === 'login' ? '<?php _e('Войти', 'mst-auth-lk'); ?>' : '<?php _e('Зарегистрироваться', 'mst-auth-lk'); ?>';
                     } else {
+                        // ✅ ИСПРАВЛЕНИЕ: Обновляем статус авторизации ПЕРЕД редиректом
+                        document.body.classList.add('logged-in');
+                        document.body.classList.remove('logged-out');
+                        if (typeof mstAuthLK !== 'undefined') {
+                            mstAuthLK.is_logged_in = true;
+                        }
+                        if (typeof mstShopGrid !== 'undefined') {
+                            mstShopGrid.userId = 1;
+                        }
+
+                        // Единое событие для моментального обновления других виджетов
+                        try {
+                            window.dispatchEvent(new CustomEvent('mst:auth', { detail: { isLoggedIn: true, userId: 1 } }));
+                        } catch (e) {}
+
                         window.location.href = data.data.redirect;
                     }
                 } else {
